@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <!-- 设置整个屏幕背景为白色 -->
+    <item android:drawable="@color/color_FFF9EB">
+<!--        <bitmap android:src="@drawable/wel_bj22" android:alpha="1" android:gravity="center|fill"/>-->
+    </item>
+
+    <item>
+        <bitmap android:src="@drawable/splash_pic"
+            android:gravity="center"/>
+    </item>
+
+    <!-- 中间logo -->
+   <!-- <item  android:gravity="top|center" android:top="120dp" android:width="300dp" android:height="300dp">
+        <bitmap
+            android:src="@mipmap/ser_pic14" />
+    </item>
+
+   <item  android:gravity="center|bottom" android:bottom="118dp" android:width="85dp" android:height="80dp">
+        <bitmap
+            android:src="@mipmap/wel_bot_img" />
+    </item>-->
+
+</layer-list>

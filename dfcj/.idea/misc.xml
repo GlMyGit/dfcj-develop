@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/custom_divider2.xml" value="0.2296875" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/custom_divider3.xml" value="0.2296875" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/custom_divider404.xml" value="0.2265625" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/custom_divider_center.xml" value="0.2296875" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/custom_divider_hei.xml" value="0.2265625" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/custom_divider_left.xml" value="0.2296875" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/custom_divider_left2.xml" value="0.2265625" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/custom_divider_left_f.xml" value="0.2296875" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/custom_divider_red.xml" value="0.22615384615384615" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/custom_divider_right.xml" value="0.2265625" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/custom_divider_white.xml" value="0.22615384615384615" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/custom_divider_white3.xml" value="0.2265625" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/message_shap_chat_bg.xml" value="0.2490740740740741" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/radio_btn.xml" value="0.2265625" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/seek_bar_bg.xml" value="0.2265625" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/seek_bar_thumb.xml" value="0.2265625" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/selector_ctype_file.xml" value="0.2490740740740741" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/selector_ctype_image.xml" value="0.2490740740740741" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/selector_ctype_location.xml" value="0.2490740740740741" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/selector_ctype_video.xml" value="0.2490740740740741" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/shape_session_btn_voice.xml" value="0.2490740740740741" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/shape_session_btn_voice_normal.xml" value="0.2490740740740741" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/drawable/videocall_background.xml" value="0.2194871794871795" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/activity_mipush.xml" value="0.17291666666666666" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/alert_float_video_layout.xml" value="0.21041666666666667" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/authority_dialog.xml" value="0.21041666666666667" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/center_item_msg.xml" value="0.21354166666666666" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/df_item_text_receive.xml" value="0.21354166666666666" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/dialog_record.xml" value="0.23854166666666668" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/dlg_dislike_custom.xml" value="0.17291666666666666" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/float_video_window_layout.xml" value="0.21041666666666667" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/include_add_layout.xml" value="0.23854166666666668" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/include_emoji_layout.xml" value="0.23854166666666668" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/item_audio_receive.xml" value="0.23854166666666668" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/item_audio_send.xml" value="0.23854166666666668" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/item_emoji.xml" value="0.23854166666666668" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/item_emoji_vprecy.xml" value="0.23854166666666668" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/item_file_receive.xml" value="0.23854166666666668" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/item_file_send.xml" value="0.23854166666666668" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/item_image_receive.xml" value="0.23854166666666668" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/item_image_send.xml" value="0.23854166666666668" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/item_text_receive.xml" value="0.23854166666666668" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/item_text_send.xml" value="0.23854166666666668" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/item_video_receive.xml" value="0.23854166666666668" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/item_video_send.xml" value="0.23854166666666668" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/kapian_item_text_receive.xml" value="0.21354166666666666" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/kapian_item_text_send.xml" value="0.21354166666666666" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/layout_toolbar.xml" value="0.21041666666666667" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/main_fragment.xml" value="0.20833333333333334" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/main_layout.xml" value="0.20833333333333334" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/mine_fragment.xml" value="0.23854166666666668" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/mine_rv_item.xml" value="0.17291666666666666" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/mydialog_loading_layout.xml" value="0.17291666666666666" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/native_insert_ad_layout.xml" value="0.17291666666666666" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/ocr_msg_edit_dialog.xml" value="0.21354166666666666" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/room_show_view.xml" value="0.21041666666666667" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/sp_ad_activity.xml" value="0.17291666666666666" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/unified_head.xml" value="0.19114583333333332" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/unified_head2.xml" value="0.21354166666666666" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/upp1_dialog.xml" value="0.17291666666666666" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/upp2_layout.xml" value="0.17291666666666666" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/user_xieyi.xml" value="0.17291666666666666" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/video_call_layout.xml" value="0.22" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/videocall_popup_layout.xml" value="0.20677083333333332" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/videocall_view_floating_default.xml" value="0.20677083333333332" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/water_item.xml" value="0.17291666666666666" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/webview_activity.xml" value="0.21354166666666666" />
+        <entry key="..\:/worck/maizhi/dfcj/app/src/main/res/layout/whellview_dialog.xml" value="0.21041666666666667" />
+        <entry key="..\:/worck/maizhi/maizhiworck/app/src/main/res/layout/main_fragment.xml" value="0.23854166666666668" />
+        <entry key="..\:/worck/maizhi/maizhiworck/app/src/main/res/layout/main_layout.xml" value="0.23854166666666668" />
+        <entry key="..\:/worck/maizhi/maizhiworck/app/src/main/res/layout/mine_fragment.xml" value="0.3729166666666667" />
+        <entry key="..\:/worck/maizhi/maizhiworck/app/src/main/res/layout/mine_rv_item.xml" value="0.25" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

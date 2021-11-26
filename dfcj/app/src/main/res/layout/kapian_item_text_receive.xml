@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/ll_text_receive"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+
+    <TextView
+        android:id="@+id/item_tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#999999"
+        android:textSize="12dp"
+        android:visibility="gone" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+         android:layout_height="wrap_content">
+
+        <com.dfcj.videoim.view.widght.CircleImageView
+            android:id="@+id/chat_item_header"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+             android:layout_marginRight="5dp"
+            android:layout_alignParentLeft="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_head_default_left"
+            />
+
+
+
+        <LinearLayout
+            android:id="@+id/chat_item_layout_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginRight="20dp"
+            android:layout_toRightOf="@id/chat_item_header"
+            android:gravity="right|center_vertical"
+            >
+
+            <TextView
+                android:id="@+id/kapian_top_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="客服001"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textSize12sp"
+                android:layout_gravity="left"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="1dp"
+                ></TextView>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:orientation="horizontal"
+                android:gravity="center|left"
+                >
+
+
+                <LinearLayout
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/custom_divider_left_f"
+                    >
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginTop="15dp"
+                        android:src="@drawable/ic_head_default_left"
+                        android:layout_gravity="center"
+                        ></ImageView>
+
+                    <TextView
+                        android:id="@+id/chat_item_content_text1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="商品编号:0878672455538"
+                        android:textColor="#333333"
+                        android:textSize="12sp"
+                        android:gravity="left"
+                        android:layout_marginLeft="13dp"
+                        android:layout_marginRight="13dp"
+                        android:layout_marginTop="13dp"
+
+                        />
+
+                    <TextView
+                        android:id="@+id/chat_item_content_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="资生堂悦薇珀翡紧颜亮肤乳（滋润型）100ml "
+                        android:textColor="#333333"
+                        android:textSize="12sp"
+                        android:gravity="center|left"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="13dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="5dp"
+
+                        />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/red8"
+                        android:textSize="@dimen/textSize13sp"
+                        android:text="599.00"
+                        android:layout_marginLeft="13dp"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginTop="10dp"
+                        ></TextView>
+
+
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+
+
+    </RelativeLayout>
+
+</LinearLayout>
