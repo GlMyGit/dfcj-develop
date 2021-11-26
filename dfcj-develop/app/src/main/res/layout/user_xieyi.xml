@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    >
+
+
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/yuanjiao1"
+        android:layout_gravity="center"
+        android:gravity="center"
+        >
+
+        <TextView
+            android:id="@+id/user_xieyi_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="欢迎使用牛牛计步APP"
+            android:textColor="#ff222222"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
+            />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="17dp"
+            android:layout_marginRight="17dp"
+            android:layout_marginTop="16dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="我们将通过"
+                android:textColor="#ff666666"
+                android:textSize="14sp"
+                android:lineSpacingExtra="5dp"
+                />
+
+            <TextView
+                android:id="@+id/user_xieyi_yinsi_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="《隐私协议》"
+                android:textColor="@color/color_F2BE0F"
+                android:textSize="14sp"
+                android:lineSpacingExtra="5dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="和"
+                android:textColor="#ff666666"
+                android:textSize="14sp"
+                android:lineSpacingExtra="5dp"
+                />
+
+            <TextView
+                android:id="@+id/user_xieyi_us_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="《用户协议》"
+                android:textColor="@color/color_F2BE0F"
+                android:textSize="14sp"
+                android:lineSpacingExtra="5dp"
+                />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="帮助你了解我们如何收集、使用、存储和共享个人信息，以及你享有的相关权利。"
+            android:textColor="#ff666666"
+            android:layout_marginLeft="17dp"
+            android:layout_marginRight="17dp"
+            android:textSize="14sp"
+            android:lineSpacingExtra="5dp"
+            android:layout_marginTop="5dp"
+            />
+
+
+        <TextView
+            android:id="@+id/user_xieyi_close_app_tv"
+            android:layout_width="256dp"
+            android:layout_height="45dp"
+            android:text="暂不同意"
+            android:textColor="#ff222222"
+            android:textSize="14sp"
+            android:background="@drawable/yuanjiao25"
+            android:gravity="center"
+            android:layout_marginTop="30dp"
+            />
+
+        <TextView
+            android:id="@+id/user_xieyi_ok_tv"
+            android:layout_width="256dp"
+            android:layout_height="45dp"
+            android:text="同意协议"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:background="@drawable/yuanjiao26"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="30dp"
+            />
+
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

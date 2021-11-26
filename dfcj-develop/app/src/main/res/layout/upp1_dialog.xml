@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="380dp"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:background="@drawable/upp_pic2"
+        android:layout_marginLeft="25dip"
+        android:layout_marginRight="25dip"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/textSize15sp"
+            android:textColor="@color/textcolor_444444"
+            android:text="app更新"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="160dip"
+            android:visibility="visible"
+            />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <ScrollView
+                android:layout_above="@+id/upp1_dialog_layot"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="none"
+                android:layout_marginTop="14dip"
+                android:layout_marginLeft="18dip"
+                android:layout_marginRight="18dip"
+                android:layout_marginBottom="10dip"
+                >
+
+                <TextView
+                    android:id="@+id/update_info_gx_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="@dimen/textSize14sp"
+                    android:gravity="center|left|top"
+                    android:layout_gravity="center_horizontal"
+                    android:text="更新APP"
+                    android:padding="8dp"
+                    android:textColor="@color/textcolor_444444"
+                    />
+
+
+            </ScrollView>
+
+
+            <LinearLayout
+                android:id="@+id/upp1_dialog_layot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_alignParentBottom="true"
+                >
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.8dp"
+                    android:background="#e8e9ef"
+                    android:visibility="visible"
+                    ></View>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    >
+
+                    <TextView
+                        android:id="@+id/versionchecklib_version_dialog_cancel"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="取消"
+                        android:textSize="@dimen/textSize16sp"
+                        android:textColor="@color/textcolor_444444"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:button="@null"
+                        />
+
+                    <View
+                        android:id="@+id/update_info_xian"
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="#e8e9ef"
+                        android:layout_marginTop="1dp"
+                        android:layout_marginBottom="1dp"
+                        ></View>
+
+                    <TextView
+                        android:id="@+id/versionchecklib_version_dialog_commit"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="更新"
+                        android:textSize="@dimen/textSize16sp"
+                        android:textColor="@color/textcolor_444444"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:button="@null"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+
+        </RelativeLayout>
+
+
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

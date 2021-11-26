@@ -1,0 +1,66 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+
+<!--    <dimen name="design_bottom_navigation_active_text_size">16sp</dimen>
+    <dimen name="design_bottom_navigation_text_size">16sp</dimen>-->
+
+
+    <dimen name="lotteryview_inner_card_text_size">16sp</dimen>
+    <dimen name="lotteryview_outer_circle_width">15dp</dimen>
+    <dimen name="lotteryview_outer_small_circle_radius">4dp</dimen>
+    <dimen name="padding23">4dp</dimen>
+
+    <dimen name="fontSize">18sp</dimen>
+
+    <!-- 字体大小 -->
+    <dimen name="textSize6sp">6.0sp</dimen>
+    <dimen name="textSize7sp">7.0sp</dimen>
+    <dimen name="textSize8sp">8.0sp</dimen>
+    <dimen name="textSize9sp">9.0sp</dimen>
+    <dimen name="textSize10sp">10.0sp</dimen>
+    <dimen name="textSize11sp">11.0sp</dimen>
+    <dimen name="textSize12sp">12.0sp</dimen>
+    <dimen name="textSize13sp">13.0sp</dimen>
+    <dimen name="textSize14sp">14.0sp</dimen>
+    <dimen name="textSize15sp">15.0sp</dimen>
+    <dimen name="textSize16sp">16.0sp</dimen>
+    <dimen name="textSize17sp">17.0sp</dimen>
+    <dimen name="textSize18sp">18.0sp</dimen>
+    <dimen name="textSize19sp">19.0sp</dimen>
+    <dimen name="textSize20sp">20.0sp</dimen>
+    <dimen name="textSize21sp">21.0sp</dimen>
+    <dimen name="textSize22sp">22.0sp</dimen>
+    <dimen name="textSize23sp">23.0sp</dimen>
+    <dimen name="textSize24sp">24.0sp</dimen>
+    <dimen name="textSize25sp">25.0sp</dimen>
+    <dimen name="textSize26sp">26.0sp</dimen>
+    <dimen name="textSize27sp">27.0sp</dimen>
+    <dimen name="textSize28sp">28.0sp</dimen>
+    <dimen name="textSize29sp">29.0sp</dimen>
+    <dimen name="textSize30sp">30.0sp</dimen>
+    <dimen name="textSize31sp">31.0sp</dimen>
+    <dimen name="textSize32sp">32.0sp</dimen>
+    <dimen name="textSize33sp">33.0sp</dimen>
+    <dimen name="textSize34sp">34.0sp</dimen>
+    <dimen name="textSize35sp">35.0sp</dimen>
+    <dimen name="textSize36sp">36.0sp</dimen>
+    <dimen name="textSize37sp">37.0sp</dimen>
+    <dimen name="textSize38sp">38.0sp</dimen>
+    <dimen name="textSize39sp">39.0sp</dimen>
+    <dimen name="textSize40sp">40.0sp</dimen>
+    <dimen name="textSize47sp">47.0sp</dimen>
+    <dimen name="textSize45sp">45.0sp</dimen>
+    <dimen name="textSize55sp">56.0sp</dimen>
+    <dimen name="textSize57sp">57.0sp</dimen>
+    <dimen name="textSize58sp">58.0sp</dimen>
+    <dimen name="textSize59sp">59.0sp</dimen>
+    <dimen name="textSize60sp">60.0sp</dimen>
+    <dimen name="textSize61sp">61.0sp</dimen>
+    <dimen name="textSize62sp">62.0sp</dimen>
+
+
+
+</resources>

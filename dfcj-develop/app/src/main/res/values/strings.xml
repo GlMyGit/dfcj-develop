@@ -1,0 +1,75 @@
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <string name="app_name">顾客客服1</string>
+
+
+    <string name="df_title" >东方购物客服</string>
+    <string name="df_title2" >详情</string>
+
+
+    <string name="main_tab_text1">首页</string>
+    <string name="main_tab_text2">2</string>
+    <string name="main_tab_text4">3</string>
+    <string name="main_tab_text3">我的</string>
+
+
+    <string name="main_tab_text11">1</string>
+    <string name="main_tab_text22">首页</string>
+    <string name="main_tab_text44">2</string>
+    <string name="main_tab_text33">我的</string>
+
+
+
+
+
+
+
+
+    <string name="shop_tx1">商品编号:</string>
+    <string name="shop_tx2">名称：</string>
+    <string name="shop_tx3">价格:</string>
+    <string name="shop_tx4">发送商品</string>
+
+
+    <string name="my_tx1">相机权限未开启</string>
+    <string name="my_tx2">请在iphone的“设置>东方购物”选项中，允许东方购物访问你的摄像头和麦克风。</string>
+    <string name="my_tx3">我知道了</string>
+    <string name="my_tx4">前往设置</string>
+
+
+    <string name="str_tag_pos">POS</string>
+
+
+
+
+    <string name="net_error">网络访问错误，请稍后再试</string>
+    <string name="empty">还没有数据哦</string>
+    <string name="loading">请稍后...</string>
+    <string name="reload">重新尝试</string>
+    <string name="no_net">网络不可用,请检查你的网络</string>
+
+
+    <string name="errcode_success">发送成功</string>
+    <string name="errcode_cancel">发送取消</string>
+    <string name="errcode_deny">发送被拒绝</string>
+    <string name="errcode_unsupported">不支持错误</string>
+    <string name="errcode_unknown">发送返回</string>
+
+
+    <string name="spd"/>
+    <string name="original_y"/>
+    <string name="isUp"/>
+
+    <string name="common_please_input_roomid_and_userid">用户没有允许需要的权限，加入通话失败</string>
+
+    <string name="xieyi1" tools:ignore="ExtraTranslation,MissingTranslation">
+      123
+</string>
+
+
+    <string name="xieyi2" translatable="false">
+     232
+</string>
+
+
+</resources>

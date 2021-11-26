@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <corners
+        android:bottomLeftRadius="0dp"
+        android:bottomRightRadius="0dp"
+        android:topLeftRadius="0dp"
+        android:topRightRadius="0dp" />
+
+    <!--
+     angle=270，从上到下
+     默认是 0.该属性只有在type=linear情况下起作用，默认的type为linear。
+     -->
+    <gradient
+        android:startColor="#45B6AD"
+        android:centerColor="#8DD3CD"
+        android:endColor="#CEEFEB"
+        android:angle="270"
+        />
+
+    <size android:height="0.5dp" />
+
+</shape>
