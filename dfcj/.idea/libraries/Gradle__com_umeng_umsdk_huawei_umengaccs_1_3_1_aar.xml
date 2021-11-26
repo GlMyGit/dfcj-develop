@@ -1,0 +1,18 @@
+<component name="libraryTable">
+  <library name="Gradle: com.umeng.umsdk:huawei-umengaccs:1.3.1@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c693b60c6b55fcb476065c4e67c90d51/jetified-huawei-umengaccs-1.3.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2c61d814338026445408f0859f91316b/jetified-huawei-umengaccs-1.3.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e9be4fca533246b35427b7e80f4f7f54/jetified-huawei-umengaccs-1.3.1/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6d8bec083e4ef14c15ddba059ff02adb/jetified-huawei-umengaccs-1.3.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6d8bec083e4ef14c15ddba059ff02adb/jetified-huawei-umengaccs-1.3.1/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6d8bec083e4ef14c15ddba059ff02adb/jetified-huawei-umengaccs-1.3.1/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.umeng.umsdk/huawei-umengaccs/1.3.1/ffb615315fe062139d87f76b9dc80f6c2e46f876/huawei-umengaccs-1.3.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.umeng.umsdk/huawei-umengaccs/1.3.1/ffb615315fe062139d87f76b9dc80f6c2e46f876/huawei-umengaccs-1.3.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

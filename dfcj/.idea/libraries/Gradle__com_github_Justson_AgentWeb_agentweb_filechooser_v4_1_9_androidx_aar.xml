@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.Justson.AgentWeb:agentweb-filechooser:v4.1.9-androidx@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2edd7459ad8db55ba698e353d11b5761/jetified-agentweb-filechooser-v4.1.9-androidx/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6d5014192750b546b82b06d377ae94b2/jetified-agentweb-filechooser-v4.1.9-androidx/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/996bfe45cdafac128d5a3a9e49a7619a/jetified-agentweb-filechooser-v4.1.9-androidx/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/98b8ef1c91bbfc660b7f0a0b15e45f7c/jetified-agentweb-filechooser-v4.1.9-androidx/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/98b8ef1c91bbfc660b7f0a0b15e45f7c/jetified-agentweb-filechooser-v4.1.9-androidx/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/98b8ef1c91bbfc660b7f0a0b15e45f7c/jetified-agentweb-filechooser-v4.1.9-androidx/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.Justson.AgentWeb/agentweb-filechooser/v4.1.9-androidx/75ec037217fc251238e131dfb0a7403192dc7113/agentweb-filechooser-v4.1.9-androidx-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

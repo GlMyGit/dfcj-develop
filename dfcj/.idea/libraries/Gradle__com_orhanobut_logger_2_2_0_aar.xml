@@ -1,0 +1,20 @@
+<component name="libraryTable">
+  <library name="Gradle: com.orhanobut:logger:2.2.0@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/18879bf429e63e2fe424dc9c2e7b7d14/jetified-logger-2.2.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/032af048d07ca3e3d28f53d29818dcb4/jetified-logger-2.2.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/154940b9ae2abe29ae915cbbcad28071/jetified-logger-2.2.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/154940b9ae2abe29ae915cbbcad28071/jetified-logger-2.2.0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/154940b9ae2abe29ae915cbbcad28071/jetified-logger-2.2.0/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b5bc4b66d6a4f886ead2f849cdcd6575/jetified-logger-2.2.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b5bc4b66d6a4f886ead2f849cdcd6575/jetified-logger-2.2.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b5bc4b66d6a4f886ead2f849cdcd6575/jetified-logger-2.2.0/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.orhanobut/logger/2.2.0/98e69754ab23f7179137d8d2a0e3eea79200d746/logger-2.2.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.orhanobut/logger/2.2.0/ab592e9d70f1f3ef6f9a62c2066b3d3ac08244e8/logger-2.2.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

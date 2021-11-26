@@ -1,0 +1,22 @@
+<component name="libraryTable">
+  <library name="Gradle: androidx.test.espresso:espresso-idling-resource:3.1.0@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/122882da00866915ece3d66fbe300609/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d179b58487bfe02495a72b7dbab827d7/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c55fe91c3e9471bd8df31a30e5e5bfef/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8aca9dd0e168eb48c2c44bdb7e52efca/espresso-idling-resource-3.1.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c72a04b673b3c073eae96e1d631045c5/espresso-idling-resource-3.1.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c0829b19efcf1c0d008c1698eb28dca3/espresso-idling-resource-3.1.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f732eb1a26c5a12ed5a2b93044e6dace/espresso-idling-resource-3.1.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/00a4d19e8508670e87a178bd2ea7fb81/espresso-idling-resource-3.1.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/00a4d19e8508670e87a178bd2ea7fb81/espresso-idling-resource-3.1.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/00a4d19e8508670e87a178bd2ea7fb81/espresso-idling-resource-3.1.0/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.test.espresso/espresso-idling-resource/3.1.0/ac774bb29e6171578dc7508bf390a4a3ccbedfea/espresso-idling-resource-3.1.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.test.espresso/espresso-idling-resource/3.1.0/85d1f70a486b5bfbd0666d08e23b06bce5264fa6/espresso-idling-resource-3.1.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

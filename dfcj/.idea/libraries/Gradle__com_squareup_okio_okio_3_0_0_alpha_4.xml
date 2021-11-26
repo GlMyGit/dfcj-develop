@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: com.squareup.okio:okio:3.0.0-alpha.4">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/3.0.0-alpha.4/45c660b28bc678f9653cf680f293e8907dca6878/okio-jvm-3.0.0-alpha.4.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/3.0.0-alpha.4/cad32bcdbfa90a2581f502f29c6df42cbf786474/okio-3.0.0-alpha.4-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/3.0.0-alpha.4/f66fd0edbe69925e79fc1efbca8a70d51a7d83d3/okio-3.0.0-alpha.4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

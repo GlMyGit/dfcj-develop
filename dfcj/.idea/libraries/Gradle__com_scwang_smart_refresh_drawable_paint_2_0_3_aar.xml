@@ -1,0 +1,24 @@
+<component name="libraryTable">
+  <library name="Gradle: com.scwang.smart:refresh-drawable-paint:2.0.3@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/627288a046a33bfe8449f6614dbc4a0d/jetified-refresh-drawable-paint-2.0.3/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/06bf9ecdaf867ac532fb886210da0a1d/jetified-refresh-drawable-paint-2.0.3/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/693c3b933dbf350c0c483703b8d77b41/jetified-refresh-drawable-paint-2.0.3/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b3b20e3bfcbc3b9aab6ef6a82dce6bf6/jetified-refresh-drawable-paint-2.0.3/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/de57f0bc77736e6dbc6662552d1c01b3/jetified-refresh-drawable-paint-2.0.3/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/de57f0bc77736e6dbc6662552d1c01b3/jetified-refresh-drawable-paint-2.0.3/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/de57f0bc77736e6dbc6662552d1c01b3/jetified-refresh-drawable-paint-2.0.3/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f666c28dc8b2b8dccabda32a1ebf9202/jetified-refresh-drawable-paint-2.0.3/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f666c28dc8b2b8dccabda32a1ebf9202/jetified-refresh-drawable-paint-2.0.3/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f666c28dc8b2b8dccabda32a1ebf9202/jetified-refresh-drawable-paint-2.0.3/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.scwang.smart/refresh-drawable-paint/2.0.3/b6ab8459bc0688d138ec61f2f762b8a6d7013011/refresh-drawable-paint-2.0.3-javadoc.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.scwang.smart/refresh-drawable-paint/2.0.3/b6ab8459bc0688d138ec61f2f762b8a6d7013011/refresh-drawable-paint-2.0.3-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.scwang.smart/refresh-drawable-paint/2.0.3/9f2924c0980c5eba2d44ce678567fbd87d89428d/refresh-drawable-paint-2.0.3-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.scwang.smart/refresh-drawable-paint/2.0.3/9f2924c0980c5eba2d44ce678567fbd87d89428d/refresh-drawable-paint-2.0.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
