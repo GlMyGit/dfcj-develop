@@ -5,6 +5,26 @@ public class TextMsgBody extends MsgBody {
      private String message;
      private String extra;
 
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
+    }
+
+    private String roomId;
+
+    public boolean isVideo() {
+        return isVideo;
+    }
+
+    public void setVideo(boolean video) {
+        isVideo = video;
+    }
+
+    private boolean isVideo;
+
     public CharSequence getCharsequence() {
         return charsequence;
     }

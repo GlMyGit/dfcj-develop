@@ -39,26 +39,36 @@
             android:orientation="vertical"
             >
 
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/swipe_chat"
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:background="@color/white"
                 >
+
+                <ProgressBar
+                    android:id="@+id/main_top_progress"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:visibility="gone"
+                    style="?android:attr/progressBarStyleSmall"
+                    />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_chat_list"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:overScrollMode="never"
                     android:adapter="@{adapter}"
                     app:layoutManager="@{layoutManager}"
                     />
 
 
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            </LinearLayout>
 
 
 
@@ -72,6 +82,23 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 >
+
+
+                <TextView
+                    android:id="@+id/main_botton_change_mean_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="转人工"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingBottom="7dp"
+                    android:paddingTop="7dp"
+                    android:background="@drawable/custom_divider_white4"
+                    android:layout_marginBottom="10dp"
+                    android:onClick="@{() ->presenter.transferToLabor()}"
+                    ></TextView>
+
+
 
                 <RelativeLayout
                     android:id="@+id/main_shop_layout"
@@ -207,6 +234,7 @@
 
 
 
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.8dp"
@@ -250,7 +278,7 @@
                             android:minHeight="36dp"
                             android:paddingLeft="13dp"
                             android:textColor="@color/black"
-                            android:textSize="11dp" />
+                            android:textSize="13dp" />
 
                         <com.dfcj.videoim.view.widght.RecordButton
                             android:id="@+id/btnAudio"
@@ -350,6 +378,7 @@
                         android:src="@drawable/xia"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="7dp"
+                        android:visibility="gone"
                         ></ImageView>
 
                 </LinearLayout>
@@ -430,13 +459,27 @@
                     >
                 </TextView>
 
-                <ImageView
+                <RelativeLayout
                     android:id="@+id/main_ocr_btn_img"
-                    android:layout_width="65dp"
-                    android:layout_height="65dp"
-                    android:layout_centerHorizontal="true"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:clickable="true"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:layout_gravity="center"
-                    android:src="@drawable/yuy_pic"></ImageView>
+                    android:layout_centerHorizontal="true"
+                    >
+
+                    <ImageView
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center"
+                        android:src="@drawable/yuy_pic"
+                        android:contentDescription="@null"
+                        ></ImageView>
+
+                </RelativeLayout>
+
 
                 <TextView
                     android:id="@+id/main_ocr_send_tv"
@@ -476,7 +519,10 @@
             android:id="@+id/bottom_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone">
+            android:visibility="gone"
+            android:background="@color/white"
+
+            >
             <!--表情-->
             <!--<include
                 android:id="@+id/rlEmotion"
@@ -486,20 +532,23 @@
             <LinearLayout
                 android:id="@+id/rlEmotion"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                >
 
                 <LinearLayout
                     android:id="@+id/home_emoji"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+
                     >
 
                     <com.dfcj.videoim.view.widght.WrapContentHeightViewPager
                         android:id="@+id/vp_emoji"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="30dp"
+                        android:layout_marginTop="15dp"
                         />
 
 
@@ -511,10 +560,10 @@
                         android:layout_gravity="bottom"
                         android:layout_marginRight="16dp"
                         app:gravity="0"
-                        android:background="#f3f3f3"
-                        android:layout_marginTop="30dp"
-                        app:indicatorColor="#668b8989"
-                        app:indicatorColorSelected="#ffffff"
+                        android:layout_marginTop="15dp"
+                        android:background="@color/white"
+                        app:indicatorColor="@color/red"
+                        app:indicatorColorSelected="@color/black"
                         app:indicatorWidth="6"/>
 
                 </LinearLayout>
@@ -533,11 +582,13 @@
             <LinearLayout
                 android:id="@+id/llAdd"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                >
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     >
 
@@ -548,8 +599,8 @@
 
                         <RelativeLayout
                             android:id="@+id/rlPhoto"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:onClick="@{() -> presenter.toImgPic()}"
                             >
@@ -575,8 +626,8 @@
 
                         <RelativeLayout
                             android:id="@+id/rlFile"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:onClick="@{() -> presenter.toImgVideoPic()}"
                             >
@@ -587,7 +638,7 @@
                                 android:layout_height="50dp"
                                 android:layout_marginTop="30dp"
                                 android:layout_centerHorizontal="true"
-                                android:background="@drawable/selector_ctype_file"
+                                android:src="@drawable/selector_ctype_file"
                                 />
 
                             <TextView
@@ -606,8 +657,8 @@
 
                         <RelativeLayout
                             android:id="@+id/rlVideo"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:onClick="@{() -> presenter.toVideo()}"
                             >
@@ -618,7 +669,7 @@
                                 android:layout_height="50dp"
                                 android:layout_marginTop="30dp"
                                 android:layout_centerHorizontal="true"
-                                android:background="@drawable/selector_ctype_video"
+                                android:src="@drawable/ship_hui"
                                 />
 
                             <TextView

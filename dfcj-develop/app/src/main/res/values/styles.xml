@@ -8,6 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
+    <style name="AppTheme.Transparent">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <!-- 启动页 -->
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
@@ -24,7 +30,7 @@
     </style>
     <style name="AppTheme.Splash2" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- 设置整个window窗体的背景颜色，为图片的底色，因为图片居中，图片未覆盖的区域会是白色-->
-        <item name="android:windowBackground">@drawable/my_welcome_pic</item>
+        <!--<item name="android:windowBackground">@drawable/my_welcome_pic</item>-->
         <!--      <item name="android:colorBackgroundCacheHint">@null</item>-->
         <!--设置背景颜色-->
         <!--<item name="android:background">@drawable/splsh_bg</item>-->

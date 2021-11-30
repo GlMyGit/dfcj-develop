@@ -66,6 +66,17 @@
                 android:background="@drawable/custom_divider_left2"
                 >
 
+                <ImageView
+                    android:id="@+id/chat_item_content_video_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ship_pic12"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="5dp"
+                    android:visibility="gone"
+                    ></ImageView>
+
+
                 <com.dfcj.videoim.view.myview.ClickableSpanTextView
                     android:id="@+id/chat_item_content_text"
                     android:layout_width="wrap_content"

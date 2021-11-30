@@ -53,6 +53,16 @@ public class QuanXianDialog extends BaseDialogFragment{
             }
         });
 
+        t2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+                if(yesOnclickListener!=null){
+                    yesOnclickListener.onYesClick();
+                }
+            }
+        });
+
 
 
     }

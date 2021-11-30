@@ -21,7 +21,6 @@ public  class Message  implements MultiItemEntity {
 
 
 
-
     public int getType() {
         return type;
     }

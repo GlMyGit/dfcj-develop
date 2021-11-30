@@ -93,8 +93,8 @@
 
                     <ImageView
                         android:id="@+id/video_call_meiyan_img"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
                         android:layout_alignParentRight="true"
                         android:src="@drawable/meiyan"
                         android:layout_marginTop="15dp"
@@ -193,11 +193,10 @@
                         android:paddingRight="10dp">
 
                         <ImageView
-
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:layout_centerVertical="true"
-                            android:src="@drawable/suoxiao"></ImageView>
+                            android:src="@drawable/suoxiao2"></ImageView>
 
                     </RelativeLayout>
 
@@ -242,7 +241,7 @@
             android:orientation="vertical"
             android:background="@color/white"
             android:layout_gravity="bottom"
-            android:visibility="visible"
+            android:visibility="gone"
             >
 
 

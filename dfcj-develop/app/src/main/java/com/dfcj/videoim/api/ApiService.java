@@ -1,11 +1,88 @@
 package com.dfcj.videoim.api;
 
 
+import com.dfcj.videoim.base.BaseRespose;
+import com.dfcj.videoim.entity.ChangeCustomerServiceEntity;
+import com.dfcj.videoim.entity.DemoBean;
+import com.dfcj.videoim.entity.LoginBean;
+import com.dfcj.videoim.entity.SendOffineMsgEntity;
+import com.dfcj.videoim.entity.TrtcRoomEntity;
+import com.dfcj.videoim.entity.upLoadImgEntity;
+import com.wzq.mvvmsmart.http.BaseResponse;
+
+import java.util.Map;
+
+import io.reactivex.Observable;
+import okhttp3.MultipartBody;
+import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Multipart;
+import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.Query;
+
 /**
  * Created by Riven
  * 服务器接口
  */
 public interface ApiService {
+
+
+    //登录
+    @POST("/api/icsm/rpc/Facade/login")
+    Observable<LoginBean> requestLogin(
+            @Body Map<String, Object> map
+    );
+
+
+
+    //智能客服
+    @POST("/api/icsm/rpc/Facade/ask")
+    Observable<SendOffineMsgEntity> requestSendOffineMsg(
+            @Body Map<String, Object> map
+    );
+
+
+    //转人工客服 分配客服
+    @POST("/api/icsm/rpc/Facade/getImStaff")
+    Observable<ChangeCustomerServiceEntity> requestChangeCustomerService(
+            @Body Map<String, Object> map
+    );
+
+
+
+    //获取视频房间号
+    @POST("/api/icsm/rpc/Facade/getTrtcRoomId")
+    Observable<TrtcRoomEntity> requestTrtcRoomId(
+            @Body Map<String, Object> map
+    );
+
+
+    //文件上传
+    @Multipart
+    @POST("/api/icsm/fileOper/uploadFile")
+    Observable<upLoadImgEntity> requestUploadImg(
+            @Part MultipartBody.Part file
+    );
+
+
+
+    @GET("action/apiv2/banner")
+    Observable<BaseResponse<DemoBean>> demoGet(@Query("catalog") int pageNum);
+
+    @FormUrlEncoded
+    @POST("action/apiv2/banner")
+    Observable<BaseResponse<DemoBean>> demoPost(@Field("catalog") String catalog);
+
+    @GET("getJsonFile")
+    Observable<BaseResponse<Object>> getJsonFile();
+
+
+
+
 
 
    /* //获取客服

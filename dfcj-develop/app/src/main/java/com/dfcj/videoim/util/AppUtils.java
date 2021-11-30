@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -37,6 +38,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 
 import androidx.annotation.RequiresApi;
@@ -59,6 +61,7 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ClickableSpan;
+import android.text.style.ImageSpan;
 import android.text.style.URLSpan;
 import android.util.Log;
 import android.util.TypedValue;
@@ -76,9 +79,11 @@ import android.widget.TextView;
 
 import com.dfcj.videoim.R;
 import com.dfcj.videoim.appconfig.AppConstant;
+import com.dfcj.videoim.base.BaseActivity;
 import com.dfcj.videoim.util.other.LogUtils;
 import com.dfcj.videoim.util.other.ScreenUtil;
 import com.dfcj.videoim.util.other.SharedPrefsUtils;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.wzq.mvvmsmart.utils.KLog;
 
 import java.io.File;
@@ -112,6 +117,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.reactivex.functions.Consumer;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
@@ -120,6 +126,34 @@ import okhttp3.RequestBody;
  */
 
 public class AppUtils {
+
+    public static SpannableString getEmotionContent(Bitmap emotion_map_type,final Context context, final TextView tv, String source) {
+        SpannableString spannableString = new SpannableString(source);
+        Resources res = context.getResources();
+
+        String regexEmotion = "\\[([\u4e00-\u9fa5\\w])+\\]";
+        Pattern patternEmotion = Pattern.compile(regexEmotion);
+        Matcher matcherEmotion = patternEmotion.matcher(spannableString);
+
+        while (matcherEmotion.find()) {
+            // 获取匹配到的具体字符
+            String key = matcherEmotion.group();
+            // 匹配字符串的开始位置
+            int start = matcherEmotion.start();
+            // 利用表情名字获取到对应的图片
+           // Integer imgRes = EmotionUtils.getImgByName(emotion_map_type,key);
+            if (emotion_map_type != null) {
+                // 压缩表情图片
+                int size = (int) tv.getTextSize()*13/10;
+              //  Bitmap bitmap = BitmapFactory.decodeResource(res, imgRes);
+                Bitmap scaleBitmap = Bitmap.createScaledBitmap(emotion_map_type, size, size, true);
+
+                ImageSpan span = new ImageSpan(context, scaleBitmap);
+                spannableString.setSpan(span, start, start + key.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+        return spannableString;
+    }
 
 
     public static String checkString(String str) {
@@ -260,6 +294,14 @@ public class AppUtils {
         }
     }
 
+    public static  String getPath() {
+        String path = Environment.getExternalStorageDirectory() + "/Luban/image/";
+        File file = new File(path);
+        if (file.mkdirs()) {
+            return path;
+        }
+        return path;
+    }
 
 
 
@@ -282,6 +324,42 @@ public class AppUtils {
         }
     }
 
+
+    public static  void readPermission(BaseActivity asct,String parm){
+
+        new RxPermissions(asct)
+                .request(parm)
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        if (aBoolean) {
+
+                        }else{
+
+                        }
+                    }
+                });
+
+    }
+
+    public static  void readPermissionStatus(BaseActivity asct,String parm){
+
+        boolean permission = isPermission(asct, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+        if(!permission){
+            new RxPermissions(asct)
+                    .request(parm)
+                    .subscribe(new Consumer<Boolean>() {
+                        @Override
+                        public void accept(Boolean aBoolean) throws Exception {
+                            if (aBoolean) {
+
+                            }
+                        }
+                    });
+        }
+
+    }
 
 
 

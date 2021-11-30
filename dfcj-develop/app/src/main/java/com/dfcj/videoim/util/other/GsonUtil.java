@@ -4,7 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.InstanceCreator;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
@@ -88,7 +92,132 @@ public class GsonUtil {
         return gsonBuilder.create();
     }
 
+    /**
+     * 增加后台返回""和"null"的处理
+     * 1.int=>0
+     * 2.double=>0.00
+     * 3.long=>0L
+     *
+     * @return
+     */
+    public static Gson buildGsonOn() {
+        if (gson == null) {
+            gson = new GsonBuilder()
+                    .registerTypeAdapter(Integer.class, new IntegerDefault0Adapter())
+                    .registerTypeAdapter(int.class, new IntegerDefault0Adapter())
+                    .registerTypeAdapter(Double.class, new DoubleDefault0Adapter())
+                    .registerTypeAdapter(double.class, new DoubleDefault0Adapter())
+                    .registerTypeAdapter(Long.class, new LongDefault0Adapter())
+                    .registerTypeAdapter(long.class, new LongDefault0Adapter())
+                    .create();
+        }
+        return gson;
+    }
 
+
+    public static Gson newGson22() {
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+
+       //注册String类型处理器
+        gsonBuilder.registerTypeAdapterFactory(TypeAdapters.newFactory(String.class, GsonTools.stringTypeAdapter()));
+        //注册int.class, Integer.class处理器
+        gsonBuilder.registerTypeAdapterFactory(TypeAdapters.newFactory(int.class, Integer.class, GsonTools.longAdapter(0)));
+        //注册short.class, Short.class处理器
+        gsonBuilder.registerTypeAdapterFactory(TypeAdapters.newFactory(short.class, Short.class, GsonTools.longAdapter(1)));
+        //注册long.class, Long.class处理器
+        gsonBuilder.registerTypeAdapterFactory(TypeAdapters.newFactory(long.class, Long.class, GsonTools.longAdapter(2)));
+        //注册double.class, Double.class处理器
+        gsonBuilder.registerTypeAdapterFactory(TypeAdapters.newFactory(double.class, Double.class, GsonTools.longAdapter(3)));
+        //注册float.class, Float.class处理器
+        gsonBuilder.registerTypeAdapterFactory(TypeAdapters.newFactory(float.class, Float.class, GsonTools.longAdapter(4)));
+
+
+        Class builder = (Class) gsonBuilder.getClass();
+        Field f = null;
+        try {
+
+            //
+
+            //通过反射得到构造器
+            f = builder.getDeclaredField("instanceCreators");
+            f.setAccessible(true);
+            final Map<Type, InstanceCreator<?>> val = (Map<Type, InstanceCreator<?>>) f.get(gsonBuilder);//得到此属性的值
+
+            //注册数组的处理器
+            gsonBuilder.registerTypeAdapterFactory(new CollectionTypeAdapterFactory(new ConstructorConstructor(val)));
+
+            //  gsonBuilder.excludeFieldsWithoutExposeAnnotation();
+
+            gsonBuilder.registerTypeAdapter(List.class, new RemoveNullListDeserializer());
+            gsonBuilder.registerTypeAdapter(Integer.class,new IntegerDefault0Adapter());
+            gsonBuilder.registerTypeAdapter(int.class,new IntegerDefault0Adapter());
+            gsonBuilder.registerTypeAdapter(String.class,new StringDefaultAdapter());
+            gsonBuilder.registerTypeAdapter(Double.class,new DoubleDefault0Adapter());
+            gsonBuilder.registerTypeAdapter(double.class,new DoubleDefault0Adapter());
+            gsonBuilder.registerTypeAdapterFactory(new NullStringToEmptyAdapterFactory());
+
+
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return gsonBuilder.create();
+    }
+
+    public static class StringDefaultAdapter extends TypeAdapter<String> {
+
+        @Override
+        public void write(JsonWriter jsonWriter, String s) throws IOException {
+            jsonWriter.value(s);
+        }
+
+        @Override
+        public String read(JsonReader jsonReader) throws IOException {
+            if (jsonReader.peek() == JsonToken.NULL) {
+                jsonReader.nextNull();
+                return "";
+            } else {
+                return jsonReader.nextString();
+            }
+        }
+    }
+
+
+
+    public static class RemoveNullListDeserializer<T> implements JsonDeserializer<List<T>> {
+        @Override
+        public List<T> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            removeNullEleInArray(json);
+            return new Gson().fromJson(json, typeOfT);
+        }
+    }
+
+    private static void removeNullEleInArray(JsonElement json) {
+        if (json.isJsonArray()) {
+            JsonArray jsonArray = json.getAsJsonArray();
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JsonElement ele = jsonArray.get(i);
+                if (ele.isJsonNull()) {
+                    jsonArray.remove(i);
+                    i--;
+                    continue;
+                }
+                removeNullEleInArray(ele);
+            }
+        } else if (json.isJsonObject()) {
+            JsonObject jsonObject = json.getAsJsonObject();
+            for (String key : jsonObject.keySet()) {
+                JsonElement jsonElement = jsonObject.get(key);
+                if (jsonElement.isJsonArray() || jsonElement.isJsonObject()) {
+                    removeNullEleInArray(jsonElement);
+                }
+            }
+
+        }
+    }
 
 
     /**
@@ -214,6 +343,7 @@ public class GsonUtil {
 
 
     public static class NullStringToEmptyAdapterFactory<T> implements TypeAdapterFactory {
+        @Override
         public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
             Class<T> rawType = (Class<T>) type.getRawType();
             if (rawType != String.class) {
@@ -236,7 +366,7 @@ public class GsonUtil {
         @Override
         public void write(JsonWriter writer, String value) throws IOException {
             if (value == null) {
-                writer.value("");
+                writer.nullValue();
                 return;
             }
             writer.value(value);

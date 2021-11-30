@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
@@ -11,13 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:background="@color/white"
         >
 
         <com.dfcj.videoim.view.widght.WrapContentHeightViewPager
             android:id="@+id/vp_emoji"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="15dp"
             />
 
 
@@ -29,8 +29,8 @@
             android:layout_gravity="bottom"
             android:layout_marginRight="16dp"
             app:gravity="0"
-            android:background="#f3f3f3"
-            android:layout_marginTop="30dp"
+            android:background="@color/white"
+            android:layout_marginTop="15dp"
             app:indicatorColor="#668b8989"
             app:indicatorColorSelected="#ffffff"
             app:indicatorWidth="6"/>

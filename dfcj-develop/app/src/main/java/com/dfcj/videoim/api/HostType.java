@@ -24,7 +24,7 @@ public class HostType {
     public static final int TYPE_COUNT = 2;
 
     /**
-     * 贷款管家的host
+     * 的host
      */
     public static final int lOAN_STEWARD_MAIN_HOST = 1;
 

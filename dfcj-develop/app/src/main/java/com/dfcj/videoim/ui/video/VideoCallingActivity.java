@@ -22,14 +22,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.Observer;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.dfcj.videoim.BR;
 import com.dfcj.videoim.R;
+import com.dfcj.videoim.appconfig.AppConstant;
 import com.dfcj.videoim.appconfig.Rout;
 import com.dfcj.videoim.base.BaseActivity;
 import com.dfcj.videoim.databinding.VideoCallLayoutBinding;
 import com.dfcj.videoim.entity.BitRateBean;
+import com.dfcj.videoim.entity.TrtcRoomEntity;
 import com.dfcj.videoim.im.ImConstant;
 import com.dfcj.videoim.im.ImUtils;
 import com.dfcj.videoim.im.video.GenerateUserSig;
@@ -58,8 +61,8 @@ import java.util.Map;
 public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,VideoCallingViewModel> {
 
 
-    private String   mRoomId="1256732";
-    private String   mUserId="70409924";
+    private String   mRoomId="96635124";
+    private String   mUserId=""+ImUtils.MyUserId;
     private TRTCCloud mTRTCCloud;
     private TXDeviceManager mTXDeviceManager;
     protected static final int REQ_PERMISSION_CODE = 0x1000;
@@ -77,6 +80,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
     private int   mQualityFlag= TRTCCloudDef.TRTC_VIDEO_RESOLUTION_960_540;
     private int   mFPSFlag= VideoConstant.VIDEO_FPS;
     private int   mBitRateFlag= VideoConstant.LIVE_540_960_VIDEO_BITRATE;
+    private String vStatus;
 
 
     @Override
@@ -121,7 +125,6 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
         if (checkPermission()) {
             enterRoom();
         }
-
         meiyan();
 
     }
@@ -134,10 +137,36 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
 
     }
 
+    @Override
+    public void initParam() {
+        super.initParam();
+        getTrtcRoom();
+    }
+
+    //获取房间视频号
+    private void getTrtcRoom(){
+
+        Bundle extras = getIntent().getExtras();
+        if(extras!=null){
+            String string = extras.getString(AppConstant.Video_mRoomId);
+            vStatus = extras.getString(AppConstant.VideoStatus);
+            if(string!=null){
+                mRoomId=string;
+            }
+        }
+
+    }
+
+
+
 
     //美颜
     private void meiyan(){
 
+
+        if(mTRTCCloud==null){
+            return;
+        }
 
         TXBeautyManager beautyManager = mTRTCCloud.getBeautyManager();
 
@@ -347,6 +376,11 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
         });
 
 
+
+
+
+
+
     }
 
 
@@ -372,6 +406,11 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
         mTRTCCloud.startLocalPreview(mIsFrontCamera, binding.txcvvMainMine);
         mTRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_SPEECH);
         mTRTCCloud.enterRoom(trtcParams, TRTCCloudDef.TRTC_APP_SCENE_VIDEOCALL);
+
+
+
+
+
 
 
     }
@@ -406,7 +445,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
 
         TXCloudVideoView txCloudVideoView = binding.txcvvMainMine;
 
-        if(ImUtils.MyUserId.equals("gudada")){
+        if(ImUtils.MyUserId.equals(""+ImUtils.MyUserId)){
             TXCGLSurfaceView mTXCGLSurfaceView=txCloudVideoView.getGLSurfaceView();
             if (mTXCGLSurfaceView!=null && mTXCGLSurfaceView.getParent() != null) {
                 ((ViewGroup) mTXCGLSurfaceView.getParent()).removeView(mTXCGLSurfaceView);
@@ -462,6 +501,14 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
         }
 
         @Override
+        public void onRemoteVideoStatusUpdated(String userId, int streamType, int status, int reason, Bundle extraInfo) {
+            super.onRemoteVideoStatusUpdated(userId, streamType, status, reason, extraInfo);
+
+        }
+
+
+        //某远端用户发布/取消了主路视频画面
+        @Override
         public void onUserVideoAvailable(String userId, boolean available) {
             KLog.d( "onUserVideoAvailable userId " + userId + ", mUserCount " + mUserCount + ",available " + available);
             int index = mRemoteUidList.indexOf(userId);
@@ -503,9 +550,9 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
             }
 
 
-            if(mRemoteUidList.size()<=0){
-                closeActivity(VideoCallingActivity.this);
-            }
+//            if(mRemoteUidList.size()<=0){
+//                closeActivity(VideoCallingActivity.this);
+//            }
 
         }
 

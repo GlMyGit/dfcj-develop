@@ -1,14 +1,21 @@
 package com.dfcj.videoim.adapter;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.camera.core.internal.utils.ImageUtil;
+
+import com.alibaba.android.arouter.launcher.ARouter;
+import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.dfcj.videoim.MainActivity;
 import com.dfcj.videoim.R;
+import com.dfcj.videoim.appconfig.Rout;
 import com.dfcj.videoim.entity.AudioMsgBody;
 import com.dfcj.videoim.entity.FileMsgBody;
 import com.dfcj.videoim.entity.ImageMsgBody;
@@ -16,8 +23,11 @@ import com.dfcj.videoim.entity.Message;
 import com.dfcj.videoim.entity.MsgBody;
 import com.dfcj.videoim.entity.MsgSendStatus;
 import com.dfcj.videoim.entity.MsgType;
+import com.dfcj.videoim.entity.ShopMsgBody;
 import com.dfcj.videoim.entity.TextMsgBody;
 import com.dfcj.videoim.entity.VideoMsgBody;
+import com.dfcj.videoim.im.ImageBean;
+import com.dfcj.videoim.im.ImageElemBean;
 import com.dfcj.videoim.util.AppUtils;
 import com.dfcj.videoim.util.AutoLinKTextViewUtil;
 import com.dfcj.videoim.util.other.GlideUtils;
@@ -46,7 +56,6 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
     public static final int TYPE_KAPIAN_RECEIVE_TEXT=12;//右边卡片
     public static final int TYPE_CENTER_TEXT=13;//中间文本
     public static final int TYPE_DF_TEXT=14;//默认机器人文本
-
 
 
     private static final int SEND_TEXT = R.layout.item_text_send;
@@ -156,36 +165,30 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
 
             CharSequence charsequence = msgBody.getCharsequence();
 
-
-//            CharSequence charSequence;
-//            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-//                charSequence = Html.fromHtml(charsequence.toString(),Html.FROM_HTML_MODE_LEGACY);
-//            } else {
-//                charSequence = Html.fromHtml(charsequence.toString());
-//            }
-
-
-            //helper.setText(R.id.chat_item_content_text, charSequence);
-
             ClickableSpanTextView tv= helper.getView(R.id.chat_item_content_text);
 
             boolean b = AppUtils.hasSpecialChars(charsequence.toString());
+
+            if(msgBody.isVideo()){
+                helper.setGone(R.id.chat_item_content_video_text,false);
+            }else{
+                helper.setGone(R.id.chat_item_content_video_text,true);
+            }
+
 
             if(b){
 
                 String replace = charsequence.toString().replace("\\n", "<br>");
                 String replace2 = replace.replace("\\r", "<br>");
 
-
-               // KLog.d("格式化后："+ charsequence.toString());
+                // KLog.d("格式化后："+ charsequence.toString());
 
                 RichText.from(replace2)
                         .into(tv);
 
             }else{
 
-                 tv.setText(AutoLinKTextViewUtil.getInstance().identifyUrl22(msgBody.getCharsequence()));
-
+                tv.setText(AutoLinKTextViewUtil.getInstance().identifyUrl22(msgBody.getCharsequence()));
 
             }
 
@@ -198,7 +201,7 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
 
             // tv.setMovementMethod(LinkMovementMethod.getInstance());
 
-          // tv.setText(charSequence);
+            // tv.setText(charSequence);
 
 
 
@@ -225,7 +228,7 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
                     KLog.d("图片接收2222:"+msgBody.getThumbPath());
                     //  KLog.d("图片接收2222url:"+msgBody.getThumbUrl());
 
-                  //  ImageView contentImage= ( (ImageView) helper.getView(R.id.bivPic));
+                    //  ImageView contentImage= ( (ImageView) helper.getView(R.id.bivPic));
 
 
                     GlideUtils.loadChatImage(getContext(),msgBody.getThumbPath(),(ImageView) helper.getView(R.id.bivPic));
@@ -244,32 +247,39 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
                 @Override
                 public void onClick(View view) {
 
+                    String thumbUrl = msgBody.getThumbUrl();
+
+                    KLog.d("点击的图片地址："+thumbUrl);
+                    if(!TextUtils.isEmpty(thumbUrl)){
+                        Bundle bundle=new Bundle();
+                        bundle.putString("thumbImgUrl",thumbUrl);
+                        ARouter.getInstance().build(Rout.PhoneViewActivity)
+                                .with(bundle)
+                                .navigation();
+                    }
+
+
 //                    String localImgPath = TUIChatUtils.getOriginImagePath(msg);
-//                    boolean isOriginImg = localImgPath != null;
-//                    // 点击后的预览图片路径 如果是原图直接放原图，否则用缩略图
-//                    String previewImgPath = localImgPath;
-//                    for (int i = 0; i < imgs.size(); i++) {
-//                        ImageBean img = imgs.get(i);
-//                        if (img.getType() == ImageElemBean.IMAGE_TYPE_ORIGIN) {
-//                            getContext().mCurrentOriginalImage = img.getV2TIMImage();
-//                        }
-//                        if (img.getType() == ImageElemBean.IMAGE_TYPE_THUMB) {
-//                            if (!isOriginImg) {
-//                                previewImgPath = ImageUtil.generateImagePath(img.getUUID(), ImageElemBean.IMAGE_TYPE_THUMB);
-//                            }
-//                        }
-//                    }
-//                    Intent intent = new Intent(TUIChatService.getAppContext(), PhotoViewActivity.class);
-//                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-//                    intent.putExtra(TUIChatConstants.IMAGE_PREVIEW_PATH, previewImgPath);
-//                    intent.putExtra(TUIChatConstants.IS_ORIGIN_IMAGE, isOriginImg);
-//                    TUIChatService.getAppContext().startActivity(intent);
+
 
                 }
             });
 
 
         }else if(item.getMsgType().equals(MsgType.KAPIAN)){//商品卡片信息
+
+
+            ShopMsgBody msgBody = (ShopMsgBody) item.getBody();
+
+
+            helper.setText(R.id.chat_item_content_text1,"商品编号:"+msgBody.getGoodsCode());
+            helper.setText(R.id.chat_item_content_text,""+msgBody.getGoodsName());
+            helper.setText(R.id.chat_item_price_text,""+msgBody.getGoodsPrice());
+
+
+            Glide.with(getContext()).
+                    load(msgBody.getGoodImgUrl())
+                    .error(R.drawable.default_img_failed).into((ImageView) helper.getView(R.id.chat_item_img));
 
 
         }else if(item.getMsgType().equals(MsgType.CENTERMS)){//中间信息

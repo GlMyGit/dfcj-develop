@@ -2,28 +2,41 @@ package com.dfcj.videoim.im;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
+import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.BackgroundColorSpan;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.FileUtils;
+import com.blankj.utilcode.util.GsonUtils;
 import com.dfcj.videoim.adapter.ChatAdapter;
+import com.dfcj.videoim.appconfig.AppConstant;
 import com.dfcj.videoim.entity.AudioMsgBody;
+import com.dfcj.videoim.entity.CustomMsgEntity;
 import com.dfcj.videoim.entity.FileMsgBody;
 import com.dfcj.videoim.entity.ImageMsgBody;
 import com.dfcj.videoim.entity.Message;
 import com.dfcj.videoim.entity.MsgSendStatus;
 import com.dfcj.videoim.entity.MsgType;
+import com.dfcj.videoim.entity.RoomIdEntity;
+import com.dfcj.videoim.entity.SendOffineMsgEntity;
+import com.dfcj.videoim.entity.ShopMsgBody;
 import com.dfcj.videoim.entity.TextMsgBody;
 import com.dfcj.videoim.entity.VideoMsgBody;
 import com.dfcj.videoim.util.AppUtils;
 import com.dfcj.videoim.util.ChatUiHelper;
+import com.dfcj.videoim.util.other.GsonUtil;
 import com.dfcj.videoim.util.other.LogUtils;
+import com.dfcj.videoim.util.other.SharedPrefsUtils;
+import com.dfcj.videoim.view.dialog.Upp2Dialog;
+import com.google.gson.Gson;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.tencent.imsdk.v2.V2TIMCallback;
 import com.tencent.imsdk.v2.V2TIMCustomElem;
@@ -32,6 +45,8 @@ import com.tencent.imsdk.v2.V2TIMElem;
 import com.tencent.imsdk.v2.V2TIMImageElem;
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMMessage;
+import com.tencent.imsdk.v2.V2TIMMessageManager;
+import com.tencent.imsdk.v2.V2TIMOfflinePushInfo;
 import com.tencent.imsdk.v2.V2TIMSDKConfig;
 import com.tencent.imsdk.v2.V2TIMSDKListener;
 import com.tencent.imsdk.v2.V2TIMSendCallback;
@@ -59,12 +74,12 @@ public class ImUtils {
 
     RecyclerView rvChatList;
 
-    public static   String fsUserId="user0";
-    public static String MyUserId="gudada";
+    public static   String fsUserId="staff2";//客服
+    public static String MyUserId="customer1";//顾客
 
 
-    //public static  String fsUserId="gudada";
-    //public static String MyUserId="user0";
+    //public static  String fsUserId="customer1";
+    //public static String MyUserId="staff1";
 
 
     public ImUtils(Context context){
@@ -81,7 +96,7 @@ public class ImUtils {
 
     public void initTencentImLogin(){
 
-        KLog.d("sdk初始化调用了");
+        KLog.d("sdk初始化调用了:" +ImConstant.SDKAPPID);
 
 
         // 1. 从 IM 控制台获取应用 SDKAppID，详情请参考 SDKAppID。
@@ -97,7 +112,7 @@ public class ImUtils {
             public void onConnecting() {
                 super.onConnecting();
                 // 正在连接到腾讯云服务器
-               // ToastUtils.showShort("链接客服系统中");
+                // ToastUtils.showShort("链接客服系统中");
 
                 KLog.d("链接客服系统中");
 
@@ -107,8 +122,7 @@ public class ImUtils {
             public void onConnectSuccess() {
                 super.onConnectSuccess();
                 // 已经成功连接到腾讯云服务器
-               // ToastUtils.showLong("链接客服系统成功");
-
+                // ToastUtils.showLong("链接客服系统成功");
 
 
             }
@@ -117,63 +131,25 @@ public class ImUtils {
             public void onConnectFailed(int code, String error) {
                 super.onConnectFailed(code, error);
                 // 连接腾讯云服务器失败
-              //  ToastUtils.showLong("链接客服失败");
+                //  ToastUtils.showLong("链接客服失败");
             }
 
             @Override
             public void onKickedOffline() {
                 super.onKickedOffline();
                 //用户被踢下线
-              //  ToastUtils.showLong("用户被踢下线");
+                //  ToastUtils.showLong("用户被踢下线");
             }
 
             @Override
             public void onSelfInfoUpdated(V2TIMUserFullInfo info) {
                 super.onSelfInfoUpdated(info);
                 //用户的资料发生了更新
-               // ToastUtils.showLong("用户的资料发生了更新");
+                // ToastUtils.showLong("用户的资料发生了更新");
             }
 
 
         });
-
-//        V2TIMManager.getInstance().initSDK(context, ImConstant.SDKAPPID, config, new V2TIMSDKListener() {
-//            // 5. 监听 V2TIMSDKListener 回调
-//            @Override
-//            public void onConnecting() {
-//                // 正在连接到腾讯云服务器
-//               // ToastUtils.showShort("链接客服系统中");
-//                KLog.d("链接客服系统中");
-//            }
-//            @Override
-//            public void onConnectSuccess() {
-//                // 已经成功连接到腾讯云服务器
-//               // ToastUtils.showLong("链接客服系统成功");
-//                KLog.d("链接客服系统成功");
-//                loginIm();
-//
-//            }
-//            @Override
-//            public void onConnectFailed(int code, String error) {
-//                // 连接腾讯云服务器失败
-//               // ToastUtils.showLong("链接客服失败");
-//                KLog.d("链接客服失败");
-//            }
-//
-//            @Override
-//            public void onKickedOffline() {
-//                super.onKickedOffline();
-//                //用户被踢下线
-//                KLog.d("用户被踢下线");
-//            }
-//
-//            @Override
-//            public void onSelfInfoUpdated(V2TIMUserFullInfo info) {
-//                super.onSelfInfoUpdated(info);
-//                //用户的资料发生了更新
-//                KLog.d("用户的资料发生了更新");
-//            }
-//        });
 
 
     }
@@ -183,28 +159,209 @@ public class ImUtils {
     public void loginIm() {
 
 
+        initTencentImLogin();
+
         V2TIMManager.getInstance().login(""+MyUserId, ImConstant.genTestUserSig(""+MyUserId), new V2TIMCallback() {
             @Override
             public void onSuccess() {
                 KLog.d("登录成功");
 
-
                 isLogin=true;
+
+                if(yesOnclickListener!=null){
+                    yesOnclickListener.onYesClick(1);
+                }
+
 
             }
 
             @Override
             public void onError(int i, String s) {
-                KLog.d("登录失败");
+                KLog.d("登录失败:"+s);
                 isLogin=false;
+
+
+                if(yesOnclickListener!=null){
+                    yesOnclickListener.onYesClick(2);
+                }
+
             }
         });
 
     }
 
 
-    //文本消息
-    public void sendTextMsg(String hello)  {
+    private SpannableStringBuilder replace = null;
+    private Message mMessgae = null;
+
+    //所有的通用消息发送消息   //msgType  1文本  2 富文本   3带网址  4图片地址  5视频  6商品
+    public void sendTextMsg(String hello,int msgType)  {
+
+        if(TextUtils.isEmpty(hello)){
+            return;
+        }
+
+        String cloudCustomData= SharedPrefsUtils.getValue(AppConstant.CloudCustomData);
+
+        KLog.d("消息的内容："+hello);
+        KLog.d("消息的内容cloudCustomData："+cloudCustomData);
+
+        try {
+
+            //msgType  1文本  2 富文本   3带网址  4图片地址  5视频 6商品
+            CustomMsgEntity customMsgEntity=new CustomMsgEntity();
+            customMsgEntity.setMsgType(msgType);
+
+            if(msgType==1|| msgType==2 || msgType==3){
+
+
+                replace = ChatUiHelper.handlerEmojiText(hello,true);
+
+                KLog.d("消息的内容replace："+replace);
+
+                mMessgae =getBaseSendMessage(MsgType.TEXT);
+                TextMsgBody mTextMsgBody=new TextMsgBody();
+                mTextMsgBody.setMessage(replace.toString());
+                mTextMsgBody.setCharsequence(replace);
+                mMessgae.setBody(mTextMsgBody);
+                mMessgae.setType(ChatAdapter.TYPE_SEND_TEXT);
+                //开始发送
+                mAdapter.addData(mMessgae);
+
+
+                customMsgEntity.setMsgText(""+replace);
+
+
+            }else if(msgType==4){
+
+                customMsgEntity.setImgUrl(hello);
+
+                mMessgae=getBaseSendMessage(MsgType.IMAGE);
+                ImageMsgBody mImageMsgBody=new ImageMsgBody();
+                mImageMsgBody.setThumbUrl(hello);
+                // mImageMsgBody.setThumbPath(imagePath);
+                mMessgae.setBody(mImageMsgBody);
+                mMessgae.setSenderId(mSenderId);
+                mMessgae.setType(ChatAdapter.TYPE_SEND_IMAGE);
+                //开始发送
+                mAdapter.addData(mMessgae);
+
+
+            }
+            else if(msgType==5){//视频
+
+
+               // RoomIdEntity roomIdEntity = new Gson().fromJson(hello, RoomIdEntity.class);
+
+                mMessgae =getBaseSendMessage(MsgType.TEXT);
+                TextMsgBody mTextMsgBody=new TextMsgBody();
+              //  mTextMsgBody.setMessage(roomIdEntity.getHelloText().toString());
+                mTextMsgBody.setMessage(hello);
+                mTextMsgBody.setVideo(true);
+                //mTextMsgBody.setRoomId(roomIdEntity.getRoomId());
+               // mTextMsgBody.setCharsequence(roomIdEntity.getHelloText());
+                mTextMsgBody.setCharsequence(hello);
+                mMessgae.setBody(mTextMsgBody);
+                mMessgae.setType(ChatAdapter.TYPE_SEND_TEXT);
+                //开始发送
+               // mAdapter.addData(mMessgae);
+                customMsgEntity.setMsgText(""+hello);
+
+
+            }else if(msgType==6){
+
+                customMsgEntity.setMsgText(""+replace);
+
+                mMessgae=getBaseSendMessage(MsgType.KAPIAN);
+               // ShopMsgBody mImageMsgBody=new ShopMsgBody();
+                //发送商品需要打开此代码
+              //  ShopMsgBody shopMsgBody = GsonUtil.newGson22().fromJson(hello, ShopMsgBody.class);
+               // mMessgae.setBody(mImageMsgBody);
+                mMessgae.setSenderId(mSenderId);
+                mMessgae.setType(ChatAdapter.TYPE_KAPIAN_RECEIVE_TEXT);
+                //开始发送
+                mAdapter.addData( mMessgae);
+
+            }
+
+
+            String sVal = GsonUtil.newGson22().toJson(customMsgEntity);
+            byte[] strs = sVal.getBytes("UTF8");
+
+
+            V2TIMMessage customMessage = V2TIMManager.getMessageManager().createCustomMessage(strs);
+            customMessage.setCloudCustomData(cloudCustomData);
+
+            //是否只有在线用户才能收到，如果设置为 true ，接收方历史消息拉取不到，常被用于实现“对方正在输入”或群组里的非重要提示等弱提示功能
+
+            V2TIMManager.getMessageManager().sendMessage(customMessage, fsUserId, null, V2TIMMessage.V2TIM_PRIORITY_DEFAULT,
+                    false, new V2TIMOfflinePushInfo(), new V2TIMSendCallback<V2TIMMessage>() {
+                        @Override
+                        public void onProgress(int i) {
+
+                        }
+
+                        @Override
+                        public void onSuccess(V2TIMMessage v2TIMMessage) {
+                            KLog.d("发送成功：");
+
+                            if(msgType==5){
+
+                            }else{
+                                updateMsg(mMessgae);
+                            }
+
+                            if(yesMsgOnclickListener!=null){
+                                yesMsgOnclickListener.onYesMsgClick(true,msgType);
+                            }
+
+                        }
+
+                        @Override
+                        public void onError(int i, String s) {
+                            KLog.d("发送失败："+s);
+
+                            if(yesMsgOnclickListener!=null){
+                                yesMsgOnclickListener.onYesMsgClick(false,msgType);
+                            }
+
+                        }
+                    });
+
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+//        V2TIMManager.getInstance().sendC2CTextMessage(hello, ""+fsUserId, new V2TIMValueCallback<V2TIMMessage>() {
+//            @Override
+//            public void onSuccess(V2TIMMessage v2TIMMessage) {
+//                updateMsg(mMessgae);
+//                KLog.d("消息发送成功");
+//
+//            }
+//
+//            @Override
+//            public void onError(int i, String s) {
+//                ToastUtils.showShort("发送失败");
+//
+//                KLog.d("发送消息失败："+s + "        --"+i);
+//
+//            }
+//        });
+
+
+    }
+
+
+
+
+
+    //客服消息回复
+    public void sendLeftTextMsg(String hello)  {
 
         if(TextUtils.isEmpty(hello)){
             return;
@@ -218,124 +375,134 @@ public class ImUtils {
         mTextMsgBody.setMessage(replace.toString());
         mTextMsgBody.setCharsequence(replace);
         mMessgae.setBody(mTextMsgBody);
-        mMessgae.setType(1);
+        mMessgae.setType(ChatAdapter.TYPE_RECEIVE_TEXT);
+        mMessgae.setSenderId(mTargetId);
+
         //开始发送
         mAdapter.addData(mMessgae);
         //模拟两秒后发送成功
-        //   updateMsg(mMessgae);
+        updateMsg(mMessgae);
 
         KLog.d("消息的内容："+hello);
-
-        V2TIMManager.getInstance().sendC2CTextMessage(hello, ""+fsUserId, new V2TIMValueCallback<V2TIMMessage>() {
-            @Override
-            public void onSuccess(V2TIMMessage v2TIMMessage) {
-                updateMsg(mMessgae);
-                KLog.d("消息发送成功");
-
-            }
-
-            @Override
-            public void onError(int i, String s) {
-                ToastUtils.showShort("发送失败");
-
-                KLog.d("发送消息失败："+s + "        --"+i);
-
-            }
-        });
 
 
     }
 
-
-    //文本自定义消息
-    public void sendCustomerTextMsg(LocalMedia localMedia)  {
-
-
-        String hello="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fup.enterdesk.com%2Fedpic_source%2F53%2F0a%2Fda%2F530adad966630fce548cd408237ff200.jpg&refer=http%3A%2F%2Fup.enterdesk.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1640336391&t=58e47be5791d9c1285e3116135ead99d";
+    public void sendRightTextMsg(String hello)  {
 
         if(TextUtils.isEmpty(hello)){
             return;
         }
 
+        SpannableStringBuilder replace = ChatUiHelper.handlerEmojiText(hello,true);
+
+
+        final Message mMessgae=getBaseSendMessage(MsgType.TEXT);
+        TextMsgBody mTextMsgBody=new TextMsgBody();
+        mTextMsgBody.setMessage(replace.toString());
+        mTextMsgBody.setCharsequence(replace);
+        mMessgae.setBody(mTextMsgBody);
+        mMessgae.setType(ChatAdapter.TYPE_SEND_TEXT);
+        mMessgae.setSenderId(mSenderId);
+
+        //开始发送
+        mAdapter.addData(mMessgae);
+        //模拟两秒后发送成功
+        updateMsg(mMessgae);
+
+        KLog.d("消息的内容："+hello);
+
+
+    }
+
+    public void takeLeftImgMsg(String imagePath){
+
         final Message mMessgae=getBaseSendMessage(MsgType.IMAGE);
         ImageMsgBody mImageMsgBody=new ImageMsgBody();
-        mImageMsgBody.setThumbUrl(hello);
+        mImageMsgBody.setThumbUrl(imagePath);
+        // mImageMsgBody.setThumbPath(imagePath);
+        mMessgae.setBody(mImageMsgBody);
+        mMessgae.setSenderId(mTargetId);
+        mMessgae.setType(ChatAdapter.TYPE_RECEIVE_IMAGE);
+
+        //开始发送
+        mAdapter.addData(mMessgae);
+        updateMsg(mMessgae);
+
+    }
+
+    public void takeRightImgMsg(String imagePath){
+
+        final Message mMessgae=getBaseSendMessage(MsgType.IMAGE);
+        ImageMsgBody mImageMsgBody=new ImageMsgBody();
+        mImageMsgBody.setThumbUrl(imagePath);
+        // mImageMsgBody.setThumbPath(imagePath);
         mMessgae.setBody(mImageMsgBody);
         mMessgae.setSenderId(mSenderId);
         mMessgae.setType(ChatAdapter.TYPE_SEND_IMAGE);
+
+        //开始发送
+        mAdapter.addData(mMessgae);
+        updateMsg(mMessgae);
+
+    }
+
+
+
+    //商品消息
+    public void sendLeftShopMessage(SendOffineMsgEntity.DataBean.ProductInfoBean hello) {
+
+        final Message mMessgae=getBaseSendMessage(MsgType.KAPIAN);
+        ShopMsgBody mImageMsgBody=new ShopMsgBody();
+        mImageMsgBody.setGoodsName(hello.getItemName());
+        mImageMsgBody.setGoodsCode(hello.getItemCode());
+        mImageMsgBody.setGoodImgUrl(hello.getShareImg());
+        mImageMsgBody.setGoodsPrice(hello.getLastSalePrice());
+        mImageMsgBody.setGoodsLinkApp(hello.getItemUrl());
+
+        mMessgae.setBody(mImageMsgBody);
+        mMessgae.setSenderId(mTargetId);
+        mMessgae.setType(ChatAdapter.TYPE_KAPIAN_RECEIVE_TEXT);
         //开始发送
         mAdapter.addData( mMessgae);
         //模拟两秒后发送成功
-        //   updateMsg(mMessgae);
-
-        KLog.d("文本自定义消息："+hello);
-
-        try {
-
-            byte[] strs = hello.getBytes("UTF8");
-
-
-            V2TIMManager.getInstance().sendC2CCustomMessage(strs, fsUserId, new V2TIMValueCallback<V2TIMMessage>() {
-                @Override
-                public void onSuccess(V2TIMMessage v2TIMMessage) {
-                    updateMsg(mMessgae);
-                    KLog.d("文本自定义消息发送成功");
-                }
-
-                @Override
-                public void onError(int i, String s) {
-                    KLog.d("文本自定义发送消息失败："+s + "        --"+i);
-                }
-            });
-
-
-
-
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-
-    //接收自定义文本消息
-    public void takeCustomerImageMsg(V2TIMMessage msg){
-
-        V2TIMCustomElem v2TIMCustomElem = msg.getCustomElem();
-        byte[] customData = v2TIMCustomElem.getData();
-
-        try {
-
-            String str = new String(customData, "UTF8");
-
-            KLog.d("自定义消息接收内容："+str);
-
-
-          /*  final Message mMessgae=getBaseSendMessage(MsgType.IMAGE);
-            ImageMsgBody mImageMsgBody=new ImageMsgBody();
-            // mImageMsgBody.setThumbUrl(imagePath);
-            mImageMsgBody.setThumbPath(str);
-            mMessgae.setBody(mImageMsgBody);
-            mMessgae.setSenderId(mTargetId);
-            mMessgae.setType(ChatAdapter.TYPE_RECEIVE_IMAGE);
-
-            //开始发送
-            mAdapter.addData(mMessgae);
-            updateMsg(mMessgae);*/
-
-
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-
+        updateMsg(mMessgae);
 
     }
 
 
 
+    //商品消息 左边
+    public void sLeftShopMessage(ShopMsgBody shopMsgBody) {
 
+        final Message mMessgae=getBaseSendMessage(MsgType.KAPIAN);
+        //  ShopMsgBody mImageMsgBody=new ShopMsgBody();
+
+        mMessgae.setBody(shopMsgBody);
+        mMessgae.setSenderId(mTargetId);
+        mMessgae.setType(ChatAdapter.TYPE_KAPIAN_SEND_TEXT);
+        //开始发送
+        mAdapter.addData( mMessgae);
+        //模拟两秒后发送成功
+        updateMsg(mMessgae);
+
+    }
+
+    //商品消息 右边
+    public void sRightShopMessage(ShopMsgBody shopMsgBody) {
+
+        final Message mMessgae=getBaseSendMessage(MsgType.KAPIAN);
+        // ShopMsgBody mImageMsgBody=new ShopMsgBody();
+
+        mMessgae.setBody(shopMsgBody);
+        mMessgae.setSenderId(mSenderId);
+        mMessgae.setType(ChatAdapter.TYPE_KAPIAN_RECEIVE_TEXT);
+        //开始发送
+        mAdapter.addData( mMessgae);
+        //模拟两秒后发送成功
+        updateMsg(mMessgae);
+
+    }
 
 
     //图片消息
@@ -422,8 +589,18 @@ public class ImUtils {
     //默认客服消息
     public void sendDefaultMsg(String replace){
 
-        replace="您好，先由机器人客服东东为您服务，请简要、完整地输入您的问题，如：我的商品今天会发货吗？\n" +
-                "若有其他问题，请在聊天对话框输入具体服务对应的数字： ";
+//        replace="您好，先由机器人客服东东为您服务，请简要、完整地输入您的问题，如：我的商品今天会发货吗？\n" +
+//                "若有其他问题，请在聊天对话框输入具体服务对应的数字： ";
+
+        if(!TextUtils.isEmpty(replace)){
+
+//            int bstart=replace.indexOf("人工客服");
+//            int bend=bstart+"人工客服".length();
+//            SpannableStringBuilder style=new SpannableStringBuilder(replace);
+//            style.setSpan(new BackgroundColorSpan(Color.RED),bstart,bend, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        }
+
 
         final Message mMessgae=getBaseSendMessage(MsgType.TEXT);
         TextMsgBody mTextMsgBody=new TextMsgBody();
@@ -550,7 +727,7 @@ public class ImUtils {
             // 设置图片下载路径 imagePath，这里可以用 uuid 作为标识，避免重复下载
 
             //String imagePath = AppApplicationMVVM.getInstance().getFilesDir().getAbsolutePath()+ "/image/download/"+ uuid;
-            String imagePath = "/sdcard/im/image/" + ""+ImConstant.myUserId + uuid;
+            String imagePath = "/sdcard/im/image/" + ""+ImUtils.MyUserId + uuid;
 
             //String imagePath =  ""+ImConstant.myUserId + uuid;
             KLog.d("收到图片路径："+imagePath);
@@ -764,10 +941,15 @@ public class ImUtils {
 
 
 
-    public void updateMsg(final Message mMessgae) {
+    public void updateMsg(Message mMessgae) {
+
+        if(mMessgae==null){
+            return;
+        }
+
         rvChatList.scrollToPosition(mAdapter.getItemCount() - 1);
         //模拟2秒后发送成功
-        new Handler().postDelayed(new Runnable() {
+        new Handler(context.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
                 int position=0;
@@ -796,6 +978,43 @@ public class ImUtils {
 //            }
 //        });
     }
+
+
+
+    public onNoOnclickListener noOnclickListener;//取消按钮被点击了的监听器
+    public onYesOnclickListener yesOnclickListener;//确定按钮被点击了的监听器
+    public onYesMsgOnclickListener yesMsgOnclickListener;//确定按钮被点击了的监听器
+
+    public void setNoOnclickListener(onNoOnclickListener onNoOnclickListener) {
+
+        this.noOnclickListener = onNoOnclickListener;
+    }
+
+    public void setYesOnclickListener(onYesOnclickListener onYesOnclickListener) {
+
+        this.yesOnclickListener = onYesOnclickListener;
+    }
+
+
+    public interface onYesOnclickListener {
+        void onYesClick(int st);
+    }
+
+    public interface onNoOnclickListener {
+        void onNoClick();
+    }
+
+
+    public void setYesMsgOnclickListener(onYesMsgOnclickListener onYesMsgOnclickListener) {
+
+        this.yesMsgOnclickListener = onYesMsgOnclickListener;
+    }
+
+
+    public interface onYesMsgOnclickListener {
+        void onYesMsgClick(boolean isMsgOk,int msgType);
+    }
+
 
 
 }

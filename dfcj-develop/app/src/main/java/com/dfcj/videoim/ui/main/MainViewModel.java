@@ -5,8 +5,9 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.dfcj.videoim.api.ApiService;
+import com.dfcj.videoim.api.HostType;
 import com.dfcj.videoim.base.BaseViewModel;
-import com.dfcj.videoim.data.source.http.service.MyApiService;
 import com.dfcj.videoim.entity.DemoBean;
 import com.dfcj.videoim.http.RetrofitClient;
 import com.wzq.mvvmsmart.event.SingleLiveEvent;
@@ -34,7 +35,7 @@ public class MainViewModel extends BaseViewModel {
 
     public void getDate(){
 
-        MyApiService  apiService = RetrofitClient.getInstance().create(MyApiService.class);
+        ApiService  apiService = RetrofitClient.getInstance(HostType.lOAN_STEWARD_MAIN_HOST).create(ApiService.class);
 
 
         apiService.demoGet(1)

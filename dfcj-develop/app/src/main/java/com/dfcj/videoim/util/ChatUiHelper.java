@@ -105,6 +105,11 @@ public class ChatUiHelper {
 
        // mListEmoji = EmojiDao.getInstance().getEmojiBean();
 
+        if(mListEmoji!=null){
+            mListEmoji.clear();
+        }
+
+
         for (int i = 0; i < emojiFilters.length; i++) {
           /* String vbal= "/emoji/" + emojiFilters[i] + "@2x.png";
             EmojiBean  sdf=new EmojiBean();
@@ -127,7 +132,7 @@ public class ChatUiHelper {
         mEmojiBean.setId(999);
         mEmojiBean.setUnicodeInt(000);
         int deleteCount = (int) Math.ceil(mListEmoji.size() * 1.0 / EVERY_PAGE_SIZE);//要显示的删除键的数量
-        KLog.d("" + deleteCount);
+//        KLog.d("" + deleteCount);
         //添加删除键
         for (int i = 1; i < deleteCount + 1; i++) {
             if (i == deleteCount) {
@@ -135,13 +140,13 @@ public class ChatUiHelper {
             } else {
                 mListEmoji.add(i * EVERY_PAGE_SIZE - 1, mEmojiBean);
             }
-            KLog.d("添加次数" + i);
+//            KLog.d("添加次数" + i);
 
         }
 
 
         int pageCount = (int) Math.ceil((mListEmoji.size()) * 1.0 / pageSize);//一共的页数
-        KLog.d("总共的页数:" + pageCount);
+       // KLog.d("总共的页数:" + pageCount);
         List<View> viewList = new ArrayList<View>();
         for (int index = 0; index < pageCount; index++) {
             //每个页面创建一个recycleview
@@ -166,18 +171,27 @@ public class ChatUiHelper {
                                 KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
                     } else {
 
-                        // 得到随机表情图片的Bitmap
                         Bitmap bitmap = ((EmojiBean) adapter.getData().get(position)).getIcon();
-                        // 得到SpannableString对象,主要用于拆分字符串
-                        SpannableString spannableString = new SpannableString("image");
-                        // 得到ImageSpan对象
-                        ImageSpan imageSpan = new ImageSpan(context, bitmap);
-                        // 调用spannableString的setSpan()方法
-                        spannableString.setSpan(imageSpan, 0, 5,
-                                Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+                        String emotionName  = ((EmojiBean) adapter.getData().get(position)).getFilter();
 
+                        // 获取当前光标位置,在指定位置上添加表情图片文本
+//                        int curPosition = mEditText.getSelectionStart();
+//                        StringBuilder sb = new StringBuilder(mEditText.getText().toString());
+//                        sb.insert(curPosition, emotionName );
+//                        // 特殊文字处理,将表情等转换一下
+//                        mEditText.append(AppUtils.getEmotionContent(bitmap,
+//                                context, mEditText, sb.toString()));
+//                        // 将光标设置到新增完表情的右侧
+                      //  mEditText.setSelection(curPosition + emotionName.length());
+
+
+                        SpannableString spannableString = new SpannableString(emotionName);
+                        ImageSpan span = new ImageSpan(context, bitmap);
+                        spannableString.setSpan(span, 0, 0 + emotionName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                         mEditText.append(spannableString);
+
+
                     }
 
                 }
@@ -559,7 +573,7 @@ public class ChatUiHelper {
     private void showBottomLayout() {
         int softInputHeight = getSupportSoftInputHeight();
          if (softInputHeight == 0) {
-            softInputHeight = mSp.getInt(SHARE_PREFERENCE_TAG, dip2Px(270));
+            softInputHeight = mSp.getInt(SHARE_PREFERENCE_TAG, dip2Px(220));//设置底部高度 270原始
         }
         hideSoftInput();
         mBottomLayout.getLayoutParams().height = softInputHeight;

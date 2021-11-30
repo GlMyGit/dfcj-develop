@@ -1,5 +1,6 @@
 package com.dfcj.videoim.view.dialog;
 
+import android.app.DownloadManager;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -11,7 +12,6 @@ import com.dfcj.videoim.R;
 import com.dfcj.videoim.util.other.LogUtils;
 import com.dfcj.videoim.util.other.ScreenUtil;
 
-import anetwork.channel.download.DownloadManager;
 
 public class Upp2Dialog extends BaseDialogFragment {
 

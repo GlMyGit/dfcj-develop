@@ -30,7 +30,10 @@ public class PictureFileUtil {
                 .maxSelectNum(6)// 最大图片选择数量
                 .minSelectNum(1)// 最小选择数量
                 .imageSpanCount(3)// 每行显示个数
-                .compress(false)//是否压缩
+                .compress(true)//是否压缩
+                .compressEngine(ImageCompressEngine.createCompressEngine())
+                .compressQuality(80)// 图片压缩后输出质量 0~ 100
+                .synOrAsy(true)//同步true或异步false 压缩 默认同步
                 .circleDimmedLayer(false)// 是否开启圆形裁剪
                 .showCropFrame(false)// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
                 .showCropGrid(false)//是否显示裁剪矩形网格 圆形裁剪时建议设为false
@@ -100,7 +103,10 @@ public class PictureFileUtil {
                 .maxSelectNum(1)// 最大图片选择数量
                 .minSelectNum(1)// 最小选择数量
                 .imageSpanCount(3)// 每行显示个数
-                .compress(false)//是否压缩
+                .compress(true)//是否压缩
+                .compressEngine(ImageCompressEngine.createCompressEngine())
+                .compressQuality(80)// 图片压缩后输出质量 0~ 100
+                .synOrAsy(true)//同步true或异步false 压缩 默认同步
                 .circleDimmedLayer(false)// 是否开启圆形裁剪
                 .showCropFrame(false)// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
                 .showCropGrid(false)//是否显示裁剪矩形网格 圆形裁剪时建议设为false

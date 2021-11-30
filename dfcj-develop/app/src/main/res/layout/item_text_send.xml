@@ -73,8 +73,18 @@
                     android:layout_marginBottom="13dp"
                     android:layout_marginLeft="13dp"
                     android:layout_marginRight="13dp"
-
                     />
+
+                <ImageView
+                    android:id="@+id/chat_item_content_video_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ship_pic11"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="5dp"
+                    android:visibility="gone"
+                    ></ImageView>
+
 
             </LinearLayout>
 

@@ -15,6 +15,12 @@ public class AppConstant {
     public static final String USERTOKEN = "USERTOKEN";
     public static final String USERopenid = "USERopenid";
 
+    public static final String CloudCustomData = "Cloud_Custom_Data";
+
+
+    public static final String VideoStatus = "Video_Status";
+    public static final String Video_mRoomId = "Video_mRoomId";
+
 
     public static final String PRO_ID = "prod_id";
     public static final String PROUDT_URL = "product_url";

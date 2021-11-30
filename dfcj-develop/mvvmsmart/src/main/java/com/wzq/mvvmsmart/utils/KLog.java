@@ -3,6 +3,8 @@ package com.wzq.mvvmsmart.utils;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,6 +48,11 @@ public class KLog {
 
     public static void d(Object msg) {
         printLog(D, null, msg);
+    }
+
+    public static void dGson(Object msg) {
+        String s = new Gson().toJson(msg);
+        printLog(D, null, s);
     }
 
     public static void d(String tag, Object msg) {

@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.WindowManager;
 
-import com.dfcj.videoim.appconfig.MyAppliaction;
+import com.dfcj.videoim.appconfig.AppApplicationMVVM;
 
 
 /**
@@ -58,7 +58,7 @@ public class ScreenUtil
     {
         // Log.e("getMetrics", "getMetrics");
         DisplayMetrics metrics = new DisplayMetrics();
-        Context ctx = MyAppliaction.getAppContext();
+        Context ctx = AppApplicationMVVM.getInstance();
         if (ctx == null)
         {
             Log.e("ScreenUtil.getMetrics", "ApplicationContext is null!");
@@ -130,7 +130,7 @@ public class ScreenUtil
     {
         int[] screenWH =
         { 320, 480 };
-        Context ctx = MyAppliaction.getAppContext();
+        Context ctx =AppApplicationMVVM.getInstance();
         if (ctx == null)
         {
             Log.e("ScreenUtil.getScreenWH", "ApplicationContext is null!");
@@ -156,10 +156,11 @@ public class ScreenUtil
     public static boolean isLargeScreen()
     {
         int w = getScreenWH()[0];
-        if (w >= 480)
+        if (w >= 480) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     /**

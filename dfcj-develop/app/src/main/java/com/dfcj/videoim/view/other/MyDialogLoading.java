@@ -2,6 +2,7 @@ package com.dfcj.videoim.view.other;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.text.TextUtils;
 import android.widget.TextView;
 
 import com.dfcj.videoim.R;
@@ -20,7 +21,11 @@ public class MyDialogLoading extends Dialog {
     }
 
     public void setDialogLabel(String label) {
-        loadingLabel.setText(label);
+
+        if(!TextUtils.isEmpty(label)){
+            loadingLabel.setText(label);
+        }
+
     }
 
 }

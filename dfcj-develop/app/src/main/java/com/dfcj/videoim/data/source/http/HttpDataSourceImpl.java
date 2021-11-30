@@ -1,7 +1,7 @@
 package com.dfcj.videoim.data.source.http;
 
 
-import com.dfcj.videoim.data.source.http.service.MyApiService;
+import com.dfcj.videoim.api.ApiService;
 import com.dfcj.videoim.entity.DemoBean;
 import com.wzq.mvvmsmart.http.BaseResponse;
 
@@ -14,10 +14,11 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 
 public class HttpDataSourceImpl {
-    private MyApiService apiService;
+
+    private ApiService apiService;
     private volatile static HttpDataSourceImpl INSTANCE = null;
 
-    public static HttpDataSourceImpl getInstance(MyApiService apiService) {
+    public static HttpDataSourceImpl getInstance(ApiService apiService) {
         if (INSTANCE == null) {
             synchronized (HttpDataSourceImpl.class) {
                 if (INSTANCE == null) {
@@ -32,7 +33,7 @@ public class HttpDataSourceImpl {
         INSTANCE = null;
     }
 
-    private HttpDataSourceImpl(MyApiService apiService) {
+    private HttpDataSourceImpl(ApiService apiService) {
         this.apiService = apiService;
     }
 

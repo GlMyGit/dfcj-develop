@@ -7,7 +7,6 @@ import android.text.TextUtils;
 
 
 import com.dfcj.videoim.util.other.LogUtils;
-import com.umeng.analytics.AnalyticsConfig;
 
 
 public class ChannelUtil {
@@ -118,7 +117,7 @@ public class ChannelUtil {
             return null;
         }
         String channelName = null;
-        channelName = AnalyticsConfig.getChannel(ctx);
+       // channelName = AnalyticsConfig.getChannel(ctx);
 
         return channelName;
     }

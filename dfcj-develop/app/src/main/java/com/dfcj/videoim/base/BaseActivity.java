@@ -5,11 +5,14 @@ import android.os.Bundle;
 
 import androidx.databinding.ViewDataBinding;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.dfcj.videoim.R;
 import com.dfcj.videoim.entity.EventMessage;
+import com.dfcj.videoim.http.MaterialDialogUtils;
 import com.dfcj.videoim.util.other.AntiShake;
 import com.dfcj.videoim.util.other.EventBusUtils;
+import com.dfcj.videoim.view.other.MyDialogLoading;
 import com.gyf.immersionbar.ImmersionBar;
 import com.wzq.mvvmsmart.base.BaseActivityMVVM;
 import com.wzq.mvvmsmart.base.BaseViewModelMVVM;
@@ -57,20 +60,42 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         //设置昼夜主题
         //initTheme();
         // 把actvity放到application栈中管理
-       /// AppManager.getAppManager().addActivity(this);
+        /// AppManager.getAppManager().addActivity(this);
         // 无标题
-       // supportRequestWindowFeature(Window.FEATURE_NO_TITLE);//requestWindowFeature(Window.FEATURE_NO_TITLE);
+        // supportRequestWindowFeature(Window.FEATURE_NO_TITLE);//requestWindowFeature(Window.FEATURE_NO_TITLE);
         // 竖屏
         // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);  //全屏
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         // 默认着色状态栏
-      //  SetStatusBarColor();
+        //  SetStatusBarColor();
 
-        ImmersionBar.with(this).statusBarDarkFont(true).init();
+        ImmersionBar.with(this)
+                .statusBarDarkFont(true) //深色字体
+//                .navigationBarDarkIcon(true) //导航栏图标是深色，不写默认为亮色
+//                .autoDarkModeEnable(true) //自动状态栏字体和导航栏图标变色，必须指定状态栏颜色和导航栏颜色才可以自动变色哦
+//                .autoStatusBarDarkModeEnable(true,0.2f) //自动状态栏字体变色，必须指定状态栏颜色才可以自动变色哦
+//                .autoNavigationBarDarkModeEnable(true,0.2f) //自动导航栏图标变色，必须指定导航栏颜色才可以自动变色哦
+                .init();
 
     }
 
 
+
+    private MyDialogLoading dialog;
+
+    public void showLoading(String title) {
+
+        dialog = new MyDialogLoading(this);
+        dialog.setDialogLabel(title);
+        dialog.show();
+
+    }
+
+    public void dismissLoading() {
+        if (dialog != null) {
+            dialog.dismiss();
+        }
+    }
 
 
     /**
