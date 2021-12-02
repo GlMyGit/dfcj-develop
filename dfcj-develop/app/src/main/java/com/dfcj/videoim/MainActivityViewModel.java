@@ -101,7 +101,6 @@ public class MainActivityViewModel extends BaseViewModel {
 
 
 
-
         RetrofitClient.getInstance(HostType.lOAN_STEWARD_MAIN_HOST).create(ApiService.class)
                 .requestSendOffineMsg(params)
                 .compose(RxUtils.observableToMain()) //线程调度,compose操作符是直接对当前Observable进行操作（可简单理解为不停地.方法名（）.方法名（）链式操作当前Observable）
@@ -137,7 +136,6 @@ public class MainActivityViewModel extends BaseViewModel {
         params.put("customerCode",""+ ImUtils.MyUserId);
         params.put("osInfo",""+systemModel);
         params.put("osType","2");//1、iOS系统、2、Android系统、3、微信小程序4、Mobile 5、电脑端PC网页浏览器
-
 
 
         RetrofitClient.getInstance(HostType.lOAN_STEWARD_MAIN_HOST).create(ApiService.class)
