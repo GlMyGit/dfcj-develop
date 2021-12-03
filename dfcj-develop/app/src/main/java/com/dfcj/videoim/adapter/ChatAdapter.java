@@ -193,17 +193,6 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
             }
 
 
-//            AutoLinKTextViewUtil.SpannableStringBuilderForAllvers spannableStringBuilderForAllvers =
-//                    AutoLinKTextViewUtil.getInstance().identifyUrl22(tv.getText());
-//
-//
-//            tv.setText(spannableStringBuilderForAllvers);
-
-            // tv.setMovementMethod(LinkMovementMethod.getInstance());
-
-            // tv.setText(charSequence);
-
-
 
         }else if(item.getMsgType().equals(MsgType.IMAGE)){
 
@@ -229,7 +218,6 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
                     //  KLog.d("图片接收2222url:"+msgBody.getThumbUrl());
 
                     //  ImageView contentImage= ( (ImageView) helper.getView(R.id.bivPic));
-
 
                     GlideUtils.loadChatImage(getContext(),msgBody.getThumbPath(),(ImageView) helper.getView(R.id.bivPic));
 
@@ -257,9 +245,6 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
                                 .with(bundle)
                                 .navigation();
                     }
-
-
-//                    String localImgPath = TUIChatUtils.getOriginImagePath(msg);
 
 
                 }
@@ -311,10 +296,17 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
 
     private void setOnClick(BaseViewHolder helper, Message item) {
         MsgBody msgContent = item.getBody();
-        if (msgContent instanceof AudioMsgBody){
+        if (msgContent instanceof ShopMsgBody){
             //helper.addOnClickListener(R.id.rlAudio);
-            addChildClickViewIds(R.id.rlAudio);
+           // addChildClickViewIds(R.id.rlAudio);
+            addChildClickViewIds(R.id.goods_layout);
         }
     }
+
+
+
+
+
+
 
 }

@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.dfcj.videoim.adapter.ChatAdapter;
 import com.dfcj.videoim.appconfig.AppConstant;
 import com.dfcj.videoim.entity.ChangeCustomerServiceEntity;
@@ -64,6 +66,7 @@ import com.tencent.imsdk.v2.V2TIMMessageListGetOption;
 import com.tencent.imsdk.v2.V2TIMTextElem;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.iot.speech.asr.listener.MessageListener;
+import com.wzq.mvvmsmart.event.StateLiveData;
 import com.wzq.mvvmsmart.utils.KLog;
 import com.wzq.mvvmsmart.utils.ToastUtils;
 import com.zzhoujay.richtext.RichText;
@@ -95,7 +98,6 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     public static final int       REQUEST_CODE_IMAGE=0000;
     public static final int       REQUEST_CODE_VEDIO=1111;
     public static final int       REQUEST_CODE_IMAGE_VIDEO=9999;
-    private static long startTime;
     private float y ;
     private ChatAdapter mAdapter;
 
@@ -109,6 +111,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     private  boolean isVidesClick=false;
     private ImageUtils imageUtils;
     private String mRoomId;
+    private String myEventId;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -142,19 +145,14 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
 
         requestPermisson();
-
         initRv();
-
         imUtils.initViewInfo(mAdapter,binding.rvChatList);
 
         initOnCLick();
         initChatUi();
-
         //takeMsgInfo();
         takeImagMsg();
-
         setOcrListener();
-
         ocrUtil.initOcr();
 
 
@@ -166,6 +164,16 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     public void initViewObservable() {
         super.initViewObservable();
 
+
+        setMyListener();
+
+        login();
+
+
+    }
+
+
+    private void setMyListener(){
 
 
         imUtils.setYesOnclickListener(new ImUtils.onYesOnclickListener() {
@@ -182,10 +190,45 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
             }
         });
 
-        login();
+
+        mAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+
+               switch ( view.getId()){
+
+                   case R.id.goods_layout:
+
+                       break;
+
+               }
+
+            }
+        });
+
+
+
+        viewModel.stateLiveData.stateEnumMutableLiveData.observe(this,stateEnum ->{
+            if (stateEnum.equals(StateLiveData.StateEnum.Loading)) {
+                KLog.e("请求数据中--显示loading");
+                showLoading("加载中");
+            }
+            if (stateEnum.equals(StateLiveData.StateEnum.Success)) {
+                KLog.e("数据获取成功--关闭loading");
+                dismissLoading();
+            }
+            if (stateEnum.equals(StateLiveData.StateEnum.Idle)) {
+                KLog.e("空闲状态--关闭loading");
+                dismissLoading();
+            }
+        });
+
 
 
     }
+
+
+
 
     //登录
     private void login(){
@@ -210,6 +253,9 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
                         cloudCustomData="{"+"\"staffCode:\""+"\""+loginBean.getData().getStaffCode()+"\""
                                 +","+"\"eventId:\""+loginBean.getData().getEventId()+"}";
+
+
+                        myEventId=""+loginBean.getData().getEventId();
 
                         SharedPrefsUtils.putValue(AppConstant.CloudCustomData,cloudCustomData);
 
@@ -240,9 +286,6 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                         break;
 
                 }
-
-
-
 
 
             }
@@ -525,7 +568,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     //获取房间号
     private void getTrtcRoomId(){
 
-        viewModel.getTrtcRoomId();
+        viewModel.getTrtcRoomId(myEventId);
 
         viewModel.trtcRoomEntity.observe(this, new Observer<TrtcRoomEntity>() {
             @Override
@@ -577,7 +620,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                         case "99990000"://有客服接入
 
                             //  String staffCode = changeCustomerServiceEntity.getData().getStaffCode();
-                            // Integer eventId = changeCustomerServiceEntity.getData().getEventId();
+                            myEventId = ""+changeCustomerServiceEntity.getData().getEventId();
 
                             if(changeCustomerServiceEntity.getData()!=null){
                                 Gson gson=new Gson();
@@ -1178,6 +1221,10 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                 });
 
     }
+
+
+
+
 
 
 

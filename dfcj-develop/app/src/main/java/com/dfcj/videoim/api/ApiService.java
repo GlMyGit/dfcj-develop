@@ -32,7 +32,7 @@ public interface ApiService {
 
 
     //登录
-    @POST("/api/icsm/rpc/Facade/login")
+    @POST("/api/newMedia/fcm/customerRead/login")
     Observable<LoginBean> requestLogin(
             @Body Map<String, Object> map
     );
@@ -40,14 +40,14 @@ public interface ApiService {
 
 
     //智能客服
-    @POST("/api/icsm/rpc/Facade/ask")
+    @POST("/api/newMedia/fcm/xiaoIRead/ask")
     Observable<SendOffineMsgEntity> requestSendOffineMsg(
             @Body Map<String, Object> map
     );
 
 
     //转人工客服 分配客服
-    @POST("/api/icsm/rpc/Facade/getImStaff")
+    @POST("/api/newMedia/fcm/customerRead/getImStaff")
     Observable<ChangeCustomerServiceEntity> requestChangeCustomerService(
             @Body Map<String, Object> map
     );
@@ -55,7 +55,7 @@ public interface ApiService {
 
 
     //获取视频房间号
-    @POST("/api/icsm/rpc/Facade/getTrtcRoomId")
+    @POST("/api/newMedia/fcm/customerRead/getTrtcRoomId")
     Observable<TrtcRoomEntity> requestTrtcRoomId(
             @Body Map<String, Object> map
     );
@@ -63,10 +63,18 @@ public interface ApiService {
 
     //文件上传
     @Multipart
-    @POST("/api/icsm/fileOper/uploadFile")
+    @POST("/api/newMedia/fcm/fileOper/uploadFile")
     Observable<upLoadImgEntity> requestUploadImg(
             @Part MultipartBody.Part file
     );
+
+
+    //顾客根据日期查询历史单聊消息接口
+    @POST("/api/newMedia/fcm/eventRead/queryCustImRecord")
+    Observable<TrtcRoomEntity> requestQueryCustImRecord(
+            @Body Map<String, Object> map
+    );
+
 
 
 

@@ -200,14 +200,17 @@ public class MainActivityViewModel extends BaseViewModel {
 
 
     //获取视频房间号
-    public void getTrtcRoomId(){
+    public void getTrtcRoomId(String eventId){
 
 
         String systemModel = AppUtils.getSystemModel();
 
         Map<String, Object> params = new HashMap<>();
 
-        params.put("customerCode",""+ ImUtils.MyUserId);
+       // params.put("customerCode",""+ ImUtils.MyUserId);
+
+        params.put("eventId",""+eventId);
+
         params.put("osInfo",""+systemModel);
         params.put("osType","2");//1、iOS系统、2、Android系统、3、微信小程序4、Mobile 5、电脑端PC网页浏览器
 
@@ -217,17 +220,25 @@ public class MainActivityViewModel extends BaseViewModel {
                 .compose(RxUtils.observableToMain()) //线程调度,compose操作符是直接对当前Observable进行操作（可简单理解为不停地.方法名（）.方法名（）链式操作当前Observable）
                 .compose(RxUtils.exceptionTransformer()) // 网络错误的异常转换, 这里可以换成自己的ExceptionHandle
                 .doOnSubscribe(MainActivityViewModel.this)    //  请求与ViewModel周期同步
-                .subscribe(new RxSubscriber<TrtcRoomEntity>(AppApplicationMVVM.getInstance(),"加载中",true) {
+                .subscribe(new Observer<TrtcRoomEntity>() {
                     @Override
-                    protected void _onNext(TrtcRoomEntity bean) {
-
-                        trtcRoomEntity.postValue(bean);
-
+                    public void onSubscribe(@NonNull Disposable d) {
+                         stateLiveData.postLoading();
                     }
 
                     @Override
-                    protected void _onError(String message) {
+                    public void onNext(@NonNull TrtcRoomEntity bean) {
+                        trtcRoomEntity.postValue(bean);
+                    }
 
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        stateLiveData.postIdle();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        stateLiveData.postIdle();
                     }
                 });
 
