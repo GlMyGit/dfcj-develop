@@ -184,24 +184,8 @@ dependencies {
     implementation 'com.flyco.dialog:FlycoDialog_Lib:1.3.2@aar'
     implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
     implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
 
-
-    //友盟统计'
-    implementation  'com.umeng.umsdk:common:9.3.8'// 必选
-    implementation  'com.umeng.umsdk:asms:1.2.2'// 必选
-
-    implementation 'com.umeng.umsdk:utdid:1.5.2.1'
-    implementation 'com.umeng.umsdk:apm:1.1.1'//可选（集成U-APM）
-    implementation  'com.umeng.umsdk:abtest:1.0.0' //使用ABTest模块必选
-    //友盟Push相关依赖（必须）
-    implementation 'com.umeng.umsdk:push:6.3.3'
-    implementation 'com.umeng.umsdk:alicloud-httpdns:1.3.2.3'
-    implementation 'com.umeng.umsdk:alicloud-utils:2.0.0'
-    implementation 'com.umeng.umsdk:alicloud_beacon:1.0.5'
-    api 'com.umeng.umsdk:agoo-accs:3.4.2.7'
-    implementation 'com.umeng.umsdk:agoo_aranger:1.0.6'
-    implementation 'com.umeng.umsdk:agoo_networksdk:3.5.8'
-    implementation 'com.umeng.umsdk:agoo_tnet4android:3.1.14.10'
 
   //  implementation(name: 'monitorsdk-1.0.7', ext: 'aar')
    // implementation(name: 'open_ad_sdk', ext: 'aar')
@@ -233,13 +217,17 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.2.0'
 
     //小米推送
-    implementation 'com.umeng.umsdk:xiaomi-push:3.8.5'
-    implementation 'com.umeng.umsdk:xiaomi-umengaccs:1.2.1'
+//    implementation 'com.umeng.umsdk:xiaomi-push:3.8.5'
+//    implementation 'com.umeng.umsdk:xiaomi-umengaccs:1.2.1'
+//
+//    //华为推送
+//    implementation 'com.huawei.agconnect:agconnect-core:1.3.1.300'
+//    implementation 'com.huawei.hms:push:5.0.4.302'
+//    implementation 'com.umeng.umsdk:huawei-umengaccs:1.3.1'
 
-    //华为推送
-    implementation 'com.huawei.agconnect:agconnect-core:1.3.1.300'
-    implementation 'com.huawei.hms:push:5.0.4.302'
-    implementation 'com.umeng.umsdk:huawei-umengaccs:1.3.1'
+    //implementation 'id.zelory:compressor:2.1.1'
+
+   implementation 'top.zibin:Luban:1.1.8'
 
     //material-dialogs
     api rootProject.ext.dependencies["material-dialogs-core"]
@@ -258,7 +246,6 @@ dependencies {
     //文件选择
     implementation 'com.nbsp:materialfilepicker:1.9.1'
 
-
     //路由跳转
     implementation 'com.alibaba:arouter-api:1.5.2'
     annotationProcessor 'com.alibaba:arouter-compiler:1.5.2'
@@ -271,7 +258,6 @@ dependencies {
 
     implementation 'org.slf4j:slf4j-android:1.7.25'
 
-
     implementation 'com.zzhoujay.richtext:richtext:3.0.8'
     implementation 'com.zzhoujay:html:1.0.1'
 
@@ -279,5 +265,9 @@ dependencies {
     implementation 'com.github.yhaolpz:FloatWindow:1.0.9'
 
 
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
+
+
+
 }
-apply plugin: 'com.huawei.agconnect'
+//apply plugin: 'com.huawei.agconnect'
