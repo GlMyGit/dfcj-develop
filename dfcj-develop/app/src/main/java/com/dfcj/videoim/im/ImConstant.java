@@ -3,6 +3,8 @@ package com.dfcj.videoim.im;
 import android.text.TextUtils;
 import android.util.Base64;
 
+import com.dfcj.videoim.appconfig.AppConstant;
+import com.dfcj.videoim.util.other.SharedPrefsUtils;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 
 import org.json.JSONException;
@@ -21,8 +23,8 @@ import javax.crypto.spec.SecretKeySpec;
 public class ImConstant {
 
 
-    public static   String fsUserId="customer_id_service";
-    public static String MyUserId="customer_id_user";
+    public static String fsUserId = "customer_id_service";
+    public static String MyUserId = "customer_id_user";
 
 
     /**
@@ -31,7 +33,7 @@ public class ImConstant {
      * 进入腾讯云云通信[控制台](https://console.cloud.tencent.com/avc ) 创建应用，即可看到 SDKAppId，
      * 它是腾讯云用于区分客户的唯一标识。  1400599605
      */
-    public static  int SDKAPPID = 1400599830;
+    public static int SDKAPPID = 1400599605;
 
 
     /**
@@ -43,7 +45,6 @@ public class ImConstant {
     private static final int EXPIRETIME = 2592000;
 
 
-
     /**
      * 计算签名用的加密密钥，获取步骤如下：
      * <p>
@@ -53,7 +54,7 @@ public class ImConstant {
      * <p>
      * 注意：该方案仅适用于调试Demo，正式上线前请将 UserSig 计算代码和密钥迁移到您的后台服务器上，以避免加密密钥泄露导致的流量盗用。
      * 文档：https://cloud.tencent.com/document/product/269/32688#Server
-     *
+     * <p>
      * e1f09ed45951c96e085619ab3110c70f5fdc5f88e4af933c7b145e5fa285fc37
      */
     private static final String SECRETKEY = "d3efe366369177e495152c8cac6d6250bae04ae2461907cadfa2407db6cc65fe";
@@ -75,7 +76,8 @@ public class ImConstant {
      * 文档：https://cloud.tencent.com/document/product/269/32688#Server
      */
     public static String genTestUserSig(String userId) {
-        return GenTLSSignature(SDKAPPID, userId, EXPIRETIME, null, SECRETKEY);
+//        return GenTLSSignature(SDKAPPID, userId, EXPIRETIME, null, SECRETKEY);
+        return SharedPrefsUtils.getValue(AppConstant.SDKUserSig);
     }
 
     /**
@@ -177,10 +179,6 @@ public class ImConstant {
     }
 
 
-
-
-
-
     /**
      * 1对1语音通话
      */
@@ -231,7 +229,6 @@ public class ImConstant {
      * 语音通话开始计时时间（悬浮窗要显示时间在这里记录开始值）
      */
     public static long audioCallStartTime;
-
 
 
 }

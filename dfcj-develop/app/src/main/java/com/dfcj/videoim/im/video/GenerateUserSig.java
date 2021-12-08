@@ -2,6 +2,9 @@ package com.dfcj.videoim.im.video;
 
 import android.util.Base64;
 
+import com.dfcj.videoim.appconfig.AppConstant;
+import com.dfcj.videoim.util.other.SharedPrefsUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -133,7 +136,8 @@ public class GenerateUserSig {
      * Reference: https://cloud.tencent.com/document/product/647/17275#Server
      */
     public static String genTestUserSig(String userId) {
-        return GenTLSSignature(SDKAPPID, userId, EXPIRETIME, null, SECRETKEY);
+//        return GenTLSSignature(SDKAPPID, userId, EXPIRETIME, null, SECRETKEY);
+        return  SharedPrefsUtils.getValue(AppConstant.SDKUserSig);
     }
 
     /**
