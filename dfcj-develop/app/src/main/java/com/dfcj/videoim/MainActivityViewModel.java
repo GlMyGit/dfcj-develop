@@ -3,6 +3,7 @@ package com.dfcj.videoim;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 
 import com.dfcj.videoim.api.ApiService;
 import com.dfcj.videoim.api.HostType;
@@ -46,10 +47,12 @@ public class MainActivityViewModel extends BaseViewModel {
     public SingleLiveEvent<ChangeCustomerServiceEntity> changeCustomerServiceEntity = new SingleLiveEvent<>();
     public SingleLiveEvent<upLoadImgEntity> upLoad_ImgEntity = new SingleLiveEvent<>();
     public SingleLiveEvent<TrtcRoomEntity> trtcRoomEntity = new SingleLiveEvent<>();
-    public SingleLiveEvent<HistoryMsgEntity> historyMsgEntity = new SingleLiveEvent<>();
+    public MutableLiveData<HistoryMsgEntity> historyMsgEntity ;
+
 
     public MainActivityViewModel(@NonNull Application application) {
         super(application);
+        historyMsgEntity = new MutableLiveData<>();
     }
 
     public LoginBean mLoginBean;
@@ -242,16 +245,31 @@ public class MainActivityViewModel extends BaseViewModel {
                 .compose(RxUtils.observableToMain()) //线程调度,compose操作符是直接对当前Observable进行操作（可简单理解为不停地.方法名（）.方法名（）链式操作当前Observable）
                 .compose(RxUtils.exceptionTransformer()) // 网络错误的异常转换, 这里可以换成自己的ExceptionHandle
                 .doOnSubscribe(MainActivityViewModel.this)    //  请求与ViewModel周期同步
-                .subscribe(new RxSubscriber<HistoryMsgEntity>(AppApplicationMVVM.getInstance(), "加载中", true) {
+                .subscribe(new Observer<HistoryMsgEntity>() {
                     @Override
-                    protected void _onNext(HistoryMsgEntity bean) {
-                        KLog.d("testtest");
-                        historyMsgEntity.postValue(bean);
+                    public void onSubscribe(@NonNull Disposable d) {
+                        stateLiveData.postLoading();
                     }
 
                     @Override
-                    protected void _onError(String message) {
+                    public void onNext(@NonNull HistoryMsgEntity hhh) {
+                        if (hhh!=null) {
 
+
+                            historyMsgEntity.postValue(hhh);
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        stateLiveData.postIdle();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        stateLiveData.postIdle();
                     }
                 });
     }

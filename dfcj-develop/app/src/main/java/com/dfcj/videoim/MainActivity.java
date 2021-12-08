@@ -1099,10 +1099,14 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     //获取历史消息（后台接口）
     private void getHistoryMessageList(int page) {
         viewModel.getCustImRecord(page, TimeUtils.getNowMills() + "");
-        viewModel.historyMsgEntity.observe(MainActivity.this, new Observer<HistoryMsgEntity>() {
+        viewModel.historyMsgEntity.observe(this, new Observer<HistoryMsgEntity>() {
             @Override
             public void onChanged(HistoryMsgEntity historyMsgEntity) {
                 KLog.d("getHistoryMessageList方法调用");
+
+
+                String s = new Gson().toJson(historyMsgEntity);
+                KLog.d("getHistoryMessageList方法调用sssssss:"+s);
 
                 binding.mainTopProgress.setVisibility(View.GONE);
                 historyMsgEntityList = historyMsgEntity.getData().getData();
