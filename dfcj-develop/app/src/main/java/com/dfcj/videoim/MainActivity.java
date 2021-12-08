@@ -997,7 +997,6 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
 
 
-
         ocrUtil.setMessageList(new MessageListener() {
             @Override
             public void onMessage(String msg) {
@@ -1041,7 +1040,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
         optionBackward.setGetType(V2TIMMessageListGetOption.V2TIM_GET_CLOUD_OLDER_MSG);
         optionBackward.setCount(20);
-        optionBackward.setUserID(""+ImUtils.fsUserId);
+       // optionBackward.setUserID(""+ImUtils.fsUserId);
 
         V2TIMManager.getMessageManager().getHistoryMessageList(optionBackward,
                 new V2TIMValueCallback<List<V2TIMMessage>>() {
