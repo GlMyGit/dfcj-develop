@@ -22,22 +22,26 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.Observer;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.dfcj.videoim.BR;
+import com.dfcj.videoim.MainActivity;
 import com.dfcj.videoim.R;
 import com.dfcj.videoim.appconfig.AppConstant;
 import com.dfcj.videoim.appconfig.Rout;
 import com.dfcj.videoim.base.BaseActivity;
 import com.dfcj.videoim.databinding.VideoCallLayoutBinding;
 import com.dfcj.videoim.entity.BitRateBean;
-import com.dfcj.videoim.entity.TrtcRoomEntity;
+import com.dfcj.videoim.entity.EventMessage;
 import com.dfcj.videoim.im.ImConstant;
 import com.dfcj.videoim.im.ImUtils;
 import com.dfcj.videoim.im.video.GenerateUserSig;
 import com.dfcj.videoim.im.video.VideoConstant;
 import com.dfcj.videoim.service.FloatVideoWindowService;
+import com.dfcj.videoim.util.other.EventBusUtils;
+import com.dfcj.videoim.util.other.SharedPrefsUtils;
+import com.tencent.imsdk.v2.V2TIMCallback;
+import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.liteav.TXLiteAVCode;
 import com.tencent.liteav.beauty.TXBeautyManager;
 import com.tencent.liteav.device.TXDeviceManager;
@@ -58,28 +62,28 @@ import java.util.Map;
  * 视频聊天
  */
 @Route(path = Rout.VideoCallingActivity)
-public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,VideoCallingViewModel> {
+public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, VideoCallingViewModel> {
 
 
-    private String   mRoomId="96635124";
-    private String   mUserId=""+ImUtils.MyUserId;
+    private String mRoomId = "96635124";
+    private String mUserId = "" + ImUtils.MyUserId;
     private TRTCCloud mTRTCCloud;
     private TXDeviceManager mTXDeviceManager;
     protected static final int REQ_PERMISSION_CODE = 0x1000;
-    protected int  mGrantedCount       = 0;
-    private boolean  mIsFrontCamera = true;
-    private List<String>                    mRemoteUidList;
-    private List<TXCloudVideoView>          mRemoteViewList;
-    private static final int                OVERLAY_PERMISSION_REQ_CODE = 1234;
+    protected int mGrantedCount = 0;
+    private boolean mIsFrontCamera = true;
+    private List<String> mRemoteUidList;
+    private List<TXCloudVideoView> mRemoteViewList;
+    private static final int OVERLAY_PERMISSION_REQ_CODE = 1234;
     //private FloatingView mFloatingView;
-    private int                             mUserCount = 0;
+    private int mUserCount = 0;
 
     private boolean mServiceBound = false;
 
     private Map<String, BitRateBean> mBitRateMap;
-    private int   mQualityFlag= TRTCCloudDef.TRTC_VIDEO_RESOLUTION_960_540;
-    private int   mFPSFlag= VideoConstant.VIDEO_FPS;
-    private int   mBitRateFlag= VideoConstant.LIVE_540_960_VIDEO_BITRATE;
+    private int mQualityFlag = TRTCCloudDef.TRTC_VIDEO_RESOLUTION_960_540;
+    private int mFPSFlag = VideoConstant.VIDEO_FPS;
+    private int mBitRateFlag = VideoConstant.LIVE_540_960_VIDEO_BITRATE;
     private String vStatus;
 
 
@@ -144,27 +148,25 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
     }
 
     //获取房间视频号
-    private void getTrtcRoom(){
+    private void getTrtcRoom() {
 
         Bundle extras = getIntent().getExtras();
-        if(extras!=null){
+        if (extras != null) {
             String string = extras.getString(AppConstant.Video_mRoomId);
             vStatus = extras.getString(AppConstant.VideoStatus);
-            if(string!=null){
-                mRoomId=string;
+            if (string != null) {
+                mRoomId = string;
             }
         }
 
     }
 
 
-
-
     //美颜
-    private void meiyan(){
+    private void meiyan() {
 
 
-        if(mTRTCCloud==null){
+        if (mTRTCCloud == null) {
             return;
         }
 
@@ -175,7 +177,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
 
-                KLog.d("进度1："+i);
+                KLog.d("进度1：" + i);
 
                 beautyManager.setBeautyLevel(i);
             }
@@ -194,7 +196,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
         binding.videoMeiyanSeekbar2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                KLog.d("进度2："+i);
+                KLog.d("进度2：" + i);
                 beautyManager.setWhitenessLevel(i);
 
             }
@@ -213,7 +215,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
         binding.videoMeiyanSeekbar3.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                KLog.d("进度3："+i);
+                KLog.d("进度3：" + i);
                 beautyManager.setRuddyLevel(i);//红润级别，取值范围0 - 9；0表示关闭，9表示效果最明显
             }
 
@@ -229,9 +231,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
         });
 
 
-
     }
-
 
 
     /**
@@ -245,7 +245,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
         ImConstant.mVideoViewLayout = binding.txcvvMainMine;
         KLog.d("服务开启开始");
         Intent floatVideoIntent = new Intent(this, FloatVideoWindowService.class);
-        floatVideoIntent.putExtra("userId", ""+ ImUtils.MyUserId);
+        floatVideoIntent.putExtra("userId", "" + ImUtils.MyUserId);
         mServiceBound = bindService(floatVideoIntent, mVideoCallServiceConnection, Context.BIND_AUTO_CREATE);
         KLog.d("服务开启开始2222");
     }
@@ -269,7 +269,6 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
         }
     };
 
-
     public class Presenter {
 
         //切换前后摄像头
@@ -279,8 +278,9 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
 
         }
 
-        //
+        //取消/挂断
         public void closeVideo() {
+            EventBusUtils.post(new EventMessage(MainActivity.VIDEO_CONNECT_CANCEL, binding.videoCallTopTv.getText()));
             closeActivity(VideoCallingActivity.this);
         }
 
@@ -290,13 +290,13 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
         }
 
         //美颜
-        public void videoMeiYan(){
+        public void videoMeiYan() {
             binding.videoMeiyanLayout.setVisibility(View.VISIBLE);
 
         }
 
         //
-        public void closeVideoMeiYan(){
+        public void closeVideoMeiYan() {
 
             binding.videoMeiyanLayout.setVisibility(View.GONE);
 
@@ -304,7 +304,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
 
 
         //美颜点击
-        public void clickMeiYan(){
+        public void clickMeiYan() {
 
             binding.videoMeiyanTopLayoutTv1.setChecked(true);
             binding.videoMeiyanTopLayoutTv2.setChecked(false);
@@ -317,7 +317,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
         }
 
         //清晰
-        public void clickClear(){
+        public void clickClear() {
 
             binding.videoMeiyanTopLayoutTv1.setChecked(false);
             binding.videoMeiyanTopLayoutTv2.setChecked(true);
@@ -331,12 +331,10 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
         }
 
 
-
     }
 
 
-
-    private void setMyListener(){
+    private void setMyListener() {
 
         binding.closeAct.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -357,7 +355,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
                     return;
                 }
 
-                switch (radioGroup.getCheckedRadioButtonId()){
+                switch (radioGroup.getCheckedRadioButtonId()) {
                     case R.id.meiyan_qx_radio1:
                         mQualityFlag = TRTCCloudDef.TRTC_VIDEO_RESOLUTION_640_360;
                         setVideoEncoderParam(true);
@@ -376,13 +374,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
         });
 
 
-
-
-
-
-
     }
-
 
 
     @Override
@@ -398,25 +390,19 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
         mTXDeviceManager = mTRTCCloud.getDeviceManager();
 
         TRTCCloudDef.TRTCParams trtcParams = new TRTCCloudDef.TRTCParams();
-        trtcParams.sdkAppId = GenerateUserSig.SDKAPPID;
+        trtcParams.sdkAppId = SharedPrefsUtils.getValue(AppConstant.SDKAppId,0);
         trtcParams.userId = mUserId;
-        trtcParams.roomId = Integer.parseInt(mRoomId);
+        trtcParams.strRoomId = mRoomId;
+        trtcParams.userDefineRecordId = mRoomId;
         trtcParams.userSig = GenerateUserSig.genTestUserSig(trtcParams.userId);
 
         mTRTCCloud.startLocalPreview(mIsFrontCamera, binding.txcvvMainMine);
         mTRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_SPEECH);
         mTRTCCloud.enterRoom(trtcParams, TRTCCloudDef.TRTC_APP_SCENE_VIDEOCALL);
-
-
-
-
-
-
-
     }
 
 
-    private void setVideoEncoderParam(boolean isSwitchQuality){
+    private void setVideoEncoderParam(boolean isSwitchQuality) {
         TRTCCloudDef.TRTCVideoEncParam encParam = new TRTCCloudDef.TRTCVideoEncParam();
         encParam.videoResolution = mQualityFlag;
         encParam.videoFps = mFPSFlag;
@@ -445,20 +431,19 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
 
         TXCloudVideoView txCloudVideoView = binding.txcvvMainMine;
 
-        if(ImUtils.MyUserId.equals(""+ImUtils.MyUserId)){
-            TXCGLSurfaceView mTXCGLSurfaceView=txCloudVideoView.getGLSurfaceView();
-            if (mTXCGLSurfaceView!=null && mTXCGLSurfaceView.getParent() != null) {
+        if (ImUtils.MyUserId.equals("" + ImUtils.MyUserId)) {
+            TXCGLSurfaceView mTXCGLSurfaceView = txCloudVideoView.getGLSurfaceView();
+            if (mTXCGLSurfaceView != null && mTXCGLSurfaceView.getParent() != null) {
                 ((ViewGroup) mTXCGLSurfaceView.getParent()).removeView(mTXCGLSurfaceView);
                 txCloudVideoView.addVideoView(mTXCGLSurfaceView);
             }
-        }else{
-            TextureView mTextureView=txCloudVideoView.getVideoView();
-            if (mTextureView!=null && mTextureView.getParent() != null) {
+        } else {
+            TextureView mTextureView = txCloudVideoView.getVideoView();
+            if (mTextureView != null && mTextureView.getParent() != null) {
                 ((ViewGroup) mTextureView.getParent()).removeView(mTextureView);
                 txCloudVideoView.addVideoView(mTextureView);
             }
         }
-
 
 
     }
@@ -475,7 +460,6 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
 
 
     }
-
 
 
     public void requestDrawOverLays() {
@@ -510,7 +494,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
         //某远端用户发布/取消了主路视频画面
         @Override
         public void onUserVideoAvailable(String userId, boolean available) {
-            KLog.d( "onUserVideoAvailable userId " + userId + ", mUserCount " + mUserCount + ",available " + available);
+            KLog.d("onUserVideoAvailable userId " + userId + ", mUserCount " + mUserCount + ",available " + available);
             int index = mRemoteUidList.indexOf(userId);
             if (available) {
                 if (index != -1) {
@@ -518,10 +502,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
                 }
                 mRemoteUidList.add(userId);
                 refreshRemoteVideoViews();
-
                 getVideoOpen();
-
-
             } else {
                 if (index == -1) {
                     return;
@@ -529,13 +510,10 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
                 mTRTCCloud.stopRemoteView(userId);
                 mRemoteUidList.remove(index);
                 refreshRemoteVideoViews();
-
                 binding.videoCallMeiyanImg.setVisibility(View.GONE);
-
             }
-
-
         }
+
 
         private void refreshRemoteVideoViews() {
 
@@ -543,7 +521,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
                 if (i < mRemoteUidList.size()) {
                     String remoteUid = mRemoteUidList.get(i);
                     mRemoteViewList.get(i).setVisibility(View.VISIBLE);
-                    mTRTCCloud.startRemoteView(remoteUid, TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL,mRemoteViewList.get(i));
+                    mTRTCCloud.startRemoteView(remoteUid, TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL, mRemoteViewList.get(i));
                 } else {
                     mRemoteViewList.get(i).setVisibility(View.GONE);
                 }
@@ -557,20 +535,34 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
         }
 
         @Override
+        public void onRemoteUserLeaveRoom(String userId, int reason) {
+            super.onRemoteUserLeaveRoom(userId, reason);
+            KLog.d("有用户退出房间");
+            new Presenter().closeVideo();
+        }
+
+        @Override
+        public void onEnterRoom(long result) {
+            super.onEnterRoom(result);
+            KLog.d(result);
+        }
+
+        @Override
         public void onError(int errCode, String errMsg, Bundle extraInfo) {
             KLog.d("sdk callback onError");
             VideoCallingActivity activity = mContext.get();
             if (activity != null) {
-                Toast.makeText(activity, "onError: " + errMsg + "[" + errCode+ "]" , Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "onError: " + errMsg + "[" + errCode + "]", Toast.LENGTH_SHORT).show();
                 if (errCode == TXLiteAVCode.ERR_ROOM_ENTER_FAIL) {
                     activity.exitRoom();
                 }
             }
+
         }
     }
 
 
-    private void getVideoOpen(){
+    private void getVideoOpen() {
 
         binding.videoCallCenterLayout.setVisibility(View.GONE);
         binding.videoCallTopTv2.setVisibility(View.GONE);
@@ -587,7 +579,6 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
         binding.videoCallTopTv.start();
 
     }
-
 
 
     private void exitRoom() {
@@ -649,7 +640,6 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding,Vi
                 break;
         }
     }
-
 
 
 }

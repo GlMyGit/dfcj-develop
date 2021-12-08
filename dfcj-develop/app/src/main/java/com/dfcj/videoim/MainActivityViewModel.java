@@ -3,6 +3,7 @@ package com.dfcj.videoim;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 
 import com.dfcj.videoim.api.ApiService;
 import com.dfcj.videoim.api.HostType;
@@ -10,6 +11,7 @@ import com.dfcj.videoim.appconfig.AppApplicationMVVM;
 import com.dfcj.videoim.base.BaseRespose;
 import com.dfcj.videoim.base.BaseViewModel;
 import com.dfcj.videoim.entity.ChangeCustomerServiceEntity;
+import com.dfcj.videoim.entity.HistoryMsgEntity;
 import com.dfcj.videoim.entity.LoginBean;
 import com.dfcj.videoim.entity.SendOffineMsgEntity;
 import com.dfcj.videoim.entity.TrtcRoomEntity;
@@ -20,6 +22,7 @@ import com.dfcj.videoim.rx.RxSubscriber;
 import com.dfcj.videoim.ui.video.VideoCallingViewModel;
 import com.dfcj.videoim.util.AppUtils;
 import com.wzq.mvvmsmart.event.SingleLiveEvent;
+import com.wzq.mvvmsmart.utils.KLog;
 import com.wzq.mvvmsmart.utils.RxUtils;
 
 import java.io.File;
@@ -44,37 +47,35 @@ public class MainActivityViewModel extends BaseViewModel {
     public SingleLiveEvent<ChangeCustomerServiceEntity> changeCustomerServiceEntity = new SingleLiveEvent<>();
     public SingleLiveEvent<upLoadImgEntity> upLoad_ImgEntity = new SingleLiveEvent<>();
     public SingleLiveEvent<TrtcRoomEntity> trtcRoomEntity = new SingleLiveEvent<>();
+    public MutableLiveData<HistoryMsgEntity> historyMsgEntity ;
 
 
     public MainActivityViewModel(@NonNull Application application) {
         super(application);
+        historyMsgEntity = new MutableLiveData<>();
     }
 
     public LoginBean mLoginBean;
 
 
-    public void requestLogin(){
-
+    public void requestLogin() {
         ApiService apiService = RetrofitClient.getInstance(HostType.lOAN_STEWARD_MAIN_HOST).create(ApiService.class);
-
         String systemModel = AppUtils.getSystemModel();
 
         Map<String, Object> params = new HashMap<>();
-
-        params.put("customerCode",""+ ImUtils.MyUserId);
-        params.put("osInfo",""+systemModel);
-        params.put("osType","2");//1、iOS系统、2、Android系统、3、微信小程序4、Mobile 5、电脑端PC网页浏览器
-
+        params.put("customerCode", "" + ImUtils.MyUserId);
+        params.put("osInfo", "" + systemModel);
+        params.put("osType", "2");//1、iOS系统、2、Android系统、3、微信小程序4、Mobile 5、电脑端PC网页浏览器
 
         apiService.requestLogin(params)
                 .compose(RxUtils.observableToMain()) //线程调度,compose操作符是直接对当前Observable进行操作（可简单理解为不停地.方法名（）.方法名（）链式操作当前Observable）
                 .compose(RxUtils.exceptionTransformer()) // 网络错误的异常转换, 这里可以换成自己的ExceptionHandle
                 .doOnSubscribe(MainActivityViewModel.this)    //  请求与ViewModel周期同步
-                .subscribe(new RxSubscriber<LoginBean>(AppApplicationMVVM.getInstance(),"加载中",true) {
+                .subscribe(new RxSubscriber<LoginBean>(AppApplicationMVVM.getInstance(), "加载中", true) {
                     @Override
                     protected void _onNext(LoginBean loginBean) {
-                        if(loginBean!=null){
-                            mLoginBean=loginBean;
+                        if (loginBean != null) {
+                            mLoginBean = loginBean;
                             loadEvent.postValue(loginBean);
                         }
                     }
@@ -86,19 +87,17 @@ public class MainActivityViewModel extends BaseViewModel {
                 });
 
 
-
     }
 
 
     //发送离线消息
-    public void sendOfflineMsg(String question){
+    public void sendOfflineMsg(String question) {
 
 
         Map<String, Object> params = new HashMap<>();
 
-        params.put("question",""+ question);
-        params.put("userId",""+ImUtils.MyUserId);
-
+        params.put("question", "" + question);
+        params.put("userId", "" + ImUtils.MyUserId);
 
 
         RetrofitClient.getInstance(HostType.lOAN_STEWARD_MAIN_HOST).create(ApiService.class)
@@ -106,7 +105,7 @@ public class MainActivityViewModel extends BaseViewModel {
                 .compose(RxUtils.observableToMain()) //线程调度,compose操作符是直接对当前Observable进行操作（可简单理解为不停地.方法名（）.方法名（）链式操作当前Observable）
                 .compose(RxUtils.exceptionTransformer()) // 网络错误的异常转换, 这里可以换成自己的ExceptionHandle
                 .doOnSubscribe(MainActivityViewModel.this)    //  请求与ViewModel周期同步
-                .subscribe(new RxSubscriber<SendOffineMsgEntity>(AppApplicationMVVM.getInstance(),"加载中",true) {
+                .subscribe(new RxSubscriber<SendOffineMsgEntity>(AppApplicationMVVM.getInstance(), "加载中", true) {
                     @Override
                     protected void _onNext(SendOffineMsgEntity bean) {
 
@@ -121,21 +120,20 @@ public class MainActivityViewModel extends BaseViewModel {
                 });
 
 
-
     }
 
 
     //获取客服
-    public void getImStaff(){
+    public void getImStaff() {
 
 
         String systemModel = AppUtils.getSystemModel();
 
         Map<String, Object> params = new HashMap<>();
 
-        params.put("customerCode",""+ ImUtils.MyUserId);
-        params.put("osInfo",""+systemModel);
-        params.put("osType","2");//1、iOS系统、2、Android系统、3、微信小程序4、Mobile 5、电脑端PC网页浏览器
+        params.put("customerCode", "" + ImUtils.MyUserId);
+        params.put("osInfo", "" + systemModel);
+        params.put("osType", "2");//1、iOS系统、2、Android系统、3、微信小程序4、Mobile 5、电脑端PC网页浏览器
 
 
         RetrofitClient.getInstance(HostType.lOAN_STEWARD_MAIN_HOST).create(ApiService.class)
@@ -143,7 +141,7 @@ public class MainActivityViewModel extends BaseViewModel {
                 .compose(RxUtils.observableToMain()) //线程调度,compose操作符是直接对当前Observable进行操作（可简单理解为不停地.方法名（）.方法名（）链式操作当前Observable）
                 .compose(RxUtils.exceptionTransformer()) // 网络错误的异常转换, 这里可以换成自己的ExceptionHandle
                 .doOnSubscribe(MainActivityViewModel.this)    //  请求与ViewModel周期同步
-                .subscribe(new RxSubscriber<ChangeCustomerServiceEntity>(AppApplicationMVVM.getInstance(),"加载中",true) {
+                .subscribe(new RxSubscriber<ChangeCustomerServiceEntity>(AppApplicationMVVM.getInstance(), "加载中", true) {
                     @Override
                     protected void _onNext(ChangeCustomerServiceEntity bean) {
 
@@ -158,13 +156,11 @@ public class MainActivityViewModel extends BaseViewModel {
                 });
 
 
-
     }
 
 
-
     //上传图片
-    public void fileUpload(String params){
+    public void fileUpload(String params) {
 
 
         File mFile = new File(params);
@@ -178,7 +174,7 @@ public class MainActivityViewModel extends BaseViewModel {
                 .compose(RxUtils.observableToMain()) //线程调度,compose操作符是直接对当前Observable进行操作（可简单理解为不停地.方法名（）.方法名（）链式操作当前Observable）
                 .compose(RxUtils.exceptionTransformer()) // 网络错误的异常转换, 这里可以换成自己的ExceptionHandle
                 .doOnSubscribe(MainActivityViewModel.this)    //  请求与ViewModel周期同步
-                .subscribe(new RxSubscriber<upLoadImgEntity>(AppApplicationMVVM.getInstance(),"加载中",true) {
+                .subscribe(new RxSubscriber<upLoadImgEntity>(AppApplicationMVVM.getInstance(), "加载中", true) {
                     @Override
                     protected void _onNext(upLoadImgEntity bean) {
 
@@ -193,27 +189,19 @@ public class MainActivityViewModel extends BaseViewModel {
                 });
 
 
-
     }
 
 
-
-
     //获取视频房间号
-    public void getTrtcRoomId(String eventId){
-
-
+    public void getTrtcRoomId(String eventId) {
         String systemModel = AppUtils.getSystemModel();
 
         Map<String, Object> params = new HashMap<>();
-
-       // params.put("customerCode",""+ ImUtils.MyUserId);
-
-        params.put("eventId",""+eventId);
-
-        params.put("osInfo",""+systemModel);
-        params.put("osType","2");//1、iOS系统、2、Android系统、3、微信小程序4、Mobile 5、电脑端PC网页浏览器
-
+        params.put("customerCode", "" + ImUtils.MyUserId);
+//        params.put("eventId", "" + eventId);
+        params.put("eventId", "" + 123123);
+        params.put("osInfo", "" + systemModel);
+        params.put("osType", "2");//1、iOS系统、2、Android系统、3、微信小程序4、Mobile 5、电脑端PC网页浏览器
 
         RetrofitClient.getInstance(HostType.lOAN_STEWARD_MAIN_HOST).create(ApiService.class)
                 .requestTrtcRoomId(params)
@@ -223,7 +211,7 @@ public class MainActivityViewModel extends BaseViewModel {
                 .subscribe(new Observer<TrtcRoomEntity>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
-                         stateLiveData.postLoading();
+                        stateLiveData.postLoading();
                     }
 
                     @Override
@@ -241,13 +229,48 @@ public class MainActivityViewModel extends BaseViewModel {
                         stateLiveData.postIdle();
                     }
                 });
-
-
-
     }
 
+    //获取历史接口
+    public void getCustImRecord(int page, String time) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("custCode", ImUtils.MyUserId);
+        Map<String, Object> params2 = new HashMap<>();
+        params2.put("pageNo", page);
+        params2.put("pageSize", 20);
+        params.put("page", params2);
+        params.put("startDate", time);
+        RetrofitClient.getInstance(HostType.lOAN_STEWARD_MAIN_HOST).create(ApiService.class)
+                .requestQueryCustImRecord(params)
+                .compose(RxUtils.observableToMain()) //线程调度,compose操作符是直接对当前Observable进行操作（可简单理解为不停地.方法名（）.方法名（）链式操作当前Observable）
+                .compose(RxUtils.exceptionTransformer()) // 网络错误的异常转换, 这里可以换成自己的ExceptionHandle
+                .doOnSubscribe(MainActivityViewModel.this)    //  请求与ViewModel周期同步
+                .subscribe(new Observer<HistoryMsgEntity>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                        stateLiveData.postLoading();
+                    }
+
+                    @Override
+                    public void onNext(@NonNull HistoryMsgEntity hhh) {
+                        if (hhh!=null) {
 
 
+                            historyMsgEntity.postValue(hhh);
+                        }
 
 
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        stateLiveData.postIdle();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        stateLiveData.postIdle();
+                    }
+                });
+    }
 }

@@ -2,52 +2,51 @@ package com.dfcj.videoim;
 
 import android.Manifest;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.room.util.StringUtil;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.blankj.utilcode.util.ActivityUtils;
+import com.blankj.utilcode.util.StringUtils;
+import com.blankj.utilcode.util.TimeUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.dfcj.videoim.adapter.ChatAdapter;
 import com.dfcj.videoim.appconfig.AppConstant;
 import com.dfcj.videoim.entity.ChangeCustomerServiceEntity;
 import com.dfcj.videoim.entity.CustomMsgEntity;
+import com.dfcj.videoim.entity.EventMessage;
+import com.dfcj.videoim.entity.HistoryMsgEntity;
 import com.dfcj.videoim.entity.LoginBean;
 import com.dfcj.videoim.entity.Message;
-import com.dfcj.videoim.entity.RoomIdEntity;
+import com.dfcj.videoim.entity.MsgBodyBean;
 import com.dfcj.videoim.entity.SendOffineMsgEntity;
-import com.dfcj.videoim.entity.ShopMsgBody;
 import com.dfcj.videoim.entity.TrtcRoomEntity;
 import com.dfcj.videoim.entity.upLoadImgEntity;
 import com.dfcj.videoim.im.ImConstant;
 import com.dfcj.videoim.im.ImUtils;
 import com.dfcj.videoim.im.ocr.OcrUtil;
+import com.dfcj.videoim.ui.video.VideoCallingActivity;
 import com.dfcj.videoim.util.AppUtils;
 import com.dfcj.videoim.util.ChatUiHelper;
 import com.dfcj.videoim.util.ImageUtils;
 import com.dfcj.videoim.util.MyDialogUtil;
 import com.dfcj.videoim.util.PermissionUtil;
 import com.dfcj.videoim.util.PictureFileUtil;
+import com.dfcj.videoim.util.other.EventBusUtils;
 import com.dfcj.videoim.util.other.GsonUtil;
 import com.dfcj.videoim.util.other.SharedPrefsUtils;
-import com.dfcj.videoim.view.dialog.BaseDialogFragment;
 import com.dfcj.videoim.view.dialog.OcrMsgEditDialog;
 import com.dfcj.videoim.view.dialog.QuanXianDialog;
-import com.dfcj.videoim.view.dialog.WhellViewDialog;
 import com.dfcj.videoim.appconfig.Rout;
 import com.dfcj.videoim.base.BaseActivity;
 
@@ -56,13 +55,14 @@ import com.google.gson.Gson;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.tbruyelle.rxpermissions2.RxPermissions;
-import com.tencent.aai.model.type.EngineModelType;
 import com.tencent.imsdk.v2.V2TIMAdvancedMsgListener;
+import com.tencent.imsdk.v2.V2TIMCallback;
 import com.tencent.imsdk.v2.V2TIMCustomElem;
 import com.tencent.imsdk.v2.V2TIMFaceElem;
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMMessage;
 import com.tencent.imsdk.v2.V2TIMMessageListGetOption;
+import com.tencent.imsdk.v2.V2TIMSignalingListener;
 import com.tencent.imsdk.v2.V2TIMTextElem;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.iot.speech.asr.listener.MessageListener;
@@ -72,17 +72,11 @@ import com.wzq.mvvmsmart.utils.ToastUtils;
 import com.zzhoujay.richtext.RichText;
 
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
-import top.zibin.luban.CompressionPredicate;
-import top.zibin.luban.Luban;
-import top.zibin.luban.OnCompressListener;
 
 
 @Route(path = Rout.toMain)
@@ -91,27 +85,37 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     // @Autowired
     //int age;
 
-    private String myOcrVal="";
-    public static final String 	  mSenderId="right";
-    public static final String     mTargetId="left";
-    public static final String     mCenterId="center";
-    public static final int       REQUEST_CODE_IMAGE=0000;
-    public static final int       REQUEST_CODE_VEDIO=1111;
-    public static final int       REQUEST_CODE_IMAGE_VIDEO=9999;
-    private float y ;
+    private String myOcrVal = "";
+    public static final String mSenderId = "right";
+    public static final String mTargetId = "left";
+    public static final String mCenterId = "center";
+    public static final int REQUEST_CODE_IMAGE = 0000;
+    public static final int REQUEST_CODE_VEDIO = 1111;
+    public static final int REQUEST_CODE_IMAGE_VIDEO = 9999;
+    private float y;
     private ChatAdapter mAdapter;
 
     private ImUtils imUtils;
     private OcrUtil ocrUtil;
 
-    public boolean isVideo=true;
+    public boolean isVideo = true;
     private ChatUiHelper mUiHelper;
-    private boolean isSendMsg=false;
+    private boolean isSendMsg = false;
+    private String loadEventMsg;
     private String cloudCustomData;
-    private  boolean isVidesClick=false;
+    private boolean isVidesClick = false;
     private ImageUtils imageUtils;
     private String mRoomId;
     private String myEventId;
+
+    private String inviteID;
+    public static final String VIDEO_CONNECT_SUCCESS = "100";//连接成功
+    public static final String VIDEO_CONNECT_ERROR = "101";//连接失败
+    public static final String VIDEO_CONNECT_ADIAPHORIA = "102"; //对方无响应
+    public static final String VIDEO_CONNECT_CANCEL = "103"; //取消连接
+    public static final String VIDEO_CONNECT_REFUSE = "104"; //拒绝连接
+
+    public int historyPage = 1;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -132,7 +136,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
         imUtils = new ImUtils(mContext);
         imageUtils = new ImageUtils();
-        ocrUtil=new OcrUtil(mContext);
+        ocrUtil = new OcrUtil(mContext);
         ocrUtil.initInfo(MainActivity.this);
 
 
@@ -146,18 +150,18 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
         requestPermisson();
         initRv();
-        imUtils.initViewInfo(mAdapter,binding.rvChatList);
+        imUtils.initViewInfo(mAdapter, binding.rvChatList);
 
         initOnCLick();
         initChatUi();
         //takeMsgInfo();
         takeImagMsg();
         setOcrListener();
+        setVideoListener();
         ocrUtil.initOcr();
 
 
     }
-
 
 
     @Override
@@ -173,42 +177,31 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     }
 
 
-    private void setMyListener(){
-
+    private void setMyListener() {
 
         imUtils.setYesOnclickListener(new ImUtils.onYesOnclickListener() {
             @Override
             public void onYesClick(int st) {
-
-                if(st==1){
+                if (st == 1) {
                     binding.ivVideo.setImageResource(R.drawable.selector_ctype_video);
-                    isVidesClick=true;
-
-                    getHistoryMessageList();
+                    isVidesClick = true;
+                    KLog.d("onYesClick");
+                    getHistoryMessageList(historyPage);
                 }
-
             }
         });
-
 
         mAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
             @Override
             public void onItemChildClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-
-               switch ( view.getId()){
-
-                   case R.id.goods_layout:
-
-                       break;
-
-               }
-
+                switch (view.getId()) {
+                    case R.id.goods_layout:
+                        break;
+                }
             }
         });
 
-
-
-        viewModel.stateLiveData.stateEnumMutableLiveData.observe(this,stateEnum ->{
+        viewModel.stateLiveData.stateEnumMutableLiveData.observe(this, stateEnum -> {
             if (stateEnum.equals(StateLiveData.StateEnum.Loading)) {
                 KLog.e("请求数据中--显示loading");
                 showLoading("加载中");
@@ -224,65 +217,52 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         });
 
 
-
     }
 
 
-
-
     //登录
-    private void login(){
+    private void login() {
 
         viewModel.requestLogin();
 
         viewModel.loadEvent.observe(this, new Observer<LoginBean>() {
             @Override
             public void onChanged(LoginBean loginBean) {
-
-
-                if(loginBean==null || loginBean.getData()==null){
+                if (loginBean == null || loginBean.getData() == null) {
                     return;
                 }
 
+                ImConstant.SDKAPPID = loginBean.getData().getSdkAppId();
+                if (ImConstant.SDKAPPID > 0) {
+                    SharedPrefsUtils.putValue(AppConstant.SDKAppId, ImConstant.SDKAPPID);
+                }
+
+                SharedPrefsUtils.putValue(AppConstant.SDKUserSig, loginBean.getData().getUserSig());
+
                 //0正在会话，1未会话，2排队中
-                switch (loginBean.getData().getStatus()){
+                switch (loginBean.getData().getStatus()) {
                     case 0:
-
+                        isSendMsg = true;
                         imUtils.loginIm();
-                        isSendMsg=true;
 
-                        cloudCustomData="{"+"\"staffCode:\""+"\""+loginBean.getData().getStaffCode()+"\""
-                                +","+"\"eventId:\""+loginBean.getData().getEventId()+"}";
-
-
-                        myEventId=""+loginBean.getData().getEventId();
-
-                        SharedPrefsUtils.putValue(AppConstant.CloudCustomData,cloudCustomData);
-
+                        cloudCustomData = "{" + "\"staffCode:\"" + "\"" + loginBean.getData().getStaffCode() + "\""
+                                + "," + "\"eventId:\"" + loginBean.getData().getEventId() + "}";
+                        myEventId = "" + loginBean.getData().getEventId();
+                        SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
                         break;
-
                     case 1:
-
-                        isSendMsg=false;
-
-                        String msg = loginBean.getData().getMsg();
-                        int sdkAppId = loginBean.getData().getSdkAppId();
-                        ImConstant.SDKAPPID=sdkAppId;
+                        isSendMsg = false;
                         imUtils.initTencentImLogin();
 
-                        imUtils.sendDefaultMsg(""+msg);
-
+                        loadEventMsg = loginBean.getData().getMsg();
+                        imUtils.sendDefaultMsg("" + loadEventMsg);
                         break;
                     case 2:
-
+                        isSendMsg = false;
                         imUtils.loginIm();
-                        isSendMsg=false;
 
-                        String msg2 = loginBean.getData().getMsg();
-                        imUtils.sendCenterDefaultMsg(""+msg2);
-
-
-
+                        loadEventMsg = loginBean.getData().getMsg();
+                        imUtils.sendCenterDefaultMsg("" + loadEventMsg);
                         break;
 
                 }
@@ -296,37 +276,36 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     }
 
 
-
     //未连接客服回复消息
-    private void sendOffineMsg(String msg){
+    private void sendOffineMsg(String msg) {
 
 
-        imUtils.sendTextDefaultMsg(""+msg);
+        imUtils.sendTextDefaultMsg("" + msg);
 
-        viewModel.sendOfflineMsg(""+msg);
+        viewModel.sendOfflineMsg("" + msg);
 
         viewModel.sendOffineMsgEntity.observe(this, new Observer<SendOffineMsgEntity>() {
             @Override
             public void onChanged(SendOffineMsgEntity sendOffineMsgEntity) {
 
-                if(sendOffineMsgEntity!=null){
+                if (sendOffineMsgEntity != null) {
 
                     Integer showType = sendOffineMsgEntity.getData().getShowType();
                     //0代表小I回复 1代表返回商品
-                    if(showType==0){
+                    if (showType == 0) {
 
                         String msgType = sendOffineMsgEntity.getData().getMsg().getMsgType();
                         String content = sendOffineMsgEntity.getData().getMsg().getContent();
-                        if(!TextUtils.isEmpty(content)){
-                            imUtils.sendLeftTextMsg(""+content);
+                        if (!TextUtils.isEmpty(content)) {
+                            imUtils.sendLeftTextMsg("" + content);
                         }
 
 
-                    }else  if(showType==1){
+                    } else if (showType == 1) {
 
                         SendOffineMsgEntity.DataBean.ProductInfoBean productInfo = sendOffineMsgEntity.getData().getProductInfo();
 
-                        if(productInfo!=null){
+                        if (productInfo != null) {
                             imUtils.sendLeftShopMessage(productInfo);
                         }
 
@@ -343,7 +322,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     }
 
 
-    private void requestPermisson(){
+    private void requestPermisson() {
 
         new RxPermissions(this)
                 .request(
@@ -365,18 +344,16 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     }
 
 
+    private void initRv() {
 
-    private void initRv(){
-
-        mAdapter=new ChatAdapter(new ArrayList<Message>());
+        mAdapter = new ChatAdapter(new ArrayList<Message>());
         //binding.setAdapter(mAdapter);
         binding.setAdapter(mAdapter);
         binding.setLayoutManager(new LinearLayoutManager(this));
 
     }
 
-    private void initOnCLick(){
-
+    private void initOnCLick() {
         binding.rvChatList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -384,19 +361,20 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                 // OnScrollListener.SCROLL_STATE_IDLE; //停止滑动状态
                 // 记录当前滑动状态
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) { //当前状态为停止滑动
-
-                    if (! binding.rvChatList.canScrollVertically(1)) { // 到达底部
+                    if (!binding.rvChatList.canScrollVertically(1)) { // 到达底部
                         KLog.d("到达底部");
 
-                    } else if (! binding.rvChatList.canScrollVertically(-1)) { // 到达顶部
-                        KLog.d( "到顶了");
+                    } else if (!binding.rvChatList.canScrollVertically(-1)) { // 到达顶部
+                        KLog.d("到顶了");
 
-                      //  binding.mainTopProgress.setVisibility(View.VISIBLE);
-
-
+                        if (historyMsgEntityList.size() > 0 && binding.mainTopProgress.getVisibility() == View.GONE) {
+                            binding.mainTopProgress.setVisibility(View.VISIBLE);
+                            historyPage++;
+                            KLog.d("分页参数" + historyPage);
+                            getHistoryMessageList(historyPage);
+                        }
                     }
                 }
-
             }
         });
 
@@ -412,7 +390,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
         public void btn_send() {
 
-            String sdMsg=binding.etContent.getText().toString().trim();
+            String sdMsg = binding.etContent.getText().toString().trim();
 
             if (TextUtils.isEmpty(sdMsg)) {
 
@@ -421,20 +399,15 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                 return;
             }
 
-            KLog.d("输入的内容："+sdMsg);
+            KLog.d("输入的内容：" + sdMsg);
 
 
-            if(!isSendMsg){
+            if (!isSendMsg) {
                 //未登录链接会话
-
-                sendOffineMsg(""+sdMsg);
-
-
-            }else{
-
+                sendOffineMsg("" + sdMsg);
+            } else {
                 //已链接会话
-                imUtils.sendTextMsg(sdMsg,1);
-
+                imUtils.sendTextMsg(sdMsg, 1);
             }
 
 
@@ -444,9 +417,9 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
 
         //转人工
-        public void transferToLabor(){
+        public void transferToLabor() {
 
-            if(!isSendMsg){
+            if (!isSendMsg) {
                 getChangeToLable();
             }
 
@@ -454,7 +427,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         }
 
         //语音点击
-        public void ivAudioClick(){
+        public void ivAudioClick() {
 
             binding.ocrLayout.setVisibility(View.VISIBLE);
             binding.mainInputMsgLayout.setVisibility(View.GONE);
@@ -467,9 +440,9 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         }
 
         //语音界面取消
-        public void closeOcr(){
+        public void closeOcr() {
 
-            myOcrVal="";
+            myOcrVal = "";
 
             binding.ocrLayout.setVisibility(View.GONE);
             binding.bottomLayout.setVisibility(View.GONE);
@@ -477,19 +450,19 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         }
 
         //语音识别
-        public void speechRecognition(){
+        public void speechRecognition() {
             ocrUtil.startRecording();
         }
 
 
         //取消语音
-        public void clearOcr(){
+        public void clearOcr() {
 
             setOcrStop();
         }
 
         //语音发送
-        public void sendOcr(){
+        public void sendOcr() {
 
             if (TextUtils.isEmpty(binding.mainOcrContentTv.getText().toString().trim())) {
 
@@ -498,65 +471,65 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                 return;
             }
 
-            imUtils.sendTextMsg(binding.mainOcrContentTv.getText().toString().trim(),1);
+            imUtils.sendTextMsg(binding.mainOcrContentTv.getText().toString().trim(), 1);
             binding.mainOcrContentTv.setText("");
 
         }
 
         //相册
-        public void toImgPic(){
+        public void toImgPic() {
             KLog.d("相册点击");
 
-            PermissionUtil.getIsPrmission(MainActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            PermissionUtil.getIsPrmission(MainActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE);
+            PermissionUtil.getIsPrmission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            PermissionUtil.getIsPrmission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
 
-            PictureFileUtil.openGalleryPic(MainActivity.this,REQUEST_CODE_IMAGE);
+            PictureFileUtil.openGalleryPic(MainActivity.this, REQUEST_CODE_IMAGE);
         }
 
         //相机
-        public void toImgVideoPic(){
+        public void toImgVideoPic() {
             KLog.d("拍照点击");
 
-            PermissionUtil.getIsPrmission(MainActivity.this,Manifest.permission.CAMERA);
-            PermissionUtil.getIsPrmission(MainActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            PermissionUtil.getIsPrmission(MainActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE);
+            PermissionUtil.getIsPrmission(MainActivity.this, Manifest.permission.CAMERA);
+            PermissionUtil.getIsPrmission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            PermissionUtil.getIsPrmission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
 
 
-            PictureFileUtil.openCameraInfo(MainActivity.this,REQUEST_CODE_IMAGE_VIDEO);
+            PictureFileUtil.openCameraInfo(MainActivity.this, REQUEST_CODE_IMAGE_VIDEO);
 
         }
 
         //视频 点击
-        public void toVideo(){
+        public void toVideo() {
             KLog.d("视频点击");
-
-            PermissionUtil.getIsPrmission(MainActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            PermissionUtil.getIsPrmission(MainActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE);
+            PermissionUtil.getIsPrmission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            PermissionUtil.getIsPrmission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
 
             boolean permission3 = AppUtils.isPermission(mContext, Manifest.permission.CAMERA);
             boolean permission4 = AppUtils.isPermission(mContext, Manifest.permission.RECORD_AUDIO);
 
-            if(!permission3||!permission4){
+            if (!permission3 || !permission4) {
                 sPermission();
                 return;
             }
 
-            if(imUtils.isLogin){
-
-                getTrtcRoomId();
-
-            }
-
+//            if (imUtils.isLogin) {
+//                if (isSendMsg) {
+            getTrtcRoomId();
+//                } else {
+//                    imUtils.sendCenterDefaultMsg(loadEventMsg);
+//                }
+//            }
         }
 
         //ocr 编辑
-        public void ocrEditClick(){
+        public void ocrEditClick() {
             KLog.d("视频点击");
             ocrEditMsgDialog();
 
         }
 
-        public void languageSel(){
+        public void languageSel() {
             KLog.d("语言选择点击");
 
             //showMyLanguageDialog();
@@ -566,22 +539,22 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     }
 
     //获取房间号
-    private void getTrtcRoomId(){
+    private void getTrtcRoomId() {
 
         viewModel.getTrtcRoomId(myEventId);
 
         viewModel.trtcRoomEntity.observe(this, new Observer<TrtcRoomEntity>() {
             @Override
             public void onChanged(TrtcRoomEntity trtcRoomEntity) {
-                if(trtcRoomEntity!=null){
+                if (trtcRoomEntity != null) {
                     mRoomId = trtcRoomEntity.getData();
-                    KLog.d("房间号："+ mRoomId);
+                    KLog.d("房间号：" + mRoomId);
                    /* RoomIdEntity roomIdEntity=new RoomIdEntity();
                     roomIdEntity.setRoomId(mRoomId);
                     roomIdEntity.setHelloText("视频连接中");
                     String s = new Gson().toJson(roomIdEntity);*/
-                    imUtils.sendTextMsg(""+ mRoomId,5);
-
+                    //imUtils.sendTextMsg("" + mRoomId, 5);
+                    inviteID = imUtils.callVideo(MainActivity.this, mRoomId);
                 }
             }
         });
@@ -589,9 +562,8 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     }
 
 
-
     //获取人工客服
-    private void getChangeToLable(){
+    private void getChangeToLable() {
 
 
         // imUtils.sendTextDefaultMsg("1");
@@ -602,37 +574,37 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
             public void onChanged(ChangeCustomerServiceEntity changeCustomerServiceEntity) {
 
 
-                if(changeCustomerServiceEntity!=null){
+                if (changeCustomerServiceEntity != null) {
 
                     imUtils.loginIm();
 
                     String code = changeCustomerServiceEntity.getFail().getCode();
 
-                    switch (code){
+                    switch (code) {
                         case "18800301"://排队中
-                            isSendMsg=false;
+                            isSendMsg = false;
 
                             String message = changeCustomerServiceEntity.getFail().getMessage();
-                            imUtils.sendCenterDefaultMsg(""+message);
+                            imUtils.sendCenterDefaultMsg("" + message);
 
 
                             break;
                         case "99990000"://有客服接入
 
                             //  String staffCode = changeCustomerServiceEntity.getData().getStaffCode();
-                            myEventId = ""+changeCustomerServiceEntity.getData().getEventId();
+                            myEventId = "" + changeCustomerServiceEntity.getData().getEventId();
 
-                            if(changeCustomerServiceEntity.getData()!=null){
-                                Gson gson=new Gson();
+                            if (changeCustomerServiceEntity.getData() != null) {
+                                Gson gson = new Gson();
                                 cloudCustomData = gson.toJson(changeCustomerServiceEntity.getData());
 
 
-                                SharedPrefsUtils.putValue(AppConstant.CloudCustomData,cloudCustomData);
+                                SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
 
                             }
 
 
-                            isSendMsg=true;
+                            isSendMsg = true;
                             break;
                     }
 
@@ -646,8 +618,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     }
 
 
-
-    private void ocrEditMsgDialog(){
+    private void ocrEditMsgDialog() {
 
 
         OcrMsgEditDialog fxdialog = MyDialogUtil.ocrEditMsgDialog(binding.mainOcrContentTv.getText().toString());
@@ -655,10 +626,10 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         fxdialog.setYesOnclickListener(new OcrMsgEditDialog.onYesOnclickListener() {
             @Override
             public void onYesClick(String tl) {
-                if(!TextUtils.isEmpty(tl)){
+                if (!TextUtils.isEmpty(tl)) {
                     binding.mainOcrContentTv.setText(tl);
 
-                }else{
+                } else {
                     binding.mainOcrContentTv.setText("");
                     binding.mainOcrContentTv.setHint("请说点什么吧~");
                 }
@@ -669,7 +640,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
 
     //相机权限
-    private void authorityDialog(){
+    private void authorityDialog() {
 
         QuanXianDialog fxdialog = MyDialogUtil.authorityDialog();
         fxdialog.show(getSupportFragmentManager(), QuanXianDialog.class.getName());
@@ -683,7 +654,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     }
 
 
-    private void initChatUi(){
+    private void initChatUi() {
 
         mUiHelper = ChatUiHelper.with(this);
         mUiHelper.bindContentLayout(binding.llContent)
@@ -740,8 +711,8 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
                         KLog.d("手指按下");
 
-                        if(!TextUtils.isEmpty(binding.mainOcrContentTv.getText().toString())){
-                            myOcrVal=binding.mainOcrContentTv.getText().toString();
+                        if (!TextUtils.isEmpty(binding.mainOcrContentTv.getText().toString())) {
+                            myOcrVal = binding.mainOcrContentTv.getText().toString();
                         }
 
                         binding.mainOcrSelImg.setVisibility(View.GONE);
@@ -774,7 +745,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     }
 
 
-    private void setOcrStop(){
+    private void setOcrStop() {
 
         binding.mainOcrCkTv.setText("按住说话");
         binding.mainOcrSelImg.setVisibility(View.VISIBLE);
@@ -796,7 +767,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
                     List<LocalMedia> result2 = PictureSelector.obtainMultipleResult(data);
                     LocalMedia localMedia = result2.get(0);
-                    KLog.d("获取图片路径成功:"+  localMedia.getPath());
+                    KLog.d("获取图片路径成功:" + localMedia.getPath());
 
                     uploadImg(localMedia);
 
@@ -806,7 +777,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                     List<LocalMedia> selectListPic = PictureSelector.obtainMultipleResult(data);
 
                     for (LocalMedia media : selectListPic) {
-                        KLog.d("获取图片路径成功:"+  media.getPath());
+                        KLog.d("获取图片路径成功:" + media.getPath());
                         // imUtils.sendImageMessage(media);
 
                         uploadImg(media);
@@ -820,14 +791,14 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     }
 
     //上传图片到服务
-    private void uploadImg(LocalMedia media){
+    private void uploadImg(LocalMedia media) {
 
 
         showLoading("发送中");
 
-       String path2=media.getPath();
+        String path2 = media.getPath();
 
-        KLog.d("获取图片路径成功path:"+  path2);
+        KLog.d("获取图片路径成功path:" + path2);
 
         initCompressorRxJava(path2);
 
@@ -835,10 +806,10 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
             @Override
             public void onChanged(upLoadImgEntity upLoadImgEntity) {
                 String data = upLoadImgEntity.getData();
-                if(!TextUtils.isEmpty(data)){
+                if (!TextUtils.isEmpty(data)) {
 
                     dismissLoading();
-                    imUtils.sendTextMsg(data,4);
+                    imUtils.sendTextMsg(data, 4);
                 }
             }
         });
@@ -846,9 +817,9 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
     }
 
-    private void initCompressorRxJava(String path){
+    private void initCompressorRxJava(String path) {
 
-        imageUtils.initCompressorRxJava(this,path);
+        imageUtils.initCompressorRxJava(this, path);
         imageUtils.setYesOnclickListener(new ImageUtils.onYesOnclickListener() {
             @Override
             public void onYesClick(String paht) {
@@ -859,9 +830,8 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     }
 
 
-
     //接收各种类型消息
-    private void takeImagMsg(){
+    private void takeImagMsg() {
 
         V2TIMManager.getMessageManager().addAdvancedMsgListener(new V2TIMAdvancedMsgListener() {
             @Override
@@ -869,10 +839,11 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                 // super.onRecvNewMessage(msg);
 
                 KLog.d("消息接收");
+                KLog.d("消息接收昵称" + msg.getNickName());
 
                 int elemType = msg.getElemType();
 
-                KLog.d("消息接收："+elemType);
+                KLog.d("消息接收：" + elemType);
 
                 if (elemType == V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE) {
 
@@ -880,7 +851,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                     imUtils.takeImageMsg(msg);
 
 
-                }else if(elemType == V2TIMMessage.V2TIM_ELEM_TYPE_TEXT){
+                } else if (elemType == V2TIMMessage.V2TIM_ELEM_TYPE_TEXT) {
 
                     KLog.d("文本消息");
 
@@ -888,7 +859,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                     V2TIMTextElem v2TIMTextElem = msg.getTextElem();
                     String text = v2TIMTextElem.getText();
 
-                    KLog.d("内容："+text);
+                    KLog.d("内容：" + text);
 
                     imUtils.getMyTextMsg(text);
 
@@ -903,15 +874,15 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
                     KLog.d("语音消息");
 
-                }else if (elemType == V2TIMMessage.V2TIM_ELEM_TYPE_VIDEO) {
+                } else if (elemType == V2TIMMessage.V2TIM_ELEM_TYPE_VIDEO) {
 
                     KLog.d("视频消息");
 
 
-                }else if (elemType == V2TIMMessage.V2TIM_ELEM_TYPE_FILE) {
+                } else if (elemType == V2TIMMessage.V2TIM_ELEM_TYPE_FILE) {
 
 
-                }else if (elemType == V2TIMMessage.V2TIM_ELEM_TYPE_FACE) {
+                } else if (elemType == V2TIMMessage.V2TIM_ELEM_TYPE_FACE) {
 
                     KLog.d("表情消息");
                     // 表情消息
@@ -927,6 +898,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
             }
         });
 
+
     }
 
 
@@ -938,17 +910,17 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         super.onDestroy();
 
 
-        if(imUtils!=null){
-            imUtils.isLogin=false;
+        if (imUtils != null) {
+            imUtils.isLogin = false;
         }
 
 
-        if(ocrUtil!=null){
+        if (ocrUtil != null) {
             ocrUtil.cancelOcr();
         }
 
 
-        if(ocrUtil.handler!=null){
+        if (ocrUtil.handler != null) {
             ocrUtil.handler.removeCallbacksAndMessages(null);
         }
 
@@ -957,44 +929,43 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     }
 
     //设置ocr识别文字
-    private void setOcrEditVal(String msgs){
+    private void setOcrEditVal(String msgs) {
 
 
         String s = msgs.replaceAll(" ", "");
 
-        if(!TextUtils.isEmpty(myOcrVal)){
-            binding.mainOcrContentTv.setText(myOcrVal+s);
-        }else{
+        if (!TextUtils.isEmpty(myOcrVal)) {
+            binding.mainOcrContentTv.setText(myOcrVal + s);
+        } else {
             binding.mainOcrContentTv.setText(s);
         }
 
 
     }
 
-    public void setOcrListener(){
+    public void setOcrListener() {
 
 
         //消息发送监听
         imUtils.setYesMsgOnclickListener(new ImUtils.onYesMsgOnclickListener() {
             @Override
-            public void onYesMsgClick(boolean isMsgOk,int msgType) {
-                if(isMsgOk){
-
-                    switch (msgType){
+            public void onYesMsgClick(boolean isMsgOk, int msgType) {
+                if (isMsgOk) {
+                    switch (msgType) {
                         case 5://视频消息
-
-                            Bundle bundle=new Bundle();
-                            bundle.putString(AppConstant.VideoStatus,"1");
-                            bundle.putString(AppConstant.Video_mRoomId,""+mRoomId);
-                            startActivityMy(Rout.VideoCallingActivity,bundle);
+                            Bundle bundle = new Bundle();
+                            bundle.putString(AppConstant.VideoStatus, "1");
+                            bundle.putString(AppConstant.Video_mRoomId, "" + mRoomId);
+                            startActivityMy(Rout.VideoCallingActivity, bundle);
 
                             break;
                     }
 
                 }
+
+
             }
         });
-
 
 
         ocrUtil.setMessageList(new MessageListener() {
@@ -1008,10 +979,10 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         ocrUtil.setOnFinishedRecordListener(new OcrUtil.OnFinishedRecordListener() {
             @Override
             public void onFinishedRecord(String msg, int time) {
-                KLog.d("录音返回的："+msg);
+                KLog.d("录音返回的：" + msg);
 
-                if(time==3){
-                    if(!TextUtils.isEmpty(msg) || msg.length()>0){
+                if (time == 3) {
+                    if (!TextUtils.isEmpty(msg) || msg.length() > 0) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -1026,9 +997,47 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
     }
 
+    private void setVideoListener() {
+        V2TIMManager.getSignalingManager().addSignalingListener(new V2TIMSignalingListener() {
+            @Override
+            public void onReceiveNewInvitation(String inviteID, String inviter, String groupID, List<String> inviteeList, String data) {
+                super.onReceiveNewInvitation(inviteID, inviter, groupID, inviteeList, data);
+                KLog.d("收到邀请");
+            }
+
+            @Override
+            public void onInviteeAccepted(String inviteID, String invitee, String data) {
+                super.onInviteeAccepted(inviteID, invitee, data);
+                KLog.d("被邀请者接受邀请");
+            }
+
+            @Override
+            public void onInviteeRejected(String inviteID, String invitee, String data) {
+                super.onInviteeRejected(inviteID, invitee, data);
+                KLog.d("被邀请者拒绝邀请");
+                EventBusUtils.post(new EventMessage(VIDEO_CONNECT_REFUSE));
+                closeActivity(ActivityUtils.getTopActivity());
+            }
+
+            @Override
+            public void onInvitationCancelled(String inviteID, String inviter, String data) {
+                super.onInvitationCancelled(inviteID, inviter, data);
+                KLog.d("邀请被取消");
+                EventBusUtils.post(new EventMessage(VIDEO_CONNECT_CANCEL));
+            }
+
+            @Override
+            public void onInvitationTimeout(String inviteID, List<String> inviteeList) {
+                super.onInvitationTimeout(inviteID, inviteeList);
+                KLog.d("邀请超时" + inviteID);
+                EventBusUtils.post(new EventMessage(VIDEO_CONNECT_ADIAPHORIA));
+            }
+        });
+    }
+
 
     //获取历史消息
-    private void getHistoryMessageList(){
+    private void getHistoryMessageList() {
 
 //        static final int 	V2TIM_GET_CLOUD_OLDER_MSG = 1
 //        static final int 	V2TIM_GET_CLOUD_NEWER_MSG = 2
@@ -1040,45 +1049,30 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
         optionBackward.setGetType(V2TIMMessageListGetOption.V2TIM_GET_CLOUD_OLDER_MSG);
         optionBackward.setCount(20);
-       // optionBackward.setUserID(""+ImUtils.fsUserId);
+        optionBackward.setUserID("" + ImUtils.fsUserId);
 
         V2TIMManager.getMessageManager().getHistoryMessageList(optionBackward,
                 new V2TIMValueCallback<List<V2TIMMessage>>() {
                     @Override
                     public void onSuccess(List<V2TIMMessage> v2TIMMessages) {
-
                         KLog.d("获取历史消息成功");
 
-                        if(v2TIMMessages!=null){
-
-                            KLog.d("获取历史消息成功:"+v2TIMMessages.size());
-
+                        if (v2TIMMessages != null) {
+                            KLog.d("获取历史消息成功:" + v2TIMMessages.size());
                             for (int i = 0; i < v2TIMMessages.size(); i++) {
 
                                 V2TIMMessage v2TIMMessage = v2TIMMessages.get(i);
-
                                 //String userID = v2TIMMessage.getUserID();
-
-                                // boolean self = v2TIMMessage.isSelf();//消息发送者是否是自己
+                                //boolean self = v2TIMMessage.isSelf();//消息发送者是否是自己
 
                                 int elemType = v2TIMMessage.getElemType();
+                                KLog.d("elemType:" + elemType);
 
-                                KLog.d("elemType:"+elemType);
-
-
-                                switch (elemType){
-
+                                switch (elemType) {
                                     case V2TIMMessage.V2TIM_ELEM_TYPE_TEXT://文本
-
-
-
                                         break;
                                     case V2TIMMessage.V2TIM_ELEM_TYPE_CUSTOM://自定义
-
-
                                         sendZiDingYiMsg(v2TIMMessage);
-
-
                                         break;
                                     case V2TIMMessage.V2TIM_ELEM_TYPE_IMAGE://图片
                                         break;
@@ -1086,7 +1080,6 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                                         break;
                                     case V2TIMMessage.V2TIM_ELEM_TYPE_FACE:// 表情消息
                                         break;
-
                                 }
 
                             }
@@ -1095,21 +1088,90 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
                     @Override
                     public void onError(int i, String s) {
-                        KLog.d("获取历史消息失败:"+s);
+                        KLog.d("获取历史消息失败:" + s);
                     }
                 });
 
     }
 
+    private List<HistoryMsgEntity.DataDTO.DataDTO2> historyMsgEntityList = new ArrayList<>();
+
+    //获取历史消息（后台接口）
+    private void getHistoryMessageList(int page) {
+        viewModel.getCustImRecord(page, TimeUtils.getNowMills() + "");
+        viewModel.historyMsgEntity.observe(this, new Observer<HistoryMsgEntity>() {
+            @Override
+            public void onChanged(HistoryMsgEntity historyMsgEntity) {
+                KLog.d("getHistoryMessageList方法调用");
+
+
+                String s = new Gson().toJson(historyMsgEntity);
+                KLog.d("getHistoryMessageList方法调用sssssss:"+s);
+
+                binding.mainTopProgress.setVisibility(View.GONE);
+                historyMsgEntityList = historyMsgEntity.getData().getData();
+
+                //循环消息模拟发送赋值
+                for (HistoryMsgEntity.DataDTO.DataDTO2 dataDTO2 : historyMsgEntityList) {
+
+                    List<HistoryMsgEntity.DataDTO.DataDTO2.MsgBody> msgBody = GsonUtil.GsonToList(dataDTO2.getMsgBody(), HistoryMsgEntity.DataDTO.DataDTO2.MsgBody.class);
+
+                    String str = GsonUtil.GsonString(msgBody.get(0));
+                    MsgBodyBean msgBodyBean = GsonUtil.newGson22().fromJson(str, MsgBodyBean.class);
+
+                    String data = msgBodyBean.getMsgContent().getData();
+                    CustomMsgEntity customMsgEntity = GsonUtil.newGson22().fromJson(data, CustomMsgEntity.class);
+
+                    sendZiDingYiMsg(customMsgEntity, StringUtils.equals(dataDTO2.getFromAccount(), ImUtils.MyUserId));
+                }
+            }
+        });
+    }
+
+
+    @Override
+    public void onReceiveEvent(EventMessage event) {
+        super.onReceiveEvent(event);
+        switch (event.getCode()) {
+            case VIDEO_CONNECT_SUCCESS:
+                imUtils.sendVideoHintMsg("通话时长" + event.getData());
+                break;
+            case VIDEO_CONNECT_ERROR:
+                imUtils.sendVideoHintMsg("连接失败");
+                break;
+            case VIDEO_CONNECT_ADIAPHORIA:
+                imUtils.sendVideoHintMsg("对方无应答");
+                break;
+            case VIDEO_CONNECT_REFUSE:
+                imUtils.sendVideoHintMsg("拒绝邀请");
+                break;
+            case VIDEO_CONNECT_CANCEL:
+                V2TIMManager.getSignalingManager().cancel(inviteID, "", new V2TIMCallback() {
+                    @Override
+                    public void onSuccess() {
+                        imUtils.sendVideoHintMsg("取消视频");
+                    }
+
+                    @Override
+                    public void onError(int i, String s) {
+                        //8010 信令请求 ID 无效或已经被处理过
+                        if (8010 == i) {
+                            EventBusUtils.post(new EventMessage(VIDEO_CONNECT_SUCCESS, event.getData()));
+                        }
+                    }
+                });
+                break;
+        }
+    }
 
     //接收自定义消息
-    private void sendZiDingYiMsg(V2TIMMessage msg){
+    private void sendZiDingYiMsg(V2TIMMessage msg) {
 
         V2TIMCustomElem v2TIMCustomElem = msg.getCustomElem();
 
         String cloudCustomData = msg.getCloudCustomData();
 
-        KLog.d("自定义消息接收cloudCustomData："+cloudCustomData);
+        KLog.d("自定义消息接收cloudCustomData：" + cloudCustomData);
 
         byte[] customData = v2TIMCustomElem.getData();
         String description = v2TIMCustomElem.getDescription();
@@ -1117,82 +1179,87 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
         try {
 
+            if (customData == null) {
+                return;
+            }
             String str = new String(customData, "UTF8");
-            KLog.d("自定义消息接收内容："+description);
-            KLog.d("自定义消息接收内容："+str);
+            KLog.d("自定义消息接收内容：" + description);
+            KLog.d("自定义消息接收内容：" + str);
 
-            if(!TextUtils.isEmpty(str)){
-                Gson gs=new Gson();
-                CustomMsgEntity customMsgEntity = gs.fromJson(str, CustomMsgEntity.class);
+            if (!TextUtils.isEmpty(str)) {
+                CustomMsgEntity customMsgEntity = GsonUtil.newGson22().fromJson(str, CustomMsgEntity.class);
+
+                if (customMsgEntity.getData() != null) {
+                    if (TextUtils.isEmpty(customMsgEntity.getData())) {
+                        return;
+                    } else {
+                        customMsgEntity = GsonUtil.newGson22().fromJson(customMsgEntity.getData(), CustomMsgEntity.class);
+                    }
+                }
 
                 int msgType = customMsgEntity.getMsgType();
 
                 //1文本  2 富文本   3带网址  4图片地址  5视频  6商品卡片
-                if(msgType==1|| msgType==2 || msgType==3){
-                    String msgText = customMsgEntity.getMsgText();
+                if (msgType == 1 || msgType == 2 || msgType == 3) {
+                    String msgText = "";
+                    if (customMsgEntity.getMsgText() instanceof String) {
+                        msgText = (String) customMsgEntity.getMsgText();
+                    }
 
-                    if(msg.isSelf()){
-
+                    if (msg.isSelf()) {
                         imUtils.sendRightTextMsg(msgText);
-
-                    }else{
-
+                    } else {
                         imUtils.sendLeftTextMsg(msgText);
-
                     }
 
 
-                }else if(msgType==4){
+                } else if (msgType == 4) {
 
-                    String msgText = customMsgEntity.getImgUrl();
+                    /*String msgText = customMsgEntity.getImgUrl();
 
-                    if(msg.isSelf()){
+                    if (msg.isSelf()) {
                         imUtils.takeRightImgMsg(msgText);
-
-
-                    }else{
-
+                    } else {
                         imUtils.takeLeftImgMsg(msgText);
+                    }*/
 
-                    }
+                } else if (msgType == 5) {//视频消息
+//                    String msgText = customMsgEntity.getMsgText();
+//
+//                    if (msg.isRead()) {
+//                        Bundle bundle = new Bundle();
+//                        bundle.putString(AppConstant.VideoStatus, "2");
+//                        bundle.putString(AppConstant.Video_mRoomId, "" + msgText);
+//                        startActivityMy(Rout.VideoCallingActivity, bundle);
+//                    }
+                } else if (msgType == 6) {//卡片消息
 
-                }else if(msgType==5){//视频消息
+                    /*String msgText = customMsgEntity.getMsgText();
 
-
-                    String msgText = customMsgEntity.getMsgText();
-
-
-                    Bundle bundle=new Bundle();
-                    bundle.putString(AppConstant.VideoStatus,"2");
-                    bundle.putString(AppConstant.Video_mRoomId,""+msgText);
-                    startActivityMy(Rout.VideoCallingActivity,bundle);
-
-
-
-                }else if(msgType==6){//卡片消息
-
-                    String msgText = customMsgEntity.getMsgText();
-
-                    if(!TextUtils.isEmpty(msgText)){
+                    if (!TextUtils.isEmpty(msgText)) {
 
                         ShopMsgBody shopMsgBody = new Gson().fromJson(msgText, ShopMsgBody.class);
-                        if(msg.isSelf()){
-
+                        if (msg.isSelf()) {
                             imUtils.sRightShopMessage(shopMsgBody);
-
-
-                        }else{
-
+                        } else {
                             imUtils.sLeftShopMessage(shopMsgBody);
                         }
+                    }*/
+                }
+            }
 
-                    }
 
+            V2TIMManager.getMessageManager().markC2CMessageAsRead(imUtils.MyUserId, new V2TIMCallback() {
+                @Override
+                public void onSuccess() {
 
                 }
 
+                @Override
+                public void onError(int i, String s) {
 
-            }
+                }
+            });
 
 
         } catch (UnsupportedEncodingException e) {
@@ -1202,29 +1269,48 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
     }
 
+    //接收自定义消息
+    private void sendZiDingYiMsg(CustomMsgEntity customMsgEntity, boolean isSelf) {
+        KLog.d("自定义消息接收cloudCustomData：" + GsonUtil.GsonString(customMsgEntity));
+        if (customMsgEntity.getData() != null) {
+            if (TextUtils.isEmpty(customMsgEntity.getData())) {
+                return;
+            } else {
+                customMsgEntity = GsonUtil.newGson22().fromJson(customMsgEntity.getData(), CustomMsgEntity.class);
+            }
+        }
+        int msgType = customMsgEntity.getMsgType();
 
+        //1文本  2 富文本   3带网址  4图片地址  5视频  6商品卡片
+        if (msgType == 1 || msgType == 2 || msgType == 3) {
+            String msgText = "";
+            if (customMsgEntity.getMsgText() instanceof String) {
+                msgText = (String) customMsgEntity.getMsgText();
+            }
+            if (isSelf) {
+                imUtils.sendRightTextMsg2(msgText);
+            } else {
+                imUtils.sendLeftTextMsg2(msgText);
+            }
+        } else if (msgType == 4) {//图片消息
+        } else if (msgType == 5) {//视频消息
+        } else if (msgType == 6) {//卡片消息
+        }
+    }
 
-    public  void sPermission(){
-
+    public void sPermission() {
         new RxPermissions(MainActivity.this)
                 .request(Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA)
                 .subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
                         if (aBoolean) {
-
-                        }else{
+                        } else {
                             authorityDialog();
                         }
                     }
                 });
-
     }
-
-
-
-
-
 
 
 }

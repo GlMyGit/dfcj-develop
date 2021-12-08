@@ -33,7 +33,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
 
 
     protected boolean isRegisteredEventBus() {
-        return false;
+        return true;
     }
 
     @Override

@@ -1,18 +1,12 @@
 package com.dfcj.videoim.entity;
 
 public class CustomMsgEntity {
-
-//
-//    自定义消息规范：msgType //1文本  2 富文本   3带网址  4图片地址  5视频 6商品
-//"data":{
-//    "msgType": 1,
-//    "msgText":"string",
-//    "imgUrl":"图片URL"
-//    }
-//
-//
-
-
+    private int msgType;//1文本  2 富文本   3带网址  4图片地址  5视频  6商品卡片    7结束视频   8取消  9拒绝
+    private Object msgText;
+    private Object imgUrl;
+    private String userName;
+    private String userImg;
+    private String data;
 
     public int getMsgType() {
         return msgType;
@@ -22,30 +16,43 @@ public class CustomMsgEntity {
         this.msgType = msgType;
     }
 
-
-    public String getMsgText() {
-        return msgText;
-    }
-
-    public void setMsgText(String msgText) {
-        this.msgText = msgText;
-    }
-
-    private int msgType;//1文本  2 富文本   3带网址  4图片地址  5视频 6商品
-
-    public String getImgUrl() {
+    public Object getImgUrl() {
         return imgUrl;
     }
 
-    public void setImgUrl(String imgUrl) {
+    public void setImgUrl(Object imgUrl) {
         this.imgUrl = imgUrl;
     }
 
-    private String imgUrl;
-    private String msgText;
+    public Object getMsgText() {
+        return msgText;
+    }
 
+    public void setMsgText(Object msgText) {
+        this.msgText = msgText;
+    }
 
+    public String getData() {
+        return data;
+    }
 
+    public void setData(String data) {
+        this.data = data;
+    }
 
+    public String getUserName() {
+        return userName;
+    }
 
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserImg() {
+        return userImg;
+    }
+
+    public void setUserImg(String userImg) {
+        this.userImg = userImg;
+    }
 }

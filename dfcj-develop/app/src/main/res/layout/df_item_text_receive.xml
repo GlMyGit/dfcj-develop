@@ -93,6 +93,16 @@
                     ></TextView>
 
 
+                <ImageView
+                    android:id="@+id/chat_item_content_video_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ship_pic11"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="5dp"
+                    android:visibility="gone"
+                    ></ImageView>
+
                 <View
                     android:layout_width="1dp"
                     android:layout_height="10dp"></View>

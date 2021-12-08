@@ -4,6 +4,7 @@ package com.dfcj.videoim.api;
 import com.dfcj.videoim.base.BaseRespose;
 import com.dfcj.videoim.entity.ChangeCustomerServiceEntity;
 import com.dfcj.videoim.entity.DemoBean;
+import com.dfcj.videoim.entity.HistoryMsgEntity;
 import com.dfcj.videoim.entity.LoginBean;
 import com.dfcj.videoim.entity.SendOffineMsgEntity;
 import com.dfcj.videoim.entity.TrtcRoomEntity;
@@ -71,7 +72,7 @@ public interface ApiService {
 
     //顾客根据日期查询历史单聊消息接口
     @POST("/api/newMedia/fcm/eventRead/queryCustImRecord")
-    Observable<TrtcRoomEntity> requestQueryCustImRecord(
+    Observable<HistoryMsgEntity> requestQueryCustImRecord(
             @Body Map<String, Object> map
     );
 

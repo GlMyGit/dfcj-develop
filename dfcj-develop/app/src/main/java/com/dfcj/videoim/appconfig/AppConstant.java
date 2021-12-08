@@ -9,14 +9,15 @@ public class AppConstant {
     public static final String MYUSERID = "UserId";
     public static final String MYUSERPHONE = "UserPhone";
     public static final String DEVICETOKEN = "DeviceToken";
-    public static final String MyUserName= "MyUserName";
+    public static final String MyUserName = "MyUserName";
     public static final String ISSECURITPWD = "Is_Securitypwd";
     public static final String IMEIVAL = "ImeiVal";
     public static final String USERTOKEN = "USERTOKEN";
     public static final String USERopenid = "USERopenid";
 
     public static final String CloudCustomData = "Cloud_Custom_Data";
-
+    public static final String SDKAppId = "SDK_APP_ID";
+    public static final String SDKUserSig = "SDK_USER_SIG";
 
     public static final String VideoStatus = "Video_Status";
     public static final String Video_mRoomId = "Video_mRoomId";
@@ -46,7 +47,7 @@ public class AppConstant {
     public static final String DefaultJiOrXiliuAdCode = "DefaultJiOrXiliuAdCode";
     public static final String DefaultJiOrXiliuAdType = "DefaultJiOrXiliuAdType";
     public static final String DefaultJiOrXiliuAdId = "DefaultJiOrXiliuAdId";
-    public static final String DefaultJiOrXiliuAdPLatFormType= "DefaultJiOrXiliuAdPLatFormType";
+    public static final String DefaultJiOrXiliuAdPLatFormType = "DefaultJiOrXiliuAdPLatFormType";
 
     public static final String checkStatus = "checkStatus";
 

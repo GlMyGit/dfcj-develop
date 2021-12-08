@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.text.Spannable;
@@ -16,10 +17,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.GsonUtils;
+import com.dfcj.videoim.MainActivity;
 import com.dfcj.videoim.adapter.ChatAdapter;
 import com.dfcj.videoim.appconfig.AppConstant;
+import com.dfcj.videoim.appconfig.Rout;
+import com.dfcj.videoim.base.BaseActivity;
 import com.dfcj.videoim.entity.AudioMsgBody;
 import com.dfcj.videoim.entity.CustomMsgEntity;
+import com.dfcj.videoim.entity.EventMessage;
 import com.dfcj.videoim.entity.FileMsgBody;
 import com.dfcj.videoim.entity.ImageMsgBody;
 import com.dfcj.videoim.entity.Message;
@@ -32,6 +37,7 @@ import com.dfcj.videoim.entity.TextMsgBody;
 import com.dfcj.videoim.entity.VideoMsgBody;
 import com.dfcj.videoim.util.AppUtils;
 import com.dfcj.videoim.util.ChatUiHelper;
+import com.dfcj.videoim.util.other.EventBusUtils;
 import com.dfcj.videoim.util.other.GsonUtil;
 import com.dfcj.videoim.util.other.LogUtils;
 import com.dfcj.videoim.util.other.SharedPrefsUtils;
@@ -60,44 +66,46 @@ import com.wzq.mvvmsmart.utils.ToastUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class ImUtils {
 
-    public static final String 	  mSenderId="right";
-    public static final String     mTargetId="left";
+    public static final String mSenderId = "right";
+    public static final String mTargetId = "left";
     private Context context;
     private ChatAdapter mAdapter;
-    public boolean isLogin=false;
-    public boolean isKeFuLogin=true;
+    public boolean isLogin = false;
+    public boolean isKeFuLogin = true;
 
     RecyclerView rvChatList;
 
-    public static   String fsUserId="staff2";//客服
-    public static String MyUserId="customer1";//顾客
+    //    public static String fsUserId = "staff2";//客服
+//    public static String fsUserId = "106584";//客服
+    public static String fsUserId = "106582";//客服
+    public static String MyUserId = "customer1";//顾客
 
 
     //public static  String fsUserId="customer1";
     //public static String MyUserId="staff1";
 
 
-    public ImUtils(Context context){
-        this.context=context;
+    public ImUtils(Context context) {
+        this.context = context;
     }
 
-    public void initViewInfo(ChatAdapter mAdapter,RecyclerView rvChatList){
-        this.mAdapter=mAdapter;
-        this.rvChatList=rvChatList;
+    public void initViewInfo(ChatAdapter mAdapter, RecyclerView rvChatList) {
+        this.mAdapter = mAdapter;
+        this.rvChatList = rvChatList;
 
 
     }
 
 
-    public void initTencentImLogin(){
-
-        KLog.d("sdk初始化调用了:" +ImConstant.SDKAPPID);
-
+    public void initTencentImLogin() {
+        KLog.d("sdk初始化调用了:" + ImConstant.SDKAPPID);
 
         // 1. 从 IM 控制台获取应用 SDKAppID，详情请参考 SDKAppID。
         // 2. 初始化 config 对象
@@ -106,7 +114,7 @@ public class ImUtils {
         config.setLogLevel(V2TIMSDKConfig.V2TIM_LOG_INFO);
         // 4. 初始化 SDK 并设置 V2TIMSDKListener 的监听对象。
         // initSDK 后 SDK 会自动连接网络，网络连接状态可以在 V2TIMSDKListener 回调里面监听。
-        V2TIMManager.getInstance().initSDK(context,ImConstant.SDKAPPID,config);
+        V2TIMManager.getInstance().initSDK(context, ImConstant.SDKAPPID, config);
         V2TIMManager.getInstance().addIMSDKListener(new V2TIMSDKListener() {
             @Override
             public void onConnecting() {
@@ -161,14 +169,14 @@ public class ImUtils {
 
         initTencentImLogin();
 
-        V2TIMManager.getInstance().login(""+MyUserId, ImConstant.genTestUserSig(""+MyUserId), new V2TIMCallback() {
+        V2TIMManager.getInstance().login("" + MyUserId, ImConstant.genTestUserSig("" + MyUserId), new V2TIMCallback() {
             @Override
             public void onSuccess() {
                 KLog.d("登录成功");
 
-                isLogin=true;
+                isLogin = true;
 
-                if(yesOnclickListener!=null){
+                if (yesOnclickListener != null) {
                     yesOnclickListener.onYesClick(1);
                 }
 
@@ -177,11 +185,11 @@ public class ImUtils {
 
             @Override
             public void onError(int i, String s) {
-                KLog.d("登录失败:"+s);
-                isLogin=false;
+                KLog.d("登录失败:" + s);
+                isLogin = false;
 
 
-                if(yesOnclickListener!=null){
+                if (yesOnclickListener != null) {
                     yesOnclickListener.onYesClick(2);
                 }
 
@@ -195,49 +203,50 @@ public class ImUtils {
     private Message mMessgae = null;
 
     //所有的通用消息发送消息   //msgType  1文本  2 富文本   3带网址  4图片地址  5视频  6商品
-    public void sendTextMsg(String hello,int msgType)  {
+    public void sendTextMsg(String hello, int msgType) {
 
-        if(TextUtils.isEmpty(hello)){
+        if (TextUtils.isEmpty(hello)) {
             return;
         }
 
-        String cloudCustomData= SharedPrefsUtils.getValue(AppConstant.CloudCustomData);
+        String cloudCustomData = SharedPrefsUtils.getValue(AppConstant.CloudCustomData);
 
-        KLog.d("消息的内容："+hello);
-        KLog.d("消息的内容cloudCustomData："+cloudCustomData);
+        KLog.d("消息的内容：" + hello);
+        KLog.d("消息的内容cloudCustomData：" + cloudCustomData);
 
         try {
 
             //msgType  1文本  2 富文本   3带网址  4图片地址  5视频 6商品
-            CustomMsgEntity customMsgEntity=new CustomMsgEntity();
+            CustomMsgEntity customMsgEntity = new CustomMsgEntity();
             customMsgEntity.setMsgType(msgType);
 
-            if(msgType==1|| msgType==2 || msgType==3){
+            if (msgType == 1 || msgType == 2 || msgType == 3) {
 
 
-                replace = ChatUiHelper.handlerEmojiText(hello,true);
+                replace = ChatUiHelper.handlerEmojiText(hello, true);
 
-                KLog.d("消息的内容replace："+replace);
+                KLog.d("消息的内容replace：" + replace);
 
-                mMessgae =getBaseSendMessage(MsgType.TEXT);
-                TextMsgBody mTextMsgBody=new TextMsgBody();
+                mMessgae = getBaseSendMessage(MsgType.TEXT);
+                TextMsgBody mTextMsgBody = new TextMsgBody();
                 mTextMsgBody.setMessage(replace.toString());
                 mTextMsgBody.setCharsequence(replace);
                 mMessgae.setBody(mTextMsgBody);
+                mTextMsgBody.setVideo(false);
                 mMessgae.setType(ChatAdapter.TYPE_SEND_TEXT);
                 //开始发送
                 mAdapter.addData(mMessgae);
 
 
-                customMsgEntity.setMsgText(""+replace);
+                customMsgEntity.setMsgText("" + replace);
 
 
-            }else if(msgType==4){
+            } else if (msgType == 4) {
 
                 customMsgEntity.setImgUrl(hello);
 
-                mMessgae=getBaseSendMessage(MsgType.IMAGE);
-                ImageMsgBody mImageMsgBody=new ImageMsgBody();
+                mMessgae = getBaseSendMessage(MsgType.IMAGE);
+                ImageMsgBody mImageMsgBody = new ImageMsgBody();
                 mImageMsgBody.setThumbUrl(hello);
                 // mImageMsgBody.setThumbPath(imagePath);
                 mMessgae.setBody(mImageMsgBody);
@@ -247,40 +256,39 @@ public class ImUtils {
                 mAdapter.addData(mMessgae);
 
 
-            }
-            else if(msgType==5){//视频
+            } else if (msgType == 5) {//视频
 
 
-               // RoomIdEntity roomIdEntity = new Gson().fromJson(hello, RoomIdEntity.class);
+                // RoomIdEntity roomIdEntity = new Gson().fromJson(hello, RoomIdEntity.class);
 
-                mMessgae =getBaseSendMessage(MsgType.TEXT);
-                TextMsgBody mTextMsgBody=new TextMsgBody();
-              //  mTextMsgBody.setMessage(roomIdEntity.getHelloText().toString());
+                mMessgae = getBaseSendMessage(MsgType.TEXT);
+                TextMsgBody mTextMsgBody = new TextMsgBody();
+                //  mTextMsgBody.setMessage(roomIdEntity.getHelloText().toString());
                 mTextMsgBody.setMessage(hello);
                 mTextMsgBody.setVideo(true);
                 //mTextMsgBody.setRoomId(roomIdEntity.getRoomId());
-               // mTextMsgBody.setCharsequence(roomIdEntity.getHelloText());
+                // mTextMsgBody.setCharsequence(roomIdEntity.getHelloText());
                 mTextMsgBody.setCharsequence(hello);
                 mMessgae.setBody(mTextMsgBody);
                 mMessgae.setType(ChatAdapter.TYPE_SEND_TEXT);
                 //开始发送
-               // mAdapter.addData(mMessgae);
-                customMsgEntity.setMsgText(""+hello);
+                // mAdapter.addData(mMessgae);
+                customMsgEntity.setMsgText("" + hello);
 
 
-            }else if(msgType==6){
+            } else if (msgType == 6) {
 
-                customMsgEntity.setMsgText(""+replace);
+                customMsgEntity.setMsgText("" + replace);
 
-                mMessgae=getBaseSendMessage(MsgType.KAPIAN);
-               // ShopMsgBody mImageMsgBody=new ShopMsgBody();
+                mMessgae = getBaseSendMessage(MsgType.KAPIAN);
+                // ShopMsgBody mImageMsgBody=new ShopMsgBody();
                 //发送商品需要打开此代码
-              //  ShopMsgBody shopMsgBody = GsonUtil.newGson22().fromJson(hello, ShopMsgBody.class);
-               // mMessgae.setBody(mImageMsgBody);
+                //  ShopMsgBody shopMsgBody = GsonUtil.newGson22().fromJson(hello, ShopMsgBody.class);
+                // mMessgae.setBody(mImageMsgBody);
                 mMessgae.setSenderId(mSenderId);
                 mMessgae.setType(ChatAdapter.TYPE_KAPIAN_RECEIVE_TEXT);
                 //开始发送
-                mAdapter.addData( mMessgae);
+                mAdapter.addData(mMessgae);
 
             }
 
@@ -305,24 +313,24 @@ public class ImUtils {
                         public void onSuccess(V2TIMMessage v2TIMMessage) {
                             KLog.d("发送成功：");
 
-                            if(msgType==5){
+                            if (msgType == 5) {
 
-                            }else{
+                            } else {
                                 updateMsg(mMessgae);
                             }
 
-                            if(yesMsgOnclickListener!=null){
-                                yesMsgOnclickListener.onYesMsgClick(true,msgType);
+                            if (yesMsgOnclickListener != null) {
+                                yesMsgOnclickListener.onYesMsgClick(true, msgType);
                             }
 
                         }
 
                         @Override
                         public void onError(int i, String s) {
-                            KLog.d("发送失败："+s);
+                            KLog.d("发送失败：" + s);
 
-                            if(yesMsgOnclickListener!=null){
-                                yesMsgOnclickListener.onYesMsgClick(false,msgType);
+                            if (yesMsgOnclickListener != null) {
+                                yesMsgOnclickListener.onYesMsgClick(false, msgType);
                             }
 
                         }
@@ -332,8 +340,6 @@ public class ImUtils {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-
-
 
 
 //        V2TIMManager.getInstance().sendC2CTextMessage(hello, ""+fsUserId, new V2TIMValueCallback<V2TIMMessage>() {
@@ -356,22 +362,48 @@ public class ImUtils {
 
     }
 
+    public String callVideo(BaseActivity context, String mRoomId) {
+        Map<String, String> data = new HashMap<>();
+        data.put("roomId", mRoomId);
+        data.put("userName", MyUserId);
+        data.put("userImg", "");
+        data.put("msgText", "开始视频");
+        data.put("msgType", "5");
+        String dataStr = GsonUtil.GsonString(data);
+        final boolean[] hintTag = {true};
+        V2TIMOfflinePushInfo v2TIMOfflinePushInfo = new V2TIMOfflinePushInfo();
+        String inviteID = V2TIMManager.getSignalingManager().invite(fsUserId, dataStr, false, v2TIMOfflinePushInfo, 60, new V2TIMCallback() {
+            @Override
+            public void onSuccess() {
+                KLog.d("拨打视频通话成功");
+                Bundle bundle = new Bundle();
+                bundle.putString(AppConstant.VideoStatus, "1");
+                bundle.putString(AppConstant.Video_mRoomId, "" + mRoomId);
+                context.startActivityMy(Rout.VideoCallingActivity, bundle);
+            }
 
-
+            @Override
+            public void onError(int i, String s) {
+                KLog.d("拨打视频通话异常：" + i + s);
+                if (hintTag[0]) {
+                    EventBusUtils.post(new EventMessage(MainActivity.VIDEO_CONNECT_ERROR));
+                    hintTag[0] = false;
+                }
+            }
+        });
+        return inviteID;
+    }
 
 
     //客服消息回复
-    public void sendLeftTextMsg(String hello)  {
-
-        if(TextUtils.isEmpty(hello)){
+    public void sendLeftTextMsg(String hello) {
+        if (TextUtils.isEmpty(hello)) {
             return;
         }
+        SpannableStringBuilder replace = ChatUiHelper.handlerEmojiText(hello, true);
 
-        SpannableStringBuilder replace = ChatUiHelper.handlerEmojiText(hello,true);
-
-
-        final Message mMessgae=getBaseSendMessage(MsgType.TEXT);
-        TextMsgBody mTextMsgBody=new TextMsgBody();
+        final Message mMessgae = getBaseSendMessage(MsgType.TEXT);
+        TextMsgBody mTextMsgBody = new TextMsgBody();
         mTextMsgBody.setMessage(replace.toString());
         mTextMsgBody.setCharsequence(replace);
         mMessgae.setBody(mTextMsgBody);
@@ -383,22 +415,41 @@ public class ImUtils {
         //模拟两秒后发送成功
         updateMsg(mMessgae);
 
-        KLog.d("消息的内容："+hello);
-
-
+        KLog.d("消息的内容：" + hello);
     }
 
-    public void sendRightTextMsg(String hello)  {
+    //客服消息回复
+    public void sendLeftTextMsg2(String hello) {
+        if (TextUtils.isEmpty(hello)) {
+            return;
+        }
+        SpannableStringBuilder replace = ChatUiHelper.handlerEmojiText(hello, true);
 
-        if(TextUtils.isEmpty(hello)){
+        final Message mMessgae = getBaseSendMessage(MsgType.TEXT);
+        TextMsgBody mTextMsgBody = new TextMsgBody();
+        mTextMsgBody.setMessage(replace.toString());
+        mTextMsgBody.setCharsequence(replace);
+        mMessgae.setBody(mTextMsgBody);
+        mMessgae.setType(ChatAdapter.TYPE_RECEIVE_TEXT);
+        mMessgae.setSenderId(mTargetId);
+        mMessgae.setSentStatus(MsgSendStatus.SENT);
+
+        //开始发送
+        mAdapter.addData(0, mMessgae);
+
+        KLog.d("消息的内容：" + hello);
+    }
+
+    public void sendRightTextMsg(String hello) {
+
+        if (TextUtils.isEmpty(hello)) {
             return;
         }
 
-        SpannableStringBuilder replace = ChatUiHelper.handlerEmojiText(hello,true);
+        SpannableStringBuilder replace = ChatUiHelper.handlerEmojiText(hello, true);
 
-
-        final Message mMessgae=getBaseSendMessage(MsgType.TEXT);
-        TextMsgBody mTextMsgBody=new TextMsgBody();
+        final Message mMessgae = getBaseSendMessage(MsgType.TEXT);
+        TextMsgBody mTextMsgBody = new TextMsgBody();
         mTextMsgBody.setMessage(replace.toString());
         mTextMsgBody.setCharsequence(replace);
         mMessgae.setBody(mTextMsgBody);
@@ -410,15 +461,34 @@ public class ImUtils {
         //模拟两秒后发送成功
         updateMsg(mMessgae);
 
-        KLog.d("消息的内容："+hello);
-
-
+        KLog.d("消息的内容：" + hello);
     }
 
-    public void takeLeftImgMsg(String imagePath){
+    public void sendRightTextMsg2(String hello) {
+        if (TextUtils.isEmpty(hello)) {
+            return;
+        }
 
-        final Message mMessgae=getBaseSendMessage(MsgType.IMAGE);
-        ImageMsgBody mImageMsgBody=new ImageMsgBody();
+        SpannableStringBuilder replace = ChatUiHelper.handlerEmojiText(hello, true);
+        final Message mMessgae = getBaseSendMessage(MsgType.TEXT);
+        TextMsgBody mTextMsgBody = new TextMsgBody();
+        mTextMsgBody.setMessage(replace.toString());
+        mTextMsgBody.setCharsequence(replace);
+        mMessgae.setBody(mTextMsgBody);
+        mMessgae.setType(ChatAdapter.TYPE_SEND_TEXT);
+        mMessgae.setSenderId(mSenderId);
+        mMessgae.setSentStatus(MsgSendStatus.SENT);
+
+        //开始发送
+        mAdapter.addData(0, mMessgae);
+
+        KLog.d("消息的内容：" + hello);
+    }
+
+    public void takeLeftImgMsg(String imagePath) {
+
+        final Message mMessgae = getBaseSendMessage(MsgType.IMAGE);
+        ImageMsgBody mImageMsgBody = new ImageMsgBody();
         mImageMsgBody.setThumbUrl(imagePath);
         // mImageMsgBody.setThumbPath(imagePath);
         mMessgae.setBody(mImageMsgBody);
@@ -431,10 +501,10 @@ public class ImUtils {
 
     }
 
-    public void takeRightImgMsg(String imagePath){
+    public void takeRightImgMsg(String imagePath) {
 
-        final Message mMessgae=getBaseSendMessage(MsgType.IMAGE);
-        ImageMsgBody mImageMsgBody=new ImageMsgBody();
+        final Message mMessgae = getBaseSendMessage(MsgType.IMAGE);
+        ImageMsgBody mImageMsgBody = new ImageMsgBody();
         mImageMsgBody.setThumbUrl(imagePath);
         // mImageMsgBody.setThumbPath(imagePath);
         mMessgae.setBody(mImageMsgBody);
@@ -448,12 +518,11 @@ public class ImUtils {
     }
 
 
-
     //商品消息
     public void sendLeftShopMessage(SendOffineMsgEntity.DataBean.ProductInfoBean hello) {
 
-        final Message mMessgae=getBaseSendMessage(MsgType.KAPIAN);
-        ShopMsgBody mImageMsgBody=new ShopMsgBody();
+        final Message mMessgae = getBaseSendMessage(MsgType.KAPIAN);
+        ShopMsgBody mImageMsgBody = new ShopMsgBody();
         mImageMsgBody.setGoodsName(hello.getItemName());
         mImageMsgBody.setGoodsCode(hello.getItemCode());
         mImageMsgBody.setGoodImgUrl(hello.getShareImg());
@@ -464,25 +533,24 @@ public class ImUtils {
         mMessgae.setSenderId(mTargetId);
         mMessgae.setType(ChatAdapter.TYPE_KAPIAN_RECEIVE_TEXT);
         //开始发送
-        mAdapter.addData( mMessgae);
+        mAdapter.addData(mMessgae);
         //模拟两秒后发送成功
         updateMsg(mMessgae);
 
     }
 
 
-
     //商品消息 左边
     public void sLeftShopMessage(ShopMsgBody shopMsgBody) {
 
-        final Message mMessgae=getBaseSendMessage(MsgType.KAPIAN);
+        final Message mMessgae = getBaseSendMessage(MsgType.KAPIAN);
         //  ShopMsgBody mImageMsgBody=new ShopMsgBody();
 
         mMessgae.setBody(shopMsgBody);
         mMessgae.setSenderId(mTargetId);
         mMessgae.setType(ChatAdapter.TYPE_KAPIAN_SEND_TEXT);
         //开始发送
-        mAdapter.addData( mMessgae);
+        mAdapter.addData(mMessgae);
         //模拟两秒后发送成功
         updateMsg(mMessgae);
 
@@ -491,14 +559,14 @@ public class ImUtils {
     //商品消息 右边
     public void sRightShopMessage(ShopMsgBody shopMsgBody) {
 
-        final Message mMessgae=getBaseSendMessage(MsgType.KAPIAN);
+        final Message mMessgae = getBaseSendMessage(MsgType.KAPIAN);
         // ShopMsgBody mImageMsgBody=new ShopMsgBody();
 
         mMessgae.setBody(shopMsgBody);
         mMessgae.setSenderId(mSenderId);
         mMessgae.setType(ChatAdapter.TYPE_KAPIAN_RECEIVE_TEXT);
         //开始发送
-        mAdapter.addData( mMessgae);
+        mAdapter.addData(mMessgae);
         //模拟两秒后发送成功
         updateMsg(mMessgae);
 
@@ -508,25 +576,25 @@ public class ImUtils {
     //图片消息
     public void sendImageMessage(final LocalMedia media) {
 
-        final Message mMessgae=getBaseSendMessage(MsgType.IMAGE);
-        ImageMsgBody mImageMsgBody=new ImageMsgBody();
+        final Message mMessgae = getBaseSendMessage(MsgType.IMAGE);
+        ImageMsgBody mImageMsgBody = new ImageMsgBody();
         mImageMsgBody.setThumbUrl(media.getPath());
         mMessgae.setBody(mImageMsgBody);
         mMessgae.setSenderId(mSenderId);
         mMessgae.setType(ChatAdapter.TYPE_SEND_IMAGE);
         //开始发送
-        mAdapter.addData( mMessgae);
+        mAdapter.addData(mMessgae);
 
-        KLog.d(""+media.getPath());
+        KLog.d("" + media.getPath());
 
-        LogUtils.logd("拍照结果11："+media.getPath());
+        LogUtils.logd("拍照结果11：" + media.getPath());
 
         String cutPath;
 
         if (media.isCut()) {
-            cutPath=media.getCutPath();
-        }else{
-            cutPath= media.getPath();
+            cutPath = media.getCutPath();
+        } else {
+            cutPath = media.getPath();
         }
 
         if (cutPath.contains("content://")) {
@@ -535,17 +603,18 @@ public class ImUtils {
         }
 
 
-        KLog.d("新地址："+cutPath);
+        KLog.d("新地址：" + cutPath);
 
         // 创建图片消息
-        V2TIMMessage v2TIMMessage = V2TIMManager.getMessageManager().createImageMessage(""+cutPath);
+        V2TIMMessage v2TIMMessage = V2TIMManager.getMessageManager().createImageMessage("" + cutPath);
         // 发送图片消息
-        V2TIMManager.getMessageManager().sendMessage(v2TIMMessage, ""+fsUserId, null, V2TIMMessage.V2TIM_PRIORITY_DEFAULT, false, null,  new V2TIMSendCallback<V2TIMMessage>() {
+        V2TIMManager.getMessageManager().sendMessage(v2TIMMessage, "" + fsUserId, null, V2TIMMessage.V2TIM_PRIORITY_DEFAULT, false, null, new V2TIMSendCallback<V2TIMMessage>() {
             @Override
             public void onError(int code, String desc) {
                 // 图片消息发送失败
-                KLog.d("图片消息发送失败:"+code +"    详情："+desc);
+                KLog.d("图片消息发送失败:" + code + "    详情：" + desc);
             }
+
             @Override
             public void onSuccess(V2TIMMessage v2TIMMessage) {
                 // 图片消息发送成功
@@ -553,12 +622,13 @@ public class ImUtils {
 
                 String faceUrl = v2TIMMessage.getFaceUrl();
 
-                KLog.d("图片消息发送成功:"+faceUrl);
+                KLog.d("图片消息发送成功:" + faceUrl);
 
                 //模拟两秒后发送成功
                 updateMsg(mMessgae);
 
             }
+
             @Override
             public void onProgress(int progress) {
                 // 图片上传进度（0-100）
@@ -569,17 +639,16 @@ public class ImUtils {
     }
 
 
-
     //文件消息
     public void sendFileMessage(String from, String to, final String path) {
-        final Message mMessgae=getBaseSendMessage(MsgType.FILE);
-        FileMsgBody mFileMsgBody=new FileMsgBody();
+        final Message mMessgae = getBaseSendMessage(MsgType.FILE);
+        FileMsgBody mFileMsgBody = new FileMsgBody();
         mFileMsgBody.setLocalPath(path);
         mFileMsgBody.setDisplayName(FileUtils.getFileName(path));
         mFileMsgBody.setSize(FileUtils.getFileLength(path));
         mMessgae.setBody(mFileMsgBody);
         //开始发送
-        mAdapter.addData( mMessgae);
+        mAdapter.addData(mMessgae);
         //模拟两秒后发送成功
         updateMsg(mMessgae);
 
@@ -587,12 +656,12 @@ public class ImUtils {
 
 
     //默认客服消息
-    public void sendDefaultMsg(String replace){
+    public void sendDefaultMsg(String replace) {
 
 //        replace="您好，先由机器人客服东东为您服务，请简要、完整地输入您的问题，如：我的商品今天会发货吗？\n" +
 //                "若有其他问题，请在聊天对话框输入具体服务对应的数字： ";
 
-        if(!TextUtils.isEmpty(replace)){
+        if (!TextUtils.isEmpty(replace)) {
 
 //            int bstart=replace.indexOf("人工客服");
 //            int bend=bstart+"人工客服".length();
@@ -602,8 +671,8 @@ public class ImUtils {
         }
 
 
-        final Message mMessgae=getBaseSendMessage(MsgType.TEXT);
-        TextMsgBody mTextMsgBody=new TextMsgBody();
+        final Message mMessgae = getBaseSendMessage(MsgType.TEXT);
+        TextMsgBody mTextMsgBody = new TextMsgBody();
         mTextMsgBody.setMessage(replace.toString());
         mTextMsgBody.setCharsequence(replace);
         mMessgae.setBody(mTextMsgBody);
@@ -617,11 +686,9 @@ public class ImUtils {
     }
 
     //默认本地消息
-    public void sendTextDefaultMsg(String replace){
-
-
-        final Message mMessgae=getBaseSendMessage(MsgType.TEXT);
-        TextMsgBody mTextMsgBody=new TextMsgBody();
+    public void sendTextDefaultMsg(String replace) {
+        final Message mMessgae = getBaseSendMessage(MsgType.TEXT);
+        TextMsgBody mTextMsgBody = new TextMsgBody();
         mTextMsgBody.setMessage(replace.toString());
         mTextMsgBody.setCharsequence(replace);
         mMessgae.setBody(mTextMsgBody);
@@ -630,17 +697,13 @@ public class ImUtils {
         mMessgae.setSentStatus(MsgSendStatus.DEFAULT);
         //开始发送
         mAdapter.addData(mMessgae);
-
-
     }
 
 
     //中间默认消息
-    public void sendCenterDefaultMsg(String replace){
-
-
-        final Message mMessgae=getBaseSendMessage(MsgType.CENTERMS);
-        TextMsgBody mTextMsgBody=new TextMsgBody();
+    public void sendCenterDefaultMsg(String replace) {
+        final Message mMessgae = getBaseSendMessage(MsgType.CENTERMS);
+        TextMsgBody mTextMsgBody = new TextMsgBody();
         mTextMsgBody.setMessage(replace.toString());
         mTextMsgBody.setCharsequence(replace);
         mMessgae.setBody(mTextMsgBody);
@@ -649,16 +712,13 @@ public class ImUtils {
         mMessgae.setSentStatus(MsgSendStatus.DEFAULT);
         //开始发送
         mAdapter.addData(mMessgae);
-
-
+        rvChatList.scrollToPosition(mAdapter.getItemCount() - 1);
     }
 
 
-
-
-    public Message getBaseSendMessage(MsgType msgType){
-        Message mMessgae=new Message();
-        mMessgae.setUuid(UUID.randomUUID()+"");
+    public Message getBaseSendMessage(MsgType msgType) {
+        Message mMessgae = new Message();
+        mMessgae.setUuid(UUID.randomUUID() + "");
         mMessgae.setSenderId(mSenderId);
         mMessgae.setTargetId(mTargetId);
         mMessgae.setSentTime(System.currentTimeMillis());
@@ -668,25 +728,23 @@ public class ImUtils {
     }
 
     //语音消息
-    public void sendAudioMessage(  final String path,int time) {
-        final Message mMessgae=getBaseSendMessage(MsgType.AUDIO);
-        AudioMsgBody mFileMsgBody=new AudioMsgBody();
+    public void sendAudioMessage(final String path, int time) {
+        final Message mMessgae = getBaseSendMessage(MsgType.AUDIO);
+        AudioMsgBody mFileMsgBody = new AudioMsgBody();
         mFileMsgBody.setLocalPath(path);
         mFileMsgBody.setDuration(time);
         mMessgae.setBody(mFileMsgBody);
         //开始发送
-        mAdapter.addData( mMessgae);
+        mAdapter.addData(mMessgae);
         //模拟两秒后发送成功
         updateMsg(mMessgae);
     }
 
     //接受文本消息
-    public void getMyTextMsg(String text){
-
-        SpannableStringBuilder replace = ChatUiHelper.handlerEmojiText(text,true);
-
-        final Message mMessgae=getBaseSendMessage(MsgType.TEXT);
-        TextMsgBody mTextMsgBody=new TextMsgBody();
+    public void getMyTextMsg(String text) {
+        SpannableStringBuilder replace = ChatUiHelper.handlerEmojiText(text, true);
+        final Message mMessgae = getBaseSendMessage(MsgType.TEXT);
+        TextMsgBody mTextMsgBody = new TextMsgBody();
         mTextMsgBody.setMessage(replace.toString());
         mTextMsgBody.setCharsequence(replace);
         mMessgae.setBody(mTextMsgBody);
@@ -694,19 +752,29 @@ public class ImUtils {
         mMessgae.setSenderId(mTargetId);
         //开始发送
         mAdapter.addData(mMessgae);
-
         updateMsg(mMessgae);
+    }
 
-
+    //发送视频提示消息
+    public void sendVideoHintMsg(String content) {
+        Message mMessgae = getBaseSendMessage(MsgType.TEXT);
+        TextMsgBody mTextMsgBody = new TextMsgBody();
+        mTextMsgBody.setMessage(content);
+        mTextMsgBody.setVideo(true);
+        mTextMsgBody.setCharsequence(content);
+        mMessgae.setBody(mTextMsgBody);
+        mMessgae.setType(ChatAdapter.TYPE_SEND_TEXT);
+        mAdapter.addData(mMessgae);
+        updateMsg(mMessgae);
     }
 
     //接收图片消息
-    public void takeImageMsg(V2TIMMessage msg){
+    public void takeImageMsg(V2TIMMessage msg) {
 
         V2TIMImageElem v2TIMImageElem = msg.getImageElem();
 
         if (v2TIMImageElem == null) {
-            return ;
+            return;
         }
 
         // 一个图片消息会包含三种格式大小的图片，分别为原图、大图、微缩图(SDK内部自动生成大图和微缩图)
@@ -714,7 +782,7 @@ public class ImUtils {
         // 缩略图：是将原图等比压缩，压缩后宽、高中较小的一个等于198像素。
         List<V2TIMImageElem.V2TIMImage> imageList = v2TIMImageElem.getImageList();
 
-        KLog.d("收到图片路径22："+imageList.size());
+        KLog.d("收到图片路径22：" + imageList.size());
 
 
         for (V2TIMImageElem.V2TIMImage v2TIMImage : imageList) {
@@ -727,10 +795,10 @@ public class ImUtils {
             // 设置图片下载路径 imagePath，这里可以用 uuid 作为标识，避免重复下载
 
             //String imagePath = AppApplicationMVVM.getInstance().getFilesDir().getAbsolutePath()+ "/image/download/"+ uuid;
-            String imagePath = "/sdcard/im/image/" + ""+ImUtils.MyUserId + uuid;
+            String imagePath = "/sdcard/im/image/" + "" + ImUtils.MyUserId + uuid;
 
             //String imagePath =  ""+ImConstant.myUserId + uuid;
-            KLog.d("收到图片路径："+imagePath);
+            KLog.d("收到图片路径：" + imagePath);
 
             File imageFile = new File(imagePath);
             if (!imageFile.exists()) {
@@ -741,20 +809,22 @@ public class ImUtils {
                     public void onProgress(V2TIMElem.V2ProgressInfo progressInfo) {
                         // 图片下载进度：已下载大小 v2ProgressInfo.getCurrentSize()；总文件大小 v2ProgressInfo.getTotalSize()
                     }
+
                     @Override
                     public void onError(int code, String desc) {
                         // 图片下载失败
-                        KLog.d("图片下载失败:"+code  +"   详情："+desc);
+                        KLog.d("图片下载失败:" + code + "   详情：" + desc);
 
                     }
+
                     @Override
                     public void onSuccess() {
                         // 图片下载完成
 
                         KLog.d("图片下载完成");
 
-                        final Message mMessgae=getBaseSendMessage(MsgType.IMAGE);
-                        ImageMsgBody mImageMsgBody=new ImageMsgBody();
+                        final Message mMessgae = getBaseSendMessage(MsgType.IMAGE);
+                        ImageMsgBody mImageMsgBody = new ImageMsgBody();
                         // mImageMsgBody.setThumbUrl(imagePath);
                         mImageMsgBody.setThumbPath(imagePath);
                         mMessgae.setBody(mImageMsgBody);
@@ -777,9 +847,9 @@ public class ImUtils {
 
                 KLog.d("图片已存在");
 
-                final Message mMessgae=getBaseSendMessage(MsgType.IMAGE);
+                final Message mMessgae = getBaseSendMessage(MsgType.IMAGE);
 
-                ImageMsgBody mImageMsgBody=new ImageMsgBody();
+                ImageMsgBody mImageMsgBody = new ImageMsgBody();
                 mImageMsgBody.setThumbPath(imagePath);
                 mImageMsgBody.setUuid(uuid);
                 // mImageMsgBody.setThumbUrl(imagePath);
@@ -788,9 +858,8 @@ public class ImUtils {
                 mMessgae.setType(ChatAdapter.TYPE_RECEIVE_IMAGE);
                 mMessgae.setV2TIMImage(v2TIMImage);
                 //开始发送
-                mAdapter.addData( mMessgae);
+                mAdapter.addData(mMessgae);
                 updateMsg(mMessgae);
-
 
 
             }
@@ -799,7 +868,7 @@ public class ImUtils {
     }
 
 
-    public  void takeOcr(V2TIMMessage msg){
+    public void takeOcr(V2TIMMessage msg) {
 
 
         // 语音消息
@@ -820,10 +889,12 @@ public class ImUtils {
                 public void onProgress(V2TIMElem.V2ProgressInfo progressInfo) {
                     // 下载进度回调：已下载大小 v2ProgressInfo.getCurrentSize()；总文件大小 v2ProgressInfo.getTotalSize()
                 }
+
                 @Override
                 public void onError(int code, String desc) {
                     // 下载失败
                 }
+
                 @Override
                 public void onSuccess() {
                     // 下载完成
@@ -837,7 +908,7 @@ public class ImUtils {
     }
 
 
-    public void takeVideoMsg(V2TIMMessage msg){
+    public void takeVideoMsg(V2TIMMessage msg) {
 
 
         // 视频消息
@@ -865,10 +936,12 @@ public class ImUtils {
                 public void onProgress(V2TIMElem.V2ProgressInfo progressInfo) {
                     // 下载进度回调：已下载大小 v2ProgressInfo.getCurrentSize()；总文件大小 v2ProgressInfo.getTotalSize()
                 }
+
                 @Override
                 public void onError(int code, String desc) {
                     // 下载失败
                 }
+
                 @Override
                 public void onSuccess() {
                     // 下载完成
@@ -887,10 +960,12 @@ public class ImUtils {
                 public void onProgress(V2TIMElem.V2ProgressInfo progressInfo) {
                     // 下载进度回调：已下载大小 v2ProgressInfo.getCurrentSize()；总文件大小 v2ProgressInfo.getTotalSize()
                 }
+
                 @Override
                 public void onError(int code, String desc) {
                     // 下载失败
                 }
+
                 @Override
                 public void onSuccess() {
                     // 下载完成
@@ -904,12 +979,11 @@ public class ImUtils {
     }
 
 
-
     //视频消息
     public void sendVedioMessage(final LocalMedia media) {
-        final Message mMessgae=getBaseSendMessage(MsgType.VIDEO);
+        final Message mMessgae = getBaseSendMessage(MsgType.VIDEO);
         //生成缩略图路径
-        String vedioPath=media.getPath();
+        String vedioPath = media.getPath();
         MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
         mediaMetadataRetriever.setDataSource(vedioPath);
         Bitmap bitmap = mediaMetadataRetriever.getFrameAtTime();
@@ -924,26 +998,24 @@ public class ImUtils {
             bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
             out.flush();
             out.close();
-        }catch ( Exception e) {
-            KLog.d("视频缩略图路径获取失败："+e.toString());
+        } catch (Exception e) {
+            KLog.d("视频缩略图路径获取失败：" + e.toString());
             e.printStackTrace();
         }
-        VideoMsgBody mImageMsgBody=new VideoMsgBody();
+        VideoMsgBody mImageMsgBody = new VideoMsgBody();
         mImageMsgBody.setExtra(urlpath);
         mMessgae.setBody(mImageMsgBody);
         //开始发送
-        mAdapter.addData( mMessgae);
+        mAdapter.addData(mMessgae);
         //模拟两秒后发送成功
         updateMsg(mMessgae);
 
     }
 
 
-
-
     public void updateMsg(Message mMessgae) {
 
-        if(mMessgae==null){
+        if (mMessgae == null) {
             return;
         }
 
@@ -952,13 +1024,13 @@ public class ImUtils {
         new Handler(context.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                int position=0;
+                int position = 0;
                 mMessgae.setSentStatus(MsgSendStatus.SENT);
                 //更新单个子条目
-                for (int i=0;i<mAdapter.getData().size();i++){
-                    Message mAdapterMessage=mAdapter.getData().get(i);
-                    if (mMessgae.getUuid().equals(mAdapterMessage.getUuid())){
-                        position=i;
+                for (int i = 0; i < mAdapter.getData().size(); i++) {
+                    Message mAdapterMessage = mAdapter.getData().get(i);
+                    if (mMessgae.getUuid().equals(mAdapterMessage.getUuid())) {
+                        position = i;
                     }
                 }
                 mAdapter.notifyItemChanged(position);
@@ -978,7 +1050,6 @@ public class ImUtils {
 //            }
 //        });
     }
-
 
 
     public onNoOnclickListener noOnclickListener;//取消按钮被点击了的监听器
@@ -1012,9 +1083,8 @@ public class ImUtils {
 
 
     public interface onYesMsgOnclickListener {
-        void onYesMsgClick(boolean isMsgOk,int msgType);
+        void onYesMsgClick(boolean isMsgOk, int msgType);
     }
-
 
 
 }
