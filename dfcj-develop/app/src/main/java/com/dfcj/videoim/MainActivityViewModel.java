@@ -47,7 +47,7 @@ public class MainActivityViewModel extends BaseViewModel {
     public SingleLiveEvent<ChangeCustomerServiceEntity> changeCustomerServiceEntity = new SingleLiveEvent<>();
     public SingleLiveEvent<upLoadImgEntity> upLoad_ImgEntity = new SingleLiveEvent<>();
     public SingleLiveEvent<TrtcRoomEntity> trtcRoomEntity = new SingleLiveEvent<>();
-    public MutableLiveData<HistoryMsgEntity> historyMsgEntity ;
+    public MutableLiveData<HistoryMsgEntity> historyMsgEntity;
 
 
     public MainActivityViewModel(@NonNull Application application) {
@@ -66,6 +66,8 @@ public class MainActivityViewModel extends BaseViewModel {
         params.put("customerCode", "" + ImUtils.MyUserId);
         params.put("osInfo", "" + systemModel);
         params.put("osType", "2");//1、iOS系统、2、Android系统、3、微信小程序4、Mobile 5、电脑端PC网页浏览器
+        params.put("faceUrl", "http");
+        params.put("nick", "test");
 
         apiService.requestLogin(params)
                 .compose(RxUtils.observableToMain()) //线程调度,compose操作符是直接对当前Observable进行操作（可简单理解为不停地.方法名（）.方法名（）链式操作当前Observable）
@@ -125,16 +127,12 @@ public class MainActivityViewModel extends BaseViewModel {
 
     //获取客服
     public void getImStaff() {
-
-
         String systemModel = AppUtils.getSystemModel();
 
         Map<String, Object> params = new HashMap<>();
-
         params.put("customerCode", "" + ImUtils.MyUserId);
         params.put("osInfo", "" + systemModel);
         params.put("osType", "2");//1、iOS系统、2、Android系统、3、微信小程序4、Mobile 5、电脑端PC网页浏览器
-
 
         RetrofitClient.getInstance(HostType.lOAN_STEWARD_MAIN_HOST).create(ApiService.class)
                 .requestChangeCustomerService(params)
@@ -234,12 +232,15 @@ public class MainActivityViewModel extends BaseViewModel {
     //获取历史接口
     public void getCustImRecord(int page, String time) {
         Map<String, Object> params = new HashMap<>();
-        params.put("custCode", ImUtils.MyUserId);
+
         Map<String, Object> params2 = new HashMap<>();
         params2.put("pageNo", page);
         params2.put("pageSize", 20);
+
         params.put("page", params2);
+        params.put("custCode", ImUtils.MyUserId);
         params.put("startDate", time);
+
         RetrofitClient.getInstance(HostType.lOAN_STEWARD_MAIN_HOST).create(ApiService.class)
                 .requestQueryCustImRecord(params)
                 .compose(RxUtils.observableToMain()) //线程调度,compose操作符是直接对当前Observable进行操作（可简单理解为不停地.方法名（）.方法名（）链式操作当前Observable）
@@ -253,13 +254,7 @@ public class MainActivityViewModel extends BaseViewModel {
 
                     @Override
                     public void onNext(@NonNull HistoryMsgEntity hhh) {
-                        if (hhh!=null) {
-
-
-                            historyMsgEntity.postValue(hhh);
-                        }
-
-
+                        historyMsgEntity.postValue(hhh);
                     }
 
                     @Override

@@ -4,6 +4,8 @@ public class ChangeCustomerServiceEntity {
     private Boolean success;
     private DataBean data;
     private FailBean fail;
+    private String code;
+    private String messaage;
 
     public Boolean getSuccess() {
         return success;
@@ -27,6 +29,22 @@ public class ChangeCustomerServiceEntity {
 
     public void setFail(FailBean fail) {
         this.fail = fail;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getMessaage() {
+        return messaage;
+    }
+
+    public void setMessaage(String messaage) {
+        this.messaage = messaage;
     }
 
     public static class DataBean {
@@ -82,7 +100,6 @@ public class ChangeCustomerServiceEntity {
 
 
     // {"success":false,"data":{"staffCode":"staff1","eventId":79},"fail":{"extra":null,"code":"18800301","message":"当前无空闲客服，请您稍候，目前正在排队人数1人"}}
-
 
 
 }

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:tools="http://schemas.android.com/tools">
 
 
     <data>
@@ -14,6 +13,7 @@
         <variable
             name="adapter"
             type="com.dfcj.videoim.adapter.ChatAdapter" />
+
         <variable
             name="layoutManager"
             type="androidx.recyclerview.widget.LinearLayoutManager" />
@@ -24,9 +24,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:fitsSystemWindows="true"
-        >
+        android:orientation="vertical">
 
         <include layout="@layout/unified_head"></include>
 
@@ -36,41 +35,35 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <ProgressBar
                     android:id="@+id/main_top_progress"
+                    style="?android:attr/progressBarStyleSmall"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
-                    android:visibility="gone"
-                    style="?android:attr/progressBarStyleSmall"
-                    />
+                    android:visibility="gone" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_chat_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:overScrollMode="never"
                     android:adapter="@{adapter}"
-                    app:layoutManager="@{layoutManager}"
-                    />
+                    android:overScrollMode="never"
+                    app:layoutManager="@{layoutManager}" />
 
 
             </LinearLayout>
-
-
 
 
             <!--             android:focusable="true"
@@ -80,24 +73,21 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
 
                 <TextView
                     android:id="@+id/main_botton_change_mean_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="转人工"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/custom_divider_white4"
+                    android:onClick="@{() ->presenter.transferToLabor()}"
                     android:paddingLeft="15dp"
+                    android:paddingTop="7dp"
                     android:paddingRight="15dp"
                     android:paddingBottom="7dp"
-                    android:paddingTop="7dp"
-                    android:background="@drawable/custom_divider_white4"
-                    android:layout_marginBottom="10dp"
-                    android:onClick="@{() ->presenter.transferToLabor()}"
-                    ></TextView>
-
+                    android:text="转人工"></TextView>
 
 
                 <RelativeLayout
@@ -106,8 +96,7 @@
                     android:layout_height="100dp"
                     android:background="@color/color_66_E5E5E5"
                     android:paddingBottom="9dp"
-                    android:visibility="gone"
-                    >
+                    android:visibility="visible">
 
                     <ImageView
                         android:id="@+id/main_layout_shop_img"
@@ -139,6 +128,7 @@
                         android:layout_marginRight="10dp"
                         android:background="@drawable/custom_divider_red"
                         android:gravity="center"
+                        android:onClick="@{() -> presenter.send_shop()}"
                         android:paddingLeft="13dp"
                         android:paddingTop="6dp"
                         android:paddingRight="13dp"
@@ -148,26 +138,36 @@
                         android:textSize="@dimen/textSize12sp"></TextView>
 
 
-
-
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="14dp"
-                        android:layout_toRightOf="@+id/main_layout_shop_img"
                         android:layout_toLeftOf="@+id/mian_layout_shop_send_tv"
+                        android:layout_toRightOf="@+id/main_layout_shop_img"
                         android:gravity="center_vertical"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/mian_layout_shop_num_tv"
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/shop_tx1"
-                            android:textColor="@color/color_676767"
-                            android:textSize="@dimen/textSize12sp"
-                            ></TextView>
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/shop_tx1"
+                                android:textColor="@color/color_676767"
+                                android:textSize="@dimen/textSize12sp" />
+
+                            <TextView
+                                android:id="@+id/mian_layout_shop_num_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="100100"
+                                android:textColor="@color/color_676767"
+                                android:textSize="@dimen/textSize12sp" />
+                        </LinearLayout>
 
 
                         <LinearLayout
@@ -187,18 +187,15 @@
                                 android:id="@+id/mian_layout_shop_title_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginRight="15dp"
+                                android:ellipsize="end"
+                                android:maxLines="2"
                                 android:text="资生堂的化妆包片12321543215342563496346348346"
                                 android:textColor="@color/color_676767"
-                                android:textSize="@dimen/textSize12sp"
-                                android:layout_marginRight="15dp"
-                                android:maxLines="2"
-                                android:ellipsize="end"
-                                ></TextView>
+                                android:textSize="@dimen/textSize12sp"></TextView>
 
 
                         </LinearLayout>
-
-
 
 
                         <LinearLayout
@@ -226,13 +223,10 @@
                         </LinearLayout>
 
 
-
                     </LinearLayout>
 
 
                 </RelativeLayout>
-
-
 
 
                 <View
@@ -255,9 +249,8 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_margin="10px"
-                        android:src="@drawable/ic_audio"
                         android:onClick="@{() -> presenter.ivAudioClick()}"
-                        />
+                        android:src="@drawable/ic_audio" />
 
                     <RelativeLayout
                         android:layout_width="0dp"
@@ -312,22 +305,19 @@
                         android:id="@+id/btn_send"
                         android:layout_width="50dp"
                         android:layout_height="30dp"
-                        android:padding="1dp"
                         android:layout_marginRight="10dp"
-                        android:text="发送"
-                        android:textSize="13dp"
-                        android:textColor="@color/black"
-                        android:visibility="gone"
                         android:onClick="@{() -> presenter.btn_send()}"
-                        />
+                        android:padding="1dp"
+                        android:text="发送"
+                        android:textColor="@color/black"
+                        android:textSize="13dp"
+                        android:visibility="gone" />
 
 
                 </LinearLayout>
 
 
             </LinearLayout>
-
-
 
 
         </LinearLayout>
@@ -337,10 +327,9 @@
             android:id="@+id/ocrLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:background="@color/white"
-            android:visibility="gone"
-            >
+            android:orientation="vertical"
+            android:visibility="gone">
 
 
             <RelativeLayout
@@ -352,60 +341,53 @@
                     android:id="@+id/mainlayout_pt_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:paddingTop="20dp"
                     android:layout_centerHorizontal="true"
-                    android:visibility="visible"
+                    android:gravity="center"
                     android:onClick="@{() ->presenter.languageSel()}"
-                    >
+                    android:orientation="horizontal"
+                    android:paddingTop="20dp"
+                    android:visibility="visible">
 
                     <TextView
                         android:id="@+id/main_layout_language_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="普通话"
-                        android:textSize="16sp"
-                        android:textColor="@color/black"
-                        android:gravity="center"
                         android:layout_gravity="center"
-                        ></TextView>
+                        android:gravity="center"
+                        android:text="普通话"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"></TextView>
 
 
                     <ImageView
                         android:layout_width="12dp"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/xia"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="7dp"
-                        android:visibility="gone"
-                        ></ImageView>
+                        android:src="@drawable/xia"
+                        android:visibility="gone"></ImageView>
 
                 </LinearLayout>
-
 
 
                 <TextView
                     android:id="@+id/main_ocr_content_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="你可以说点什么"
-                    android:textSize="16sp"
-                    android:textColor="@color/black"
-                    android:gravity="left|top"
-                    android:paddingTop="20dp"
-                    android:paddingLeft="14dp"
-                    android:paddingRight="14dp"
-                    android:visibility="gone"
                     android:background="@null"
+                    android:gravity="left|top"
+                    android:hint="你可以说点什么"
                     android:maxLength="100"
                     android:onClick="@{() -> presenter.ocrEditClick()}"
-                    ></TextView>
-
+                    android:paddingLeft="14dp"
+                    android:paddingTop="20dp"
+                    android:paddingRight="14dp"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:visibility="gone"></TextView>
 
 
             </RelativeLayout>
-
 
 
             <View
@@ -417,18 +399,16 @@
                 android:id="@+id/main_ocr_ck_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="按住说话"
-                android:textSize="14sp"
-                android:textColor="@color/color_40_222222"
                 android:layout_gravity="center"
-                ></TextView>
+                android:text="按住说话"
+                android:textColor="@color/color_40_222222"
+                android:textSize="14sp"></TextView>
 
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                >
+                android:layout_marginTop="15dp">
 
 
                 <ImageView
@@ -447,36 +427,32 @@
                     android:id="@+id/main_ocr_cancel_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="清空"
-                    android:textSize="14sp"
-                    android:textColor="@color/color_40_222222"
                     android:layout_centerVertical="true"
+                    android:onClick="@{() ->presenter.clearOcr()}"
                     android:paddingLeft="35dp"
                     android:paddingTop="15dp"
                     android:paddingBottom="15dp"
-                    android:visibility="gone"
-                    android:onClick="@{() ->presenter.clearOcr()}"
-                    >
-                </TextView>
+                    android:text="清空"
+                    android:textColor="@color/color_40_222222"
+                    android:textSize="14sp"
+                    android:visibility="gone"></TextView>
 
                 <RelativeLayout
                     android:id="@+id/main_ocr_btn_img"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
-                    android:clickable="true"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:layout_gravity="center"
                     android:layout_centerHorizontal="true"
-                    >
+                    android:layout_gravity="center"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:clickable="true">
 
                     <ImageView
                         android:layout_width="65dp"
                         android:layout_height="65dp"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center"
-                        android:src="@drawable/yuy_pic"
                         android:contentDescription="@null"
-                        ></ImageView>
+                        android:src="@drawable/yuy_pic"></ImageView>
 
                 </RelativeLayout>
 
@@ -485,22 +461,19 @@
                     android:id="@+id/main_ocr_send_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="发送"
-                    android:textSize="14sp"
-                    android:textColor="@color/color_40_222222"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:paddingRight="35dp"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="15dp"
-                    android:visibility="gone"
                     android:onClick="@{() -> presenter.sendOcr()}"
-                    ></TextView>
-
+                    android:paddingTop="15dp"
+                    android:paddingRight="35dp"
+                    android:paddingBottom="15dp"
+                    android:text="发送"
+                    android:textColor="@color/color_40_222222"
+                    android:textSize="14sp"
+                    android:visibility="gone"></TextView>
 
 
             </RelativeLayout>
-
 
 
             <View
@@ -508,19 +481,15 @@
                 android:layout_height="38dp"></View>
 
 
-
         </LinearLayout>
-
-
-
 
 
         <RelativeLayout
             android:id="@+id/bottom_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:background="@color/white"
+            android:visibility="gone"
 
             >
             <!--表情-->
@@ -533,8 +502,7 @@
                 android:id="@+id/rlEmotion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                >
+                android:background="@color/white">
 
                 <LinearLayout
                     android:id="@+id/home_emoji"
@@ -548,29 +516,27 @@
                         android:id="@+id/vp_emoji"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        />
+                        android:layout_marginTop="15dp" />
 
 
                     <com.dfcj.videoim.view.widght.IndicatorView
                         android:id="@+id/ind_emoji"
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
-                        android:layout_marginLeft="16dp"
                         android:layout_gravity="bottom"
-                        android:layout_marginRight="16dp"
-                        app:gravity="0"
+                        android:layout_marginLeft="16dp"
                         android:layout_marginTop="15dp"
+                        android:layout_marginRight="16dp"
                         android:background="@color/white"
+                        app:gravity="0"
                         app:indicatorColor="@color/red"
                         app:indicatorColorSelected="@color/black"
-                        app:indicatorWidth="6"/>
+                        app:indicatorWidth="6" />
 
                 </LinearLayout>
 
 
             </LinearLayout>
-
 
 
             <!--  <include
@@ -583,14 +549,12 @@
                 android:id="@+id/llAdd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                >
+                android:background="@color/white">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    >
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -602,17 +566,15 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="@{() -> presenter.toImgPic()}"
-                            >
+                            android:onClick="@{() -> presenter.toImgPic()}">
 
                             <ImageView
                                 android:id="@+id/ivPhoto"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
-                                android:layout_marginTop="30dp"
                                 android:layout_centerHorizontal="true"
-                                android:background="@drawable/selector_ctype_image"
-                                />
+                                android:layout_marginTop="30dp"
+                                android:background="@drawable/selector_ctype_image" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -621,7 +583,7 @@
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginTop="15px"
                                 android:text="相册"
-                                android:textSize="12sp"/>
+                                android:textSize="12sp" />
                         </RelativeLayout>
 
                         <RelativeLayout
@@ -629,17 +591,15 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="@{() -> presenter.toImgVideoPic()}"
-                            >
+                            android:onClick="@{() -> presenter.toImgVideoPic()}">
 
                             <ImageView
                                 android:id="@+id/ivFile"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
-                                android:layout_marginTop="30dp"
                                 android:layout_centerHorizontal="true"
-                                android:src="@drawable/selector_ctype_file"
-                                />
+                                android:layout_marginTop="30dp"
+                                android:src="@drawable/selector_ctype_file" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -648,11 +608,8 @@
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginTop="15px"
                                 android:text="拍照"
-                                android:textSize="12sp"/>
+                                android:textSize="12sp" />
                         </RelativeLayout>
-
-
-
 
 
                         <RelativeLayout
@@ -660,17 +617,15 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="@{() -> presenter.toVideo()}"
-                            >
+                            android:onClick="@{() -> presenter.toVideo()}">
 
                             <ImageView
                                 android:id="@+id/ivVideo"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
-                                android:layout_marginTop="30dp"
                                 android:layout_centerHorizontal="true"
-                                android:src="@drawable/ship_hui"
-                                />
+                                android:layout_marginTop="30dp"
+                                android:src="@drawable/ship_hui" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -679,11 +634,8 @@
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginTop="15px"
                                 android:text="视频"
-                                android:textSize="12sp"/>
+                                android:textSize="12sp" />
                         </RelativeLayout>
-
-
-
 
 
                         <RelativeLayout
@@ -691,17 +643,15 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:visibility="gone"
-                            >
+                            android:visibility="gone">
 
                             <ImageView
                                 android:id="@+id/ivLocation"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
-                                android:layout_marginTop="30dp"
                                 android:layout_centerHorizontal="true"
-                                android:background="@drawable/selector_ctype_location"
-                                />
+                                android:layout_marginTop="30dp"
+                                android:background="@drawable/selector_ctype_location" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -710,10 +660,9 @@
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginTop="15px"
                                 android:text="位置"
-                                android:textSize="12sp"/>
+                                android:textSize="12sp" />
                         </RelativeLayout>
                     </LinearLayout>
-
 
 
                 </LinearLayout>
@@ -722,17 +671,10 @@
             </LinearLayout>
 
 
-
         </RelativeLayout>
 
 
-
-
-
-
     </LinearLayout>
-
-
 
 
 </layout>

@@ -1,6 +1,6 @@
 package com.dfcj.videoim.entity;
 
-public class ShopMsgBody  extends MsgBody{
+public class ShopMsgBody extends MsgBody {
 
     //    产品json:{
 //        "goodsIcon": "商品缩略图",
@@ -12,9 +12,12 @@ public class ShopMsgBody  extends MsgBody{
 //    }
 //
 
-
-
     private String goodsCode;
+    private String goodsName;
+    private String goodsPrice;
+    private String goodsLinkApp;
+    private String goodsLinkWeb;
+    private String goodsIcon;
 
     public String getGoodsCode() {
         return goodsCode;
@@ -56,21 +59,11 @@ public class ShopMsgBody  extends MsgBody{
         this.goodsLinkWeb = goodsLinkWeb;
     }
 
-    private String goodsName;
-    private String goodsPrice;
-    private String goodsLinkApp;
-    private String goodsLinkWeb;
-
-    public String getGoodImgUrl() {
-        return goodImgUrl;
+    public String getGoodsIcon() {
+        return goodsIcon;
     }
 
-    public void setGoodImgUrl(String goodImgUrl) {
-        this.goodImgUrl = goodImgUrl;
+    public void setGoodsIcon(String goodsIcon) {
+        this.goodsIcon = goodsIcon;
     }
-
-    private String goodImgUrl;
-
-
-
 }
