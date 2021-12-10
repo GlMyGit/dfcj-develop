@@ -29,7 +29,7 @@
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:scaleType="centerInside"
-             android:src="@drawable/touxian_df" />
+            android:src="@drawable/touxian_df" />
 
 
 
@@ -44,6 +44,7 @@
             >
 
             <TextView
+                android:id="@+id/kapian_top_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="我"

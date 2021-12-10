@@ -15,6 +15,8 @@ import android.text.style.BackgroundColorSpan;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.BusUtils;
+import com.blankj.utilcode.util.CloseUtils;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.GsonUtils;
 import com.dfcj.videoim.MainActivity;
@@ -32,6 +34,7 @@ import com.dfcj.videoim.entity.MsgSendStatus;
 import com.dfcj.videoim.entity.MsgType;
 import com.dfcj.videoim.entity.RoomIdEntity;
 import com.dfcj.videoim.entity.SendOffineMsgEntity;
+import com.dfcj.videoim.entity.SenderType;
 import com.dfcj.videoim.entity.ShopMsgBody;
 import com.dfcj.videoim.entity.TextMsgBody;
 import com.dfcj.videoim.entity.VideoMsgBody;
@@ -82,9 +85,9 @@ public class ImUtils {
 
     RecyclerView rvChatList;
 
-    //    public static String fsUserId = "106584";//客服
-    public static String fsUserId = SharedPrefsUtils.getValue(AppConstant.STAFF_CODE);//客服
-    public static String MyUserId = "customer1";//顾客
+        public static String fsUserId = "106584";//客服
+//    public static String fsUserId = SharedPrefsUtils.getValue(AppConstant.STAFF_CODE);//客服
+    public static String MyUserId = SharedPrefsUtils.getValue(AppConstant.MYUSERID);//顾客
 
     //public static  String fsUserId="customer1";
     //public static String MyUserId="staff1";
@@ -117,43 +120,41 @@ public class ImUtils {
             public void onConnecting() {
                 super.onConnecting();
                 // 正在连接到腾讯云服务器
-                // ToastUtils.showShort("链接客服系统中");
-
                 KLog.d("链接客服系统中");
-
             }
 
             @Override
             public void onConnectSuccess() {
                 super.onConnectSuccess();
                 // 已经成功连接到腾讯云服务器
-                // ToastUtils.showLong("链接客服系统成功");
-
-
+                KLog.d("链接客服系统成功");
             }
 
             @Override
             public void onConnectFailed(int code, String error) {
                 super.onConnectFailed(code, error);
                 // 连接腾讯云服务器失败
-                //  ToastUtils.showLong("链接客服失败");
+                KLog.d("连接腾讯云服务器失败");
+                MainActivity mainActivity = (MainActivity) context;
+                mainActivity.closeActivity(mainActivity);
             }
 
             @Override
             public void onKickedOffline() {
                 super.onKickedOffline();
                 //用户被踢下线
-                //  ToastUtils.showLong("用户被踢下线");
+                KLog.d("用户被踢下线");
+                MainActivity mainActivity = (MainActivity) context;
+                mainActivity.closeActivity(mainActivity);
             }
 
             @Override
             public void onSelfInfoUpdated(V2TIMUserFullInfo info) {
                 super.onSelfInfoUpdated(info);
                 //用户的资料发生了更新
-                // ToastUtils.showLong("用户的资料发生了更新");
+                KLog.d("用户的资料发生了更新");
+
             }
-
-
         });
 
 
@@ -162,10 +163,7 @@ public class ImUtils {
 
     //登录
     public void loginIm() {
-
-
         initTencentImLogin();
-
         V2TIMManager.getInstance().login("" + MyUserId, ImConstant.genTestUserSig("" + MyUserId), new V2TIMCallback() {
             @Override
             public void onSuccess() {
@@ -176,8 +174,6 @@ public class ImUtils {
                 if (yesOnclickListener != null) {
                     yesOnclickListener.onYesClick(1);
                 }
-
-
             }
 
             @Override
@@ -333,6 +329,13 @@ public class ImUtils {
                         @Override
                         public void onError(int i, String s) {
                             KLog.d("发送失败：" + s);
+                            if (msgType == AppConstant.SEND_VIDEO_TYPE_START ||
+                                    msgType == AppConstant.SEND_VIDEO_TYPE_CANCEL ||
+                                    msgType == AppConstant.SEND_VIDEO_TYPE_END ||
+                                    msgType == AppConstant.SEND_VIDEO_TYPE_OVERTIME) {
+                            } else {
+                                updateFailedMsg(mMessgae);
+                            }
                             if (yesMsgOnclickListener != null) {
                                 yesMsgOnclickListener.onYesMsgClick(false, msgType);
                             }
@@ -408,6 +411,7 @@ public class ImUtils {
         mMessgae.setBody(mTextMsgBody);
         mMessgae.setType(ChatAdapter.TYPE_RECEIVE_TEXT);
         mMessgae.setSenderId(mTargetId);
+        mMessgae.setSenderType(SenderType.LEFT);
 
         //开始发送
         mAdapter.addData(mMessgae);
@@ -432,6 +436,7 @@ public class ImUtils {
         mMessgae.setType(ChatAdapter.TYPE_RECEIVE_TEXT);
         mMessgae.setSenderId(mTargetId);
         mMessgae.setSentStatus(MsgSendStatus.SENT);
+        mMessgae.setSenderType(SenderType.LEFT);
 
         //开始发送
         mAdapter.addData(0, mMessgae);
@@ -454,6 +459,7 @@ public class ImUtils {
         mMessgae.setBody(mTextMsgBody);
         mMessgae.setType(ChatAdapter.TYPE_SEND_TEXT);
         mMessgae.setSenderId(mSenderId);
+        mMessgae.setSenderType(SenderType.RIGHT);
 
         //开始发送
         mAdapter.addData(mMessgae);
@@ -477,6 +483,7 @@ public class ImUtils {
         mMessgae.setType(ChatAdapter.TYPE_SEND_TEXT);
         mMessgae.setSenderId(mSenderId);
         mMessgae.setSentStatus(MsgSendStatus.SENT);
+        mMessgae.setSenderType(SenderType.RIGHT);
 
         //开始发送
         mAdapter.addData(0, mMessgae);
@@ -493,6 +500,7 @@ public class ImUtils {
         mMessgae.setBody(mImageMsgBody);
         mMessgae.setSenderId(mTargetId);
         mMessgae.setType(ChatAdapter.TYPE_RECEIVE_IMAGE);
+        mMessgae.setSenderType(SenderType.LEFT);
 
         //开始发送
         mAdapter.addData(mMessgae);
@@ -509,6 +517,7 @@ public class ImUtils {
         mMessgae.setBody(mImageMsgBody);
         mMessgae.setSenderId(mSenderId);
         mMessgae.setType(ChatAdapter.TYPE_SEND_IMAGE);
+        mMessgae.setSenderType(SenderType.RIGHT);
 
         //开始发送
         mAdapter.addData(mMessgae);
@@ -531,6 +540,8 @@ public class ImUtils {
         mMessgae.setBody(mImageMsgBody);
         mMessgae.setSenderId(mTargetId);
         mMessgae.setType(ChatAdapter.TYPE_KAPIAN_RECEIVE_TEXT);
+        mMessgae.setSenderType(SenderType.LEFT);
+
         //开始发送
         mAdapter.addData(mMessgae);
         //模拟两秒后发送成功
@@ -539,36 +550,34 @@ public class ImUtils {
     }
 
 
-    //商品消息 左边
-    public void sLeftShopMessage(ShopMsgBody shopMsgBody) {
-
+    //商品消息 右边
+    public void sRightShopMessage(ShopMsgBody shopMsgBody) {
         final Message mMessgae = getBaseSendMessage(MsgType.KAPIAN);
-        //  ShopMsgBody mImageMsgBody=new ShopMsgBody();
 
         mMessgae.setBody(shopMsgBody);
         mMessgae.setSenderId(mTargetId);
         mMessgae.setType(ChatAdapter.TYPE_KAPIAN_SEND_TEXT);
+        mMessgae.setSenderType(SenderType.RIGHT);
         //开始发送
         mAdapter.addData(mMessgae);
+
         //模拟两秒后发送成功
         updateMsg(mMessgae);
-
     }
 
-    //商品消息 右边
-    public void sRightShopMessage(ShopMsgBody shopMsgBody) {
-
+    //商品消息 左边
+    public void sLeftShopMessage(ShopMsgBody shopMsgBody) {
         final Message mMessgae = getBaseSendMessage(MsgType.KAPIAN);
-        // ShopMsgBody mImageMsgBody=new ShopMsgBody();
 
         mMessgae.setBody(shopMsgBody);
         mMessgae.setSenderId(mSenderId);
         mMessgae.setType(ChatAdapter.TYPE_KAPIAN_RECEIVE_TEXT);
+        mMessgae.setSenderType(SenderType.LEFT);
         //开始发送
         mAdapter.addData(mMessgae);
+
         //模拟两秒后发送成功
         updateMsg(mMessgae);
-
     }
 
 
@@ -581,6 +590,7 @@ public class ImUtils {
         mMessgae.setBody(mImageMsgBody);
         mMessgae.setSenderId(mSenderId);
         mMessgae.setType(ChatAdapter.TYPE_SEND_IMAGE);
+        mMessgae.setSenderType(SenderType.RIGHT);
         //开始发送
         mAdapter.addData(mMessgae);
 
@@ -646,6 +656,7 @@ public class ImUtils {
         mFileMsgBody.setDisplayName(FileUtils.getFileName(path));
         mFileMsgBody.setSize(FileUtils.getFileLength(path));
         mMessgae.setBody(mFileMsgBody);
+        mMessgae.setSenderType(SenderType.RIGHT);
         //开始发送
         mAdapter.addData(mMessgae);
         //模拟两秒后发送成功
@@ -678,6 +689,7 @@ public class ImUtils {
         mMessgae.setType(ChatAdapter.TYPE_DF_TEXT);
         mMessgae.setSenderId(mTargetId);
         mMessgae.setSentStatus(MsgSendStatus.SENT);
+        mMessgae.setSenderType(SenderType.LEFT);
         //开始发送
         mAdapter.addData(mMessgae);
 
@@ -694,6 +706,7 @@ public class ImUtils {
         mMessgae.setType(ChatAdapter.TYPE_SEND_TEXT);
         mMessgae.setSenderId(mSenderId);
         mMessgae.setSentStatus(MsgSendStatus.DEFAULT);
+        mMessgae.setSenderType(SenderType.RIGHT);
         //开始发送
         mAdapter.addData(mMessgae);
     }
@@ -709,6 +722,7 @@ public class ImUtils {
         mMessgae.setType(ChatAdapter.TYPE_CENTER_TEXT);
         mMessgae.setSenderId(mSenderId);
         mMessgae.setSentStatus(MsgSendStatus.DEFAULT);
+        mMessgae.setSenderType(SenderType.CENTRE);
         //开始发送
         mAdapter.addData(mMessgae);
         rvChatList.scrollToPosition(mAdapter.getItemCount() - 1);
@@ -749,6 +763,8 @@ public class ImUtils {
         mMessgae.setBody(mTextMsgBody);
         mMessgae.setType(2);
         mMessgae.setSenderId(mTargetId);
+        mMessgae.setSenderType(SenderType.LEFT);
+
         //开始发送
         mAdapter.addData(mMessgae);
         updateMsg(mMessgae);
@@ -763,6 +779,8 @@ public class ImUtils {
         mTextMsgBody.setCharsequence(content);
         mMessgae.setBody(mTextMsgBody);
         mMessgae.setType(ChatAdapter.TYPE_SEND_TEXT);
+        mMessgae.setSenderType(SenderType.RIGHT);
+
         mAdapter.addData(mMessgae);
         updateMsg(mMessgae);
     }
@@ -1048,6 +1066,25 @@ public class ImUtils {
 //                // 设置消息已读成功
 //            }
 //        });
+    }
+
+    public void updateFailedMsg(Message mMessgae) {
+        if (mMessgae == null) {
+            return;
+        }
+
+        int position = 0;
+        mMessgae.setSentStatus(MsgSendStatus.FAILED);
+
+        //更新单个子条目
+        for (int i = 0; i < mAdapter.getData().size(); i++) {
+            Message mAdapterMessage = mAdapter.getData().get(i);
+            if (mMessgae.getUuid().equals(mAdapterMessage.getUuid())) {
+                position = i;
+            }
+        }
+
+        mAdapter.notifyItemChanged(position);
     }
 
 

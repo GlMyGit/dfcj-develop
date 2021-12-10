@@ -7,19 +7,17 @@ import com.tencent.imsdk.v2.V2TIMDownloadCallback;
 import com.tencent.imsdk.v2.V2TIMElem;
 import com.tencent.imsdk.v2.V2TIMImageElem;
 
-public  class Message  implements MultiItemEntity {
+public class Message implements MultiItemEntity {
 
-     private String uuid;
-      private String msgId;
-     private MsgType msgType;
-     private MsgBody body;
-     private MsgSendStatus sentStatus;
-     private String senderId;
-     private String targetId;
-     private long sentTime;
-
-
-
+    private String uuid;
+    private String msgId;
+    private MsgType msgType;
+    private MsgBody body;
+    private MsgSendStatus sentStatus;
+    private String senderId;
+    private String targetId;
+    private long sentTime;
+    private SenderType senderType;
 
     public int getType() {
         return type;
@@ -88,7 +86,6 @@ public  class Message  implements MultiItemEntity {
     }
 
 
-
     public long getSentTime() {
         return sentTime;
     }
@@ -97,14 +94,18 @@ public  class Message  implements MultiItemEntity {
         this.sentTime = sentTime;
     }
 
+    public SenderType getSenderType() {
+        return senderType;
+    }
+
+    public void setSenderType(SenderType senderType) {
+        this.senderType = senderType;
+    }
+
     @Override
     public int getItemType() {
         return type;
     }
-
-
-
-
 
 
     private V2TIMImageElem.V2TIMImage v2TIMImage;

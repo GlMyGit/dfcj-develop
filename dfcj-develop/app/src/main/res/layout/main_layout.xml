@@ -104,7 +104,8 @@
                         android:layout_height="80dp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="14dp"
-                        android:src="@drawable/ic_head_default_left"></ImageView>
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_head_default_left" />
 
 
                     <ImageView
@@ -112,11 +113,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
+                        android:onClick="@{() -> presenter.close_shop()}"
                         android:paddingLeft="10dp"
                         android:paddingTop="10dp"
                         android:paddingRight="15dp"
                         android:paddingBottom="10dp"
-                        android:src="@drawable/guanbi_hei"></ImageView>
+                        android:src="@drawable/guanbi_hei" />
 
 
                     <TextView

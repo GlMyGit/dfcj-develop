@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:tools="http://schemas.android.com/tools">
 
 
     <data>
@@ -15,7 +13,6 @@
     </data>
 
 
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -23,9 +20,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:background="@color/color_60_FF000000"
-            >
+            android:orientation="vertical">
 
 
             <FrameLayout
@@ -37,29 +33,27 @@
                     android:id="@+id/video_call_center_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center"
                     android:layout_marginTop="150dp"
-                    >
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <ImageView
+                        android:id="@+id/staff_icon"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
-                        android:src="@drawable/ic_head_default_right"
-                        ></ImageView>
+                        android:src="@drawable/ic_head_default_left" />
 
                     <TextView
+                        android:id="@+id/staff_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="客服001"
-                        android:textSize="15sp"
-                        android:textColor="@color/white"
                         android:layout_marginTop="8dp"
-                        ></TextView>
+                        android:text="客服001"
+                        android:textColor="@color/white"
+                        android:textSize="15sp" />
 
 
                 </LinearLayout>
-
 
 
                 <com.tencent.rtmp.ui.TXCloudVideoView
@@ -67,83 +61,74 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_alignParentLeft="true"
-                    android:visibility="gone"
-                    />
+                    android:visibility="gone" />
 
 
                 <LinearLayout
                     android:id="@+id/trtc_view_to_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_alignParentRight="true"
+                    android:layout_gravity="right"
                     android:layout_marginTop="70dp"
                     android:layout_marginRight="15dp"
-                    android:layout_gravity="right"
                     android:gravity="center"
-                    android:visibility="gone"
-                    >
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <com.tencent.rtmp.ui.TXCloudVideoView
                         android:id="@+id/trtc_view_to"
                         android:layout_width="90dp"
                         android:layout_height="160dp"
-                        android:onClick="@{() -> presenter.videoSwitch()}"
-                        />
+                        android:onClick="@{() -> presenter.videoSwitch()}" />
 
                     <ImageView
                         android:id="@+id/video_call_meiyan_img"
                         android:layout_width="45dp"
                         android:layout_height="45dp"
                         android:layout_alignParentRight="true"
-                        android:src="@drawable/meiyan"
                         android:layout_marginTop="15dp"
                         android:onClick="@{() -> presenter.videoMeiYan()}"
-                        ></ImageView>
+                        android:src="@drawable/meiyan"></ImageView>
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_gravity="bottom"
-                    android:layout_marginBottom="70dp"
-                    android:weightSum="2"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
-                    >
+                    android:layout_marginBottom="70dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
 
                     <LinearLayout
                         android:id="@+id/video_call_close_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
                         android:layout_weight="1"
+                        android:gravity="center"
                         android:onClick="@{() -> presenter.closeVideo()}"
-                        >
+                        android:orientation="vertical">
 
                         <ImageView
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            android:src="@drawable/dianhua_pic1"
-                            ></ImageView>
+                            android:src="@drawable/dianhua_pic1"></ImageView>
 
                         <TextView
                             android:id="@+id/video_call_close_tv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="取消"
-                            android:textSize="15sp"
-                            android:textColor="@color/white"
                             android:layout_marginTop="8dp"
-                            ></TextView>
+                            android:text="取消"
+                            android:textColor="@color/white"
+                            android:textSize="15sp"></TextView>
 
 
                     </LinearLayout>
-
 
 
                     <LinearLayout
@@ -152,9 +137,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center_horizontal"
-                        android:visibility="gone"
                         android:onClick="@{() -> presenter.switchCamear()}"
-                        >
+                        android:visibility="gone">
 
                         <ImageView
                             android:layout_width="50dp"
@@ -180,8 +164,8 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:orientation="horizontal"
                     android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
 
                     >
 
@@ -208,9 +192,8 @@
                         android:layout_gravity="center"
                         android:format="%s"
                         android:textColor="@color/white"
-                        android:visibility="gone"
                         android:textSize="16sp"
-                        />
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/video_call_top_tv2"
@@ -233,50 +216,45 @@
         </RelativeLayout>
 
 
-
         <LinearLayout
             android:id="@+id/video_meiyan_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@color/white"
             android:layout_gravity="bottom"
-            android:visibility="gone"
-            >
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:visibility="gone">
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="20dp"
-                android:gravity="center"
                 android:layout_marginLeft="30dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginRight="30dp"
-                >
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:id="@+id/video_meiyan_top_layout1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_weight="1"
                     android:onClick="@{() -> presenter.clickMeiYan()}"
-                    >
+                    android:orientation="vertical">
 
                     <RadioButton
                         android:id="@+id/video_meiyan_top_layout_tv1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="美颜"
-                        android:textColor="@color/tab_text_font2"
-                        android:textSize="16sp"
-                        android:paddingTop="10dp"
+                        android:background="@null"
+                        android:button="@null"
                         android:checked="true"
                         android:gravity="center"
-                        android:button="@null"
-                        android:background="@null"
-                        ></RadioButton>
+                        android:paddingTop="10dp"
+                        android:text="美颜"
+                        android:textColor="@color/tab_text_font2"
+                        android:textSize="16sp"></RadioButton>
 
                     <View
                         android:id="@+id/video_meiyan_top_layout1_view"
@@ -284,8 +262,7 @@
                         android:layout_height="2dp"
                         android:layout_gravity="center"
                         android:layout_marginTop="5dp"
-                        android:background="@color/color_3D3D3D"
-                        ></View>
+                        android:background="@color/color_3D3D3D"></View>
 
                 </LinearLayout>
 
@@ -294,24 +271,22 @@
                     android:id="@+id/video_meiyan_top_layout2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_weight="1"
                     android:onClick="@{() -> presenter.clickClear()}"
-                    >
+                    android:orientation="vertical">
 
                     <RadioButton
                         android:id="@+id/video_meiyan_top_layout_tv2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="清晰"
-                        android:textColor="@color/tab_text_font2"
-                        android:textSize="16sp"
-                        android:paddingTop="10dp"
+                        android:background="@null"
+                        android:button="@null"
                         android:checked="true"
                         android:gravity="center"
-                        android:button="@null"
-                        android:background="@null"
-                        ></RadioButton>
+                        android:paddingTop="10dp"
+                        android:text="清晰"
+                        android:textColor="@color/tab_text_font2"
+                        android:textSize="16sp"></RadioButton>
 
                     <View
                         android:id="@+id/video_meiyan_top_layout2_view"
@@ -320,16 +295,12 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="5dp"
                         android:background="@color/color_3D3D3D"
-                        android:visibility="invisible"
-                        ></View>
+                        android:visibility="invisible"></View>
 
                 </LinearLayout>
 
 
-
             </LinearLayout>
-
-
 
 
             <RelativeLayout
@@ -337,53 +308,47 @@
                 android:layout_height="wrap_content">
 
 
-
                 <LinearLayout
                     android:id="@+id/meiyan_set_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="visible"
-                    >
+                    android:visibility="visible">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginTop="25dp"
                         android:layout_marginLeft="30dp"
+                        android:layout_marginTop="25dp"
                         android:layout_marginRight="10dp"
-                        >
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:src="@drawable/meiyan"
-                            ></ImageView>
+                            android:src="@drawable/meiyan"></ImageView>
 
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="7dp"
                             android:text="美颜"
                             android:textColor="@color/color_141414"
-                            android:textSize="14sp"
-                            android:layout_marginLeft="7dp"
-                            ></TextView>
+                            android:textSize="14sp"></TextView>
 
 
                         <SeekBar
                             android:id="@+id/video_meiyan_seekbar1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
-                            android:thumb="@drawable/seek_bar_thumb"
-                            android:progressDrawable="@drawable/seek_bar_bg"
                             android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="10dp"
                             android:max="9"
                             android:progress="0"
-                            ></SeekBar>
+                            android:progressDrawable="@drawable/seek_bar_bg"
+                            android:thumb="@drawable/seek_bar_thumb"></SeekBar>
 
 
                     </LinearLayout>
@@ -392,41 +357,37 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginTop="25dp"
                         android:layout_marginLeft="30dp"
+                        android:layout_marginTop="25dp"
                         android:layout_marginRight="10dp"
-                        >
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:src="@drawable/meiyan"
-                            ></ImageView>
+                            android:src="@drawable/meiyan"></ImageView>
 
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="7dp"
                             android:text="美白"
                             android:textColor="@color/color_141414"
-                            android:textSize="14sp"
-                            android:layout_marginLeft="7dp"
-                            ></TextView>
+                            android:textSize="14sp"></TextView>
 
 
                         <SeekBar
                             android:id="@+id/video_meiyan_seekbar2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
-                            android:thumb="@drawable/seek_bar_thumb"
-                            android:progressDrawable="@drawable/seek_bar_bg"
                             android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="10dp"
                             android:max="9"
                             android:progress="0"
-                            ></SeekBar>
+                            android:progressDrawable="@drawable/seek_bar_bg"
+                            android:thumb="@drawable/seek_bar_thumb"></SeekBar>
 
 
                     </LinearLayout>
@@ -434,49 +395,43 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginTop="25dp"
                         android:layout_marginLeft="30dp"
+                        android:layout_marginTop="25dp"
                         android:layout_marginRight="10dp"
-                        >
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:src="@drawable/meiyan"
-                            ></ImageView>
+                            android:src="@drawable/meiyan"></ImageView>
 
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="7dp"
                             android:text="红润"
                             android:textColor="@color/color_141414"
-                            android:textSize="14sp"
-                            android:layout_marginLeft="7dp"
-                            ></TextView>
+                            android:textSize="14sp"></TextView>
 
 
                         <SeekBar
                             android:id="@+id/video_meiyan_seekbar3"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
-                            android:thumb="@drawable/seek_bar_thumb"
-                            android:progressDrawable="@drawable/seek_bar_bg"
                             android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="10dp"
                             android:max="9"
                             android:progress="0"
-                            ></SeekBar>
+                            android:progressDrawable="@drawable/seek_bar_bg"
+                            android:thumb="@drawable/seek_bar_thumb"></SeekBar>
 
 
                     </LinearLayout>
 
 
                 </LinearLayout>
-
-
 
 
                 <LinearLayout
@@ -484,94 +439,77 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:visibility="gone"
-                    >
+                    android:visibility="gone">
 
 
                     <RadioGroup
                         android:id="@+id/video_call_qingxi_radio_group"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:orientation="horizontal"
-                        android:gravity="center"
                         android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp"
                         android:layout_marginTop="30dp"
+                        android:layout_marginRight="15dp"
                         android:layout_marginBottom="5dp"
-                        >
+                        android:gravity="center"
+                        android:orientation="horizontal">
 
 
                         <com.dfcj.videoim.view.myview.CustomRadioButton
                             android:id="@+id/meiyan_qx_radio1"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:text="360P流畅"
-                            android:textSize="14sp"
-                            android:textColor="@color/black"
-                            android:background="@null"
                             android:layout_weight="1"
-                            android:drawableStart="@drawable/a_check_bg"
+                            android:background="@null"
                             android:button="@null"
-                            android:gravity="center"
+                            android:drawableStart="@drawable/a_check_bg"
                             android:drawablePadding="15dp"
-                            ></com.dfcj.videoim.view.myview.CustomRadioButton>
+                            android:gravity="center"
+                            android:text="360P流畅"
+                            android:textColor="@color/black"
+                            android:textSize="14sp"></com.dfcj.videoim.view.myview.CustomRadioButton>
 
                         <com.dfcj.videoim.view.myview.CustomRadioButton
                             android:id="@+id/meiyan_qx_radio2"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:text="720P高清"
-                            android:textSize="14sp"
-                            android:textColor="@color/black"
+                            android:layout_weight="1"
                             android:background="@color/white"
                             android:button="@null"
                             android:drawableStart="@drawable/a_check_bg"
-                            android:layout_weight="1"
-                            android:gravity="center"
                             android:drawablePadding="15dp"
-                            ></com.dfcj.videoim.view.myview.CustomRadioButton>
+                            android:gravity="center"
+                            android:text="720P高清"
+                            android:textColor="@color/black"
+                            android:textSize="14sp"></com.dfcj.videoim.view.myview.CustomRadioButton>
 
                         <com.dfcj.videoim.view.myview.CustomRadioButton
                             android:id="@+id/meiyan_qx_radio3"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:text="1080P超清"
-                            android:textSize="14sp"
-                            android:textColor="@color/black"
-                            android:background="@null"
                             android:layout_weight="1"
+                            android:background="@null"
                             android:button="@null"
-                            android:gravity="center"
-                            android:drawablePadding="15dp"
                             android:drawableStart="@drawable/a_check_bg"
-                            ></com.dfcj.videoim.view.myview.CustomRadioButton>
-
+                            android:drawablePadding="15dp"
+                            android:gravity="center"
+                            android:text="1080P超清"
+                            android:textColor="@color/black"
+                            android:textSize="14sp"></com.dfcj.videoim.view.myview.CustomRadioButton>
 
 
                     </RadioGroup>
 
 
-
-
                 </LinearLayout>
-
-
 
 
             </RelativeLayout>
 
 
-
-
-
-
-
-
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                >
+                android:layout_marginTop="10dp">
 
 
                 <LinearLayout
@@ -579,13 +517,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
+                    android:onClick="@{() -> presenter.closeVideoMeiYan()}"
                     android:orientation="horizontal"
                     android:paddingLeft="10dp"
                     android:paddingTop="10dp"
                     android:paddingRight="28dp"
-                    android:paddingBottom="15dp"
-                    android:onClick="@{() -> presenter.closeVideoMeiYan()}"
-                    >
+                    android:paddingBottom="15dp">
 
                     <ImageView
                         android:layout_width="20dp"
@@ -615,13 +552,10 @@
                 android:layout_height="10dp"></View>
 
 
-
         </LinearLayout>
 
 
-
     </FrameLayout>
-
 
 
 </layout>

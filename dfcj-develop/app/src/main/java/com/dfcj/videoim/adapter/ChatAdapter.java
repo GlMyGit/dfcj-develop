@@ -9,12 +9,14 @@ import android.widget.ImageView;
 import androidx.camera.core.internal.utils.ImageUtil;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.blankj.utilcode.util.ObjectUtils;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.dfcj.videoim.MainActivity;
 import com.dfcj.videoim.R;
+import com.dfcj.videoim.appconfig.AppConstant;
 import com.dfcj.videoim.appconfig.Rout;
 import com.dfcj.videoim.entity.AudioMsgBody;
 import com.dfcj.videoim.entity.FileMsgBody;
@@ -23,6 +25,7 @@ import com.dfcj.videoim.entity.Message;
 import com.dfcj.videoim.entity.MsgBody;
 import com.dfcj.videoim.entity.MsgSendStatus;
 import com.dfcj.videoim.entity.MsgType;
+import com.dfcj.videoim.entity.SenderType;
 import com.dfcj.videoim.entity.ShopMsgBody;
 import com.dfcj.videoim.entity.TextMsgBody;
 import com.dfcj.videoim.entity.VideoMsgBody;
@@ -31,6 +34,7 @@ import com.dfcj.videoim.im.ImageElemBean;
 import com.dfcj.videoim.util.AppUtils;
 import com.dfcj.videoim.util.AutoLinKTextViewUtil;
 import com.dfcj.videoim.util.other.GlideUtils;
+import com.dfcj.videoim.util.other.SharedPrefsUtils;
 import com.dfcj.videoim.view.myview.ClickableSpanTextView;
 import com.wzq.mvvmsmart.utils.KLog;
 import com.zzhoujay.richtext.RichText;
@@ -192,6 +196,11 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
 
             }
 
+            if (item.getSenderId().equals(MainActivity.mSenderId)) {
+                helper.setText(R.id.kapian_top_tv, SharedPrefsUtils.getValue(AppConstant.MyUserName));
+            } else {
+                helper.setText(R.id.kapian_top_tv, SharedPrefsUtils.getValue(AppConstant.STAFF_NAME));
+            }
 
         } else if (item.getMsgType().equals(MsgType.IMAGE)) {
 
@@ -252,19 +261,21 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
 
         } else if (item.getMsgType().equals(MsgType.KAPIAN)) {//商品卡片信息
 
-
             ShopMsgBody msgBody = (ShopMsgBody) item.getBody();
-
 
             helper.setText(R.id.chat_item_content_text1, "" + msgBody.getGoodsCode());
             helper.setText(R.id.chat_item_content_text, "" + msgBody.getGoodsName());
             helper.setText(R.id.chat_item_price_text, "" + msgBody.getGoodsPrice());
 
-
             Glide.with(getContext()).
                     load(msgBody.getGoodsIcon())
                     .error(R.drawable.default_img_failed).into((ImageView) helper.getView(R.id.chat_item_img));
 
+            if (item.getSenderId().equals(MainActivity.mSenderId)) {
+                helper.setText(R.id.kapian_top_tv, SharedPrefsUtils.getValue(AppConstant.MyUserName));
+            } else {
+                helper.setText(R.id.kapian_top_tv, SharedPrefsUtils.getValue(AppConstant.STAFF_NAME));
+            }
 
         } else if (item.getMsgType().equals(MsgType.CENTERMS)) {//中间信息
 
@@ -288,6 +299,20 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
             AudioMsgBody msgBody = (AudioMsgBody) item.getBody();
             helper.setText(R.id.tvDuration, msgBody.getDuration() + "\"");
         }
+
+        //头像
+        /*if (item.getSenderId().equals(MainActivity.mSenderId)) {
+            Glide.with(getContext())
+                    .load(SharedPrefsUtils.getValue(AppConstant.MyUserIcon))
+                    .error(R.drawable.ic_head_default_right)
+                    .into((ImageView) helper.getView(R.id.chat_item_header));
+        } else {
+            Glide.with(getContext())
+                    .load(SharedPrefsUtils.getValue(AppConstant.STAFF_IMGE))
+                    .error(R.drawable.ic_head_default_left)
+                    .into((ImageView) helper.getView(R.id.chat_item_header));
+        }*/
+
     }
 
 

@@ -8,6 +8,7 @@ import com.dfcj.videoim.entity.HistoryMsgEntity;
 import com.dfcj.videoim.entity.LoginBean;
 import com.dfcj.videoim.entity.SendOffineMsgEntity;
 import com.dfcj.videoim.entity.TrtcRoomEntity;
+import com.dfcj.videoim.entity.UserInfoEntity;
 import com.dfcj.videoim.entity.upLoadImgEntity;
 import com.wzq.mvvmsmart.http.BaseResponse;
 
@@ -31,53 +32,34 @@ import retrofit2.http.Query;
  */
 public interface ApiService {
 
+    //获取客户信息
+    @POST("/api/newMedia/fcm/customerRead/getCustomerInfo")
+    Observable<UserInfoEntity> getCustomerInfo(@Body Map<String, Object> map);
 
     //登录
     @POST("/api/newMedia/fcm/customerRead/login")
-    Observable<LoginBean> requestLogin(
-            @Body Map<String, Object> map
-    );
-
-
+    Observable<LoginBean> requestLogin(@Body Map<String, Object> map);
 
     //智能客服
     @POST("/api/newMedia/fcm/xiaoIRead/ask")
-    Observable<SendOffineMsgEntity> requestSendOffineMsg(
-            @Body Map<String, Object> map
-    );
-
+    Observable<SendOffineMsgEntity> requestSendOffineMsg(@Body Map<String, Object> map);
 
     //转人工客服 分配客服
     @POST("/api/newMedia/fcm/customerRead/getImStaff")
-    Observable<ChangeCustomerServiceEntity> requestChangeCustomerService(
-            @Body Map<String, Object> map
-    );
-
-
+    Observable<ChangeCustomerServiceEntity> requestChangeCustomerService(@Body Map<String, Object> map);
 
     //获取视频房间号
     @POST("/api/newMedia/fcm/customerRead/getTrtcRoomId")
-    Observable<TrtcRoomEntity> requestTrtcRoomId(
-            @Body Map<String, Object> map
-    );
-
+    Observable<TrtcRoomEntity> requestTrtcRoomId(@Body Map<String, Object> map);
 
     //文件上传
     @Multipart
     @POST("/api/newMedia/fcm/fileOper/uploadFile")
-    Observable<upLoadImgEntity> requestUploadImg(
-            @Part MultipartBody.Part file
-    );
-
+    Observable<upLoadImgEntity> requestUploadImg(@Part MultipartBody.Part file);
 
     //顾客根据日期查询历史单聊消息接口
     @POST("/api/newMedia/fcm/eventRead/queryCustImRecord")
-    Observable<HistoryMsgEntity> requestQueryCustImRecord(
-            @Body Map<String, Object> map
-    );
-
-
-
+    Observable<HistoryMsgEntity> requestQueryCustImRecord(@Body Map<String, Object> map);
 
     @GET("action/apiv2/banner")
     Observable<BaseResponse<DemoBean>> demoGet(@Query("catalog") int pageNum);
@@ -88,11 +70,6 @@ public interface ApiService {
 
     @GET("getJsonFile")
     Observable<BaseResponse<Object>> getJsonFile();
-
-
-
-
-
 
    /* //获取客服
     @GET("/sys/config/v1/getKf")

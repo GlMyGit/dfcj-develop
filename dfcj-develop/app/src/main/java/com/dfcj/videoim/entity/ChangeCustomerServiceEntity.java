@@ -5,7 +5,7 @@ public class ChangeCustomerServiceEntity {
     private DataBean data;
     private FailBean fail;
     private String code;
-    private String messaage;
+    private String message;
 
     public Boolean getSuccess() {
         return success;
@@ -39,12 +39,12 @@ public class ChangeCustomerServiceEntity {
         this.code = code;
     }
 
-    public String getMessaage() {
-        return messaage;
+    public String getMessage() {
+        return message;
     }
 
-    public void setMessaage(String messaage) {
-        this.messaage = messaage;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public static class DataBean {

@@ -18,6 +18,7 @@ import androidx.room.util.StringUtil;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.ActivityUtils;
+import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.TimeUtils;
 import com.bumptech.glide.Glide;
@@ -37,6 +38,7 @@ import com.dfcj.videoim.entity.RoomIdEntity;
 import com.dfcj.videoim.entity.SendOffineMsgEntity;
 import com.dfcj.videoim.entity.ShopMsgBody;
 import com.dfcj.videoim.entity.TrtcRoomEntity;
+import com.dfcj.videoim.entity.UserInfoEntity;
 import com.dfcj.videoim.entity.upLoadImgEntity;
 import com.dfcj.videoim.im.ImConstant;
 import com.dfcj.videoim.im.ImUtils;
@@ -72,6 +74,7 @@ import com.tencent.imsdk.v2.V2TIMSignalingListener;
 import com.tencent.imsdk.v2.V2TIMTextElem;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.iot.speech.asr.listener.MessageListener;
+import com.wzq.mvvmsmart.base.AppManagerMVVM;
 import com.wzq.mvvmsmart.event.StateLiveData;
 import com.wzq.mvvmsmart.utils.KLog;
 import com.wzq.mvvmsmart.utils.ToastUtils;
@@ -121,6 +124,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     private List<HistoryMsgEntity.DataDTO.DataDTO2> historyMsgEntityList = new ArrayList<>();
 
     //设定app传递数据
+    private String token;
     private ShopMsgBody shopMsgBody;
     private boolean showShopCard = true;
 
@@ -139,6 +143,8 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         super.initViews();
         setAppValue();
 
+        initHttp();
+
         //第一次设置缓存位置
         RichText.initCacheDir(this);
 
@@ -147,6 +153,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         ocrUtil = new OcrUtil(mContext);
         ocrUtil.initInfo(MainActivity.this);
 
+
     }
 
     @Override
@@ -154,7 +161,8 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         super.initData();
         binding.setPresenter(new Presenter());
 
-        requestPermisson();
+        //requestPermisson();
+
         initRv();
         imUtils.initViewInfo(mAdapter, binding.rvChatList);
 
@@ -177,14 +185,16 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
         setMyListener();
 
-        login();
+        getCustomerInfo();
     }
 
     private void setAppValue() {
+        token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMDA4MDEwMDAwNDQiLCJpc3MiOiJvY2otc3RhcnNreSIsImxvZ2lkIjoiNjg3NDYyNzk0OTA5MDMxMjE5MiIsImV4cCI6MTY0NjgxNTAyNywiaWF0IjoxNjM5MDM5MDI3LCJkZXZpY2VpZCI6IiJ9.hNcsiYer2GsAA_TbqPT8vyNrW1rfdVfV4YTbMs-Rrho";
+
         shopMsgBody = new ShopMsgBody();
         shopMsgBody.setGoodsIcon("https://t7.baidu.com/it/u=793426911,3641399153&fm=218&app=126&f=JPEG?w=121&h=75&s=DEA0546E36517A77458B2750020030FA");
         shopMsgBody.setGoodsCode("1001001");
-        shopMsgBody.setGoodsName("商品名称哈哈哈哈");
+        shopMsgBody.setGoodsName("资生堂悦薇珀翡紧颜亮肤乳（滋润型）100ml");
         shopMsgBody.setGoodsPrice("20.00");
 
         binding.mainShopLayout.setVisibility(showShopCard ? View.VISIBLE : View.GONE);
@@ -209,7 +219,6 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                     binding.ivVideo.setImageResource(R.drawable.selector_ctype_video);
                     isVidesClick = true;
                     KLog.d("onYesClick");
-                    viewModel.getCustImRecord(historyPage, TimeUtils.getNowMills() + "");
                 }
             }
         });
@@ -224,80 +233,20 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
             }
         });
 
-        viewModel.stateLiveData.stateEnumMutableLiveData.observe(this, stateEnum -> {
-            if (stateEnum.equals(StateLiveData.StateEnum.Loading)) {
-                KLog.e("请求数据中--显示loading");
-                showLoading("加载中");
-            }
-            if (stateEnum.equals(StateLiveData.StateEnum.Success)) {
-                KLog.e("数据获取成功--关闭loading");
-                dismissLoading();
-            }
-            if (stateEnum.equals(StateLiveData.StateEnum.Idle)) {
-                KLog.e("空闲状态--关闭loading");
-                dismissLoading();
-            }
-        });
 
+    }
+
+    //获取顾客信息
+    private void getCustomerInfo() {
+        viewModel.getCustomerInfo(token);
 
     }
 
 
     //登录
     private void login() {
-
         viewModel.requestLogin();
 
-        viewModel.loadEvent.observe(this, new Observer<LoginBean>() {
-            @Override
-            public void onChanged(LoginBean loginBean) {
-                if (loginBean == null || loginBean.getData() == null) {
-                    return;
-                }
-
-                ImConstant.SDKAPPID = loginBean.getData().getSdkAppId();
-                if (ImConstant.SDKAPPID > 0) {
-                    SharedPrefsUtils.putValue(AppConstant.SDKAppId, ImConstant.SDKAPPID);
-                }
-
-                SharedPrefsUtils.putValue(AppConstant.SDKUserSig, loginBean.getData().getUserSig());
-
-                //0正在会话，1未会话，2排队中
-                switch (loginBean.getData().getStatus()) {
-                    case 0:
-                        isSendMsg = true;
-                        imUtils.loginIm();
-
-                        Map<String, String> value = new HashMap<>();
-                        value.put("eventId", loginBean.getData().getEventId());
-                        cloudCustomData = GsonUtil.newGson22().toJson(value);
-
-                        myEventId = "" + loginBean.getData().getEventId();
-                        SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
-                        SharedPrefsUtils.putValue(AppConstant.STAFF_CODE, loginBean.getData().getStaffCode());
-                        break;
-                    case 1:
-                        isSendMsg = false;
-                        imUtils.initTencentImLogin();
-
-                        loadEventMsg = loginBean.getData().getMsg();
-                        imUtils.sendDefaultMsg("" + loadEventMsg);
-                        break;
-                    case 2:
-                        isSendMsg = false;
-                        imUtils.loginIm();
-
-                        loadEventMsg = loginBean.getData().getMsg();
-                        imUtils.sendCenterDefaultMsg("" + loadEventMsg);
-                        break;
-
-                }
-
-
-            }
-
-
-        });
 
     }
 
@@ -309,40 +258,6 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
         viewModel.sendOfflineMsg("" + msg);
 
-        viewModel.sendOffineMsgEntity.observe(this, new Observer<SendOffineMsgEntity>() {
-            @Override
-            public void onChanged(SendOffineMsgEntity sendOffineMsgEntity) {
-
-                if (sendOffineMsgEntity != null && sendOffineMsgEntity.getData() != null) {
-
-                    Integer showType = sendOffineMsgEntity.getData().getShowType();
-                    //0代表小I回复 1代表返回商品
-                    if (showType == 0) {
-
-                        String msgType = sendOffineMsgEntity.getData().getMsg().getMsgType();
-                        String content = sendOffineMsgEntity.getData().getMsg().getContent();
-                        if (!TextUtils.isEmpty(content)) {
-                            imUtils.sendLeftTextMsg("" + content);
-                        }
-
-
-                    } else if (showType == 1) {
-
-                        SendOffineMsgEntity.DataBean.ProductInfoBean productInfo = sendOffineMsgEntity.getData().getProductInfo();
-
-                        if (productInfo != null) {
-                            imUtils.sendLeftShopMessage(productInfo);
-                        }
-
-
-                    }
-
-
-                }
-
-
-            }
-        });
 
     }
 
@@ -392,7 +307,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                     } else if (!binding.rvChatList.canScrollVertically(-1)) { // 到达顶部
                         KLog.d("到顶了");
 
-                        if (historyMsgEntityList.size() > 0 && binding.mainTopProgress.getVisibility() == View.GONE) {
+                        if (historyMsgEntityList.size() > 19 && binding.mainTopProgress.getVisibility() == View.GONE) {
                             binding.mainTopProgress.setVisibility(View.VISIBLE);
                             viewModel.getCustImRecord(historyPage++, TimeUtils.getNowMills() + "");
                         }
@@ -430,8 +345,14 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
             binding.etContent.setText("");
         }
 
+        //发送商品
         public void send_shop() {
             imUtils.sendTextMsg(GsonUtil.newGson22().toJson(shopMsgBody), AppConstant.SEND_MSG_TYPE_CARD);
+        }
+
+        //关闭商品
+        public void close_shop() {
+            binding.mainShopLayout.setVisibility(View.GONE);
         }
 
         //转人工
@@ -551,23 +472,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     //获取房间号
     private void getTrtcRoomId() {
         viewModel.getTrtcRoomId(myEventId);
-        viewModel.trtcRoomEntity.observe(this, new Observer<TrtcRoomEntity>() {
-            @Override
-            public void onChanged(TrtcRoomEntity trtcRoomEntity) {
-                if (trtcRoomEntity != null) {
 
-                    mRoomId = trtcRoomEntity.getData();
-                    KLog.d("房间号：" + mRoomId);
-
-                    RoomIdEntity roomIdEntity = new RoomIdEntity();
-                    roomIdEntity.setRoomId(mRoomId);
-                    roomIdEntity.setHelloText("视频连接中");
-                    imUtils.sendTextMsg("" + mRoomId, AppConstant.SEND_VIDEO_TYPE_START);
-
-                    //inviteID = imUtils.callVideo(MainActivity.this, mRoomId);
-                }
-            }
-        });
     }
 
 
@@ -575,42 +480,6 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     private void getChangeToLable() {
         // imUtils.sendTextDefaultMsg("1");
         viewModel.getImStaff();
-        viewModel.changeCustomerServiceEntity.observe(this, new Observer<ChangeCustomerServiceEntity>() {
-            @Override
-            public void onChanged(ChangeCustomerServiceEntity changeCustomerServiceEntity) {
-                if (changeCustomerServiceEntity != null) {
-                    imUtils.loginIm();
-//                    String code = changeCustomerServiceEntity.getFail().getCode();
-                    String code = changeCustomerServiceEntity.getCode();
-                    switch (code) {
-                        case "18790301"://排队中
-                            isSendMsg = false;
-
-                            String message = changeCustomerServiceEntity.getFail().getMessage();
-                            imUtils.sendCenterDefaultMsg("" + message);
-
-                            break;
-                        case "99990000"://有客服接入
-                            //  String staffCode = changeCustomerServiceEntity.getData().getStaffCode();
-                            myEventId = "" + changeCustomerServiceEntity.getData().getEventId();
-
-                            if (changeCustomerServiceEntity.getData() != null) {
-                                Gson gson = new Gson();
-                                cloudCustomData = gson.toJson(changeCustomerServiceEntity.getData());
-
-                                SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
-                                SharedPrefsUtils.putValue(AppConstant.STAFF_CODE, changeCustomerServiceEntity.getData().getStaffCode());
-                            }
-
-                            isSendMsg = true;
-                            break;
-                    }
-
-
-                }
-
-            }
-        });
 
 
     }
@@ -797,19 +666,6 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
         initCompressorRxJava(path2);
 
-        viewModel.upLoad_ImgEntity.observe(MainActivity.this, new Observer<upLoadImgEntity>() {
-            @Override
-            public void onChanged(upLoadImgEntity upLoadImgEntity) {
-
-                String data = upLoadImgEntity.getData();
-
-                if (!TextUtils.isEmpty(data)) {
-                    dismissLoading();
-                    imUtils.sendTextMsg(data, AppConstant.SEND_MSG_TYPE_IMAGE);
-                }
-            }
-        });
-
 
     }
 
@@ -901,7 +757,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         }
 
         RichText.recycle();
-
+        SharedPrefsUtils.clearShardInfo();
     }
 
     //设置ocr识别文字
@@ -922,6 +778,9 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
             public void onYesMsgClick(boolean isMsgOk, int msgType) {
                 if (isMsgOk) {
                     switch (msgType) {
+                        case AppConstant.SEND_MSG_TYPE_CARD:
+                            binding.mainShopLayout.setVisibility(View.GONE);
+                            break;
                         case AppConstant.SEND_VIDEO_TYPE_START://开始视频
                             Bundle bundle = new Bundle();
                             bundle.putString(AppConstant.VideoStatus, "1");
@@ -1066,29 +925,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
     //获取历史消息（后台接口返回）
     private void getHistoryMessageList() {
-        viewModel.historyMsgEntity.observe(this, new Observer<HistoryMsgEntity>() {
-            @Override
-            public void onChanged(HistoryMsgEntity historyMsgEntity) {
-                String s = new Gson().toJson(historyMsgEntity);
 
-                binding.mainTopProgress.setVisibility(View.GONE);
-                historyMsgEntityList = historyMsgEntity.getData().getData();
-
-                //循环消息模拟发送赋值
-                for (HistoryMsgEntity.DataDTO.DataDTO2 dataDTO2 : historyMsgEntityList) {
-
-                    List<HistoryMsgEntity.DataDTO.DataDTO2.MsgBody> msgBody = GsonUtil.GsonToList(dataDTO2.getMsgBody(), HistoryMsgEntity.DataDTO.DataDTO2.MsgBody.class);
-
-                    String str = GsonUtil.GsonString(msgBody.get(0));
-                    MsgBodyBean msgBodyBean = GsonUtil.newGson22().fromJson(str, MsgBodyBean.class);
-
-                    String data = msgBodyBean.getMsgContent().getData();
-                    CustomMsgEntity customMsgEntity = GsonUtil.newGson22().fromJson(data, CustomMsgEntity.class);
-
-                    sendZiDingYiMsg(customMsgEntity, StringUtils.equals(dataDTO2.getFromAccount(), ImUtils.MyUserId));
-                }
-            }
-        });
     }
 
     @Override
@@ -1149,15 +986,15 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
                 CustomMsgEntity customMsgEntity = GsonUtil.newGson22().fromJson(str, CustomMsgEntity.class);
                 int msgType = customMsgEntity.getMsgType();
-
+                String msgText = "";
+                if (customMsgEntity.getMsgText() instanceof String) {
+                    msgText = (String) customMsgEntity.getMsgText();
+                } else {
+                    msgText = GsonUtil.newGson22().toJson(customMsgEntity.getMsgText());
+                }
                 //会话枚举：101文本  102 图片地址  103商品卡片
                 //视频用枚举：201发起邀请视频  202已接听，结束视频   203未接听，顾客取消   204未接听，客服拒绝  205超时（60s）挂断
                 if (msgType == AppConstant.SEND_MSG_TYPE_TEXT) {//文本
-                    String msgText = "";
-                    if (customMsgEntity.getMsgText() instanceof String) {
-                        msgText = (String) customMsgEntity.getMsgText();
-                    }
-
                     if (msg.isSelf()) {
                         imUtils.sendRightTextMsg(msgText);
                     } else {
@@ -1173,39 +1010,22 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                     }*/
 
                 } else if (msgType == AppConstant.SEND_MSG_TYPE_CARD) {//卡片
-                    /*String msgText = customMsgEntity.getMsgText();
-                    if (!TextUtils.isEmpty(msgText)) {
-                        ShopMsgBody shopMsgBody = new Gson().fromJson(msgText, ShopMsgBody.class);
-                        if (msg.isSelf()) {
-                            imUtils.sRightShopMessage(shopMsgBody);
-                        } else {
-                            imUtils.sLeftShopMessage(shopMsgBody);
-                        }
-                    }*/
+                    ShopMsgBody shopMsgBod = GsonUtil.newGson22().fromJson(msgText, ShopMsgBody.class);
+                    imUtils.sLeftShopMessage(shopMsgBod);
 
                 } else if (msgType == AppConstant.SEND_VIDEO_TYPE_END) {//结束视频
-                    String msgText = "";
-                    if (customMsgEntity.getMsgText() instanceof String) {
-                        msgText = (String) customMsgEntity.getMsgText();
-                    }
-
-                    closeActivity(new VideoCallingActivity());
+                    closeVideoActivity();
                     EventBusUtils.post(new EventMessage<>(AppConstant.SEND_VIDEO_TYPE_END, msgText));
 
                 } else if (msgType == AppConstant.SEND_VIDEO_TYPE_REFUSE) {//拒绝视频
-                    closeActivity(new VideoCallingActivity());
+                    closeVideoActivity();
                     EventBusUtils.post(new EventMessage<>(AppConstant.SEND_VIDEO_TYPE_REFUSE));
 
                 } else if (msgType == AppConstant.SEND_MSG_TYPE_SERVICE) {
-
                     SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
                     SharedPrefsUtils.putValue(AppConstant.STAFF_CODE, msg.getUserID());
                     imUtils.sendCenterDefaultMsg(msg.getNickName() + "将为你服务");
 
-                    String msgText = "";
-                    if (customMsgEntity.getMsgText() instanceof String) {
-                        msgText = (String) customMsgEntity.getMsgText();
-                    }
                     imUtils.sendLeftTextMsg(msgText);
                 }
             }
@@ -1229,26 +1049,36 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
     //接收自定义消息（处理接口拉取的历史数据）
     private void sendZiDingYiMsg(CustomMsgEntity customMsgEntity, boolean isSelf) {
-        KLog.d("自定义消息接收cloudCustomData：" + GsonUtil.GsonString(customMsgEntity));
+        KLog.d("自定义消息接收cloudCustomData：" + GsonUtil.GsonString(customMsgEntity) + isSelf);
         int msgType = customMsgEntity.getMsgType();
 
         String msgText = "";
         if (customMsgEntity.getMsgText() instanceof String) {
             msgText = (String) customMsgEntity.getMsgText();
+        } else {
+            KLog.d("自定义消息接收msgText数据异常" + msgText);
+            return;
         }
 
         switch (msgType) {
             case AppConstant.SEND_MSG_TYPE_TEXT://文本
-
                 if (isSelf) {
                     imUtils.sendRightTextMsg2(msgText);
+                    KLog.d("test+我发的");
                 } else {
                     imUtils.sendLeftTextMsg2(msgText);
+                    KLog.d("test+你发的");
                 }
                 break;
             case AppConstant.SEND_MSG_TYPE_IMAGE://图片
                 break;
             case AppConstant.SEND_MSG_TYPE_CARD://卡片
+                ShopMsgBody shopMsgBod = GsonUtil.newGson22().fromJson(msgText, ShopMsgBody.class);
+                if (isSelf) {
+                    imUtils.sRightShopMessage(shopMsgBod);
+                } else {
+                    imUtils.sLeftShopMessage(shopMsgBod);
+                }
                 break;
             case AppConstant.SEND_VIDEO_TYPE_START://开始视频
                 break;
@@ -1276,4 +1106,239 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     }
 
 
+    private void initHttp() {
+
+        viewModel.stateLiveData.stateEnumMutableLiveData.observe(this, stateEnum -> {
+            if (stateEnum.equals(StateLiveData.StateEnum.Loading)) {
+                KLog.e("请求数据中--显示loading");
+                showLoading("加载中");
+            }
+            if (stateEnum.equals(StateLiveData.StateEnum.Success)) {
+                KLog.e("数据获取成功--关闭loading");
+                dismissLoading();
+            }
+            if (stateEnum.equals(StateLiveData.StateEnum.Idle)) {
+                KLog.e("空闲状态--关闭loading");
+                dismissLoading();
+            }
+        });
+
+        //获取用户信息
+        viewModel.userInfoEntity.observe(this, new Observer<UserInfoEntity>() {
+            @Override
+            public void onChanged(UserInfoEntity userInfoEntity) {
+                if (ObjectUtils.isEmpty(userInfoEntity) || ObjectUtils.isEmpty(userInfoEntity.getData())) {
+                    ToastUtils.showShort("获取用户信息失败");
+                    return;
+                }
+                if (userInfoEntity.getSuccess()) {
+                    SharedPrefsUtils.putValue(AppConstant.MYUSERID, userInfoEntity.getData().getCustNo());
+                    SharedPrefsUtils.putValue(AppConstant.MyUserName, userInfoEntity.getData().getCustName());
+                    SharedPrefsUtils.putValue(AppConstant.MyUserIcon, userInfoEntity.getData().getCustFaceUrl());
+                    if (ObjectUtils.isEmpty(userInfoEntity.getData().getCustFaceUrl())) {
+                        SharedPrefsUtils.putValue(AppConstant.MyUserIcon, "https://t7.baidu.com/it/u=793426911,3641399153&fm=218&app=126&f=JPEG?w=121&h=75&s=DEA0546E36517A77458B2750020030FA");
+                    }
+
+                    login();
+                    viewModel.getCustImRecord(historyPage, TimeUtils.getNowMills() + "");
+                } else {
+                    ToastUtils.showShort("获取用户信息失败");
+                }
+            }
+        });
+
+
+        //登录
+        viewModel.loadEvent.observe(this, new Observer<LoginBean>() {
+            @Override
+            public void onChanged(LoginBean loginBean) {
+                if (loginBean == null || loginBean.getData() == null) {
+                    return;
+                }
+
+                ImConstant.SDKAPPID = loginBean.getData().getSdkAppId();
+                if (ImConstant.SDKAPPID > 0) {
+                    SharedPrefsUtils.putValue(AppConstant.SDKAppId, ImConstant.SDKAPPID);
+                }
+
+                SharedPrefsUtils.putValue(AppConstant.SDKUserSig, loginBean.getData().getUserSig());
+
+                //0正在会话，1未会话，2排队中
+                switch (loginBean.getData().getStatus()) {
+                    case 0:
+                        isSendMsg = true;
+                        imUtils.loginIm();
+
+                        Map<String, Object> value = new HashMap<>();
+                        value.put("eventId", Integer.parseInt(loginBean.getData().getEventId()));
+                        cloudCustomData = GsonUtil.newGson22().toJson(value);
+
+                        myEventId = "" + loginBean.getData().getEventId();
+                        SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
+                        SharedPrefsUtils.putValue(AppConstant.STAFF_CODE, loginBean.getData().getStaffCode());
+                        break;
+                    case 1:
+                        isSendMsg = false;
+                        imUtils.initTencentImLogin();
+
+                        loadEventMsg = loginBean.getData().getMsg();
+                        imUtils.sendDefaultMsg("" + loadEventMsg);
+                        break;
+                    case 2:
+                        isSendMsg = false;
+                        imUtils.loginIm();
+
+                        loadEventMsg = loginBean.getData().getMsg();
+                        imUtils.sendCenterDefaultMsg("" + loadEventMsg);
+                        break;
+
+                }
+
+
+            }
+
+
+        });
+
+        //获取历史信息
+        viewModel.historyMsgEntity.observe(this, new Observer<HistoryMsgEntity>() {
+            @Override
+            public void onChanged(HistoryMsgEntity historyMsgEntity) {
+                if (ObjectUtils.isEmpty(historyMsgEntity) ||
+                        ObjectUtils.isEmpty(historyMsgEntity.getData())) {
+                    return;
+                }
+
+                binding.mainTopProgress.setVisibility(View.GONE);
+                historyMsgEntityList = historyMsgEntity.getData().getData();
+
+                //循环消息模拟发送赋值
+                for (HistoryMsgEntity.DataDTO.DataDTO2 dataDTO2 : historyMsgEntityList) {
+
+                    List<HistoryMsgEntity.DataDTO.DataDTO2.MsgBody> msgBody = GsonUtil.GsonToList(dataDTO2.getMsgBody(), HistoryMsgEntity.DataDTO.DataDTO2.MsgBody.class);
+
+                    String str = GsonUtil.GsonString(msgBody.get(0));
+                    MsgBodyBean msgBodyBean = GsonUtil.newGson22().fromJson(str, MsgBodyBean.class);
+
+                    String data = msgBodyBean.getMsgContent().getData();
+                    CustomMsgEntity customMsgEntity = GsonUtil.newGson22().fromJson(data, CustomMsgEntity.class);
+
+                    sendZiDingYiMsg(customMsgEntity, StringUtils.equals(dataDTO2.getFromAccount(), ImUtils.MyUserId));
+                }
+            }
+        });
+
+        //获取人工客服
+        viewModel.changeCustomerServiceEntity.observe(this, new Observer<ChangeCustomerServiceEntity>() {
+            @Override
+            public void onChanged(ChangeCustomerServiceEntity changeCustomerServiceEntity) {
+                if (changeCustomerServiceEntity != null) {
+                    imUtils.loginIm();
+                    String code = changeCustomerServiceEntity.getCode();
+
+                    switch (code) {
+                        case "18790301"://排队中
+                        case "18790303"://客服下班了
+                            isSendMsg = false;
+
+                            String message = changeCustomerServiceEntity.getMessage();
+                            imUtils.sendCenterDefaultMsg("" + message);
+
+                            break;
+                        case "99990000"://有客服接入
+                            //  String staffCode = changeCustomerServiceEntity.getData().getStaffCode();
+                            myEventId = "" + changeCustomerServiceEntity.getData().getEventId();
+
+                            if (changeCustomerServiceEntity.getData() != null) {
+                                Gson gson = new Gson();
+                                cloudCustomData = gson.toJson(changeCustomerServiceEntity.getData());
+
+                                SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
+                                SharedPrefsUtils.putValue(AppConstant.STAFF_CODE, changeCustomerServiceEntity.getData().getStaffCode());
+                            }
+
+                            isSendMsg = true;
+                            break;
+                    }
+
+
+                }
+
+            }
+        });
+
+        //未回复客服消息
+        viewModel.sendOffineMsgEntity.observe(this, new Observer<SendOffineMsgEntity>() {
+            @Override
+            public void onChanged(SendOffineMsgEntity sendOffineMsgEntity) {
+
+                if (sendOffineMsgEntity != null && sendOffineMsgEntity.getData() != null) {
+
+                    Integer showType = sendOffineMsgEntity.getData().getShowType();
+                    //0代表小I回复 1代表返回商品
+                    if (showType == 0) {
+
+                        String msgType = sendOffineMsgEntity.getData().getMsg().getMsgType();
+                        String content = sendOffineMsgEntity.getData().getMsg().getContent();
+                        if (!TextUtils.isEmpty(content)) {
+                            imUtils.sendLeftTextMsg("" + content);
+                        }
+
+
+                    } else if (showType == 1) {
+
+                        SendOffineMsgEntity.DataBean.ProductInfoBean productInfo = sendOffineMsgEntity.getData().getProductInfo();
+
+                        if (productInfo != null) {
+                            imUtils.sendLeftShopMessage(productInfo);
+                        }
+
+
+                    }
+
+
+                }
+
+
+            }
+        });
+
+
+        //获取房间号
+        viewModel.trtcRoomEntity.observe(this, new Observer<TrtcRoomEntity>() {
+            @Override
+            public void onChanged(TrtcRoomEntity trtcRoomEntity) {
+                if (trtcRoomEntity != null) {
+
+                    mRoomId = trtcRoomEntity.getData();
+                    KLog.d("房间号：" + mRoomId);
+
+                    RoomIdEntity roomIdEntity = new RoomIdEntity();
+                    roomIdEntity.setRoomId(mRoomId);
+                    roomIdEntity.setHelloText("视频连接中");
+                    imUtils.sendTextMsg("" + mRoomId, AppConstant.SEND_VIDEO_TYPE_START);
+
+                    //inviteID = imUtils.callVideo(MainActivity.this, mRoomId);
+                }
+            }
+        });
+
+        //上传图片
+        viewModel.upLoad_ImgEntity.observe(MainActivity.this, new Observer<upLoadImgEntity>() {
+            @Override
+            public void onChanged(upLoadImgEntity upLoadImgEntity) {
+
+                String data = upLoadImgEntity.getData();
+
+                if (!TextUtils.isEmpty(data)) {
+                    dismissLoading();
+                    imUtils.sendTextMsg(data, AppConstant.SEND_MSG_TYPE_IMAGE);
+                }
+            }
+        });
+    }
+
+    private void closeVideoActivity() {
+        AppManagerMVVM.getAppManager().finishActivity(VideoCallingActivity.class);
+    }
 }

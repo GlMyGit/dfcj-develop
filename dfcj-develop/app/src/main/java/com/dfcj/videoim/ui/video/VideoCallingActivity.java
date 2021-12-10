@@ -17,6 +17,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.bumptech.glide.Glide;
 import com.dfcj.videoim.BR;
 import com.dfcj.videoim.MainActivity;
 import com.dfcj.videoim.R;
@@ -115,6 +117,12 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
         //mBitRateMap.put(TRTCCloudDef.TRTC_VIDEO_RESOLUTION_960_540 + "", new BitRateBean(400, 1600, 900));
         mBitRateMap.put(TRTCCloudDef.TRTC_VIDEO_RESOLUTION_1280_720 + "", new BitRateBean(500, 2000, 1250));
         mBitRateMap.put(TRTCCloudDef.TRTC_VIDEO_RESOLUTION_1920_1080 + "", new BitRateBean(800, 3000, 1900));
+
+        //客服数据显示
+        binding.staffName.setText(ImUtils.fsUserId);
+        Glide.with(this).
+                load(SharedPrefsUtils.getValue(AppConstant.STAFF_IMGE))
+                .error(R.drawable.ic_head_default_left).into(binding.staffIcon);
 
         imUtils = new ImUtils(mContext);
         timer.start();
@@ -285,6 +293,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
 
         //取消/挂断
         public void closeVideo() {
+            timer.cancel();
 
             if (available) {//挂断
                 //通话时长
@@ -297,7 +306,6 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
                 imUtils.sendTextMsg("取消视频", AppConstant.SEND_VIDEO_TYPE_CANCEL);
                 EventBusUtils.post(new EventMessage<>(AppConstant.SEND_VIDEO_TYPE_CANCEL));
             }
-
             closeActivity(VideoCallingActivity.this);
         }
 
@@ -514,16 +522,18 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
         @Override
         public void onUserVideoAvailable(String userId, boolean available) {
             KLog.d("onUserVideoAvailable userId " + userId + ", mUserCount " + mUserCount + ",available " + available);
-            VideoCallingActivity.this.available = available;
+            timer.cancel();
 
             int index = mRemoteUidList.indexOf(userId);
             if (available) {
                 if (index != -1) {
                     return;
                 }
+
                 mRemoteUidList.add(userId);
                 refreshRemoteVideoViews();
                 getVideoOpen();
+                VideoCallingActivity.this.available = available;
             } else {
                 if (index == -1) {
                     return;
@@ -534,7 +544,6 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
                 binding.videoCallMeiyanImg.setVisibility(View.GONE);
             }
 
-            timer.cancel();
         }
 
 
@@ -554,6 +563,8 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
 //            if(mRemoteUidList.size()<=0){
 //                closeActivity(VideoCallingActivity.this);
 //            }
+
+
 
         }
 
@@ -678,6 +689,4 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
                 break;
         }
     }
-
-
 }
