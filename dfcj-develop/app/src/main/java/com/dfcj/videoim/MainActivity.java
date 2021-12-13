@@ -1064,10 +1064,8 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
             case AppConstant.SEND_MSG_TYPE_TEXT://文本
                 if (isSelf) {
                     imUtils.sendRightTextMsg2(msgText);
-                    KLog.d("test+我发的");
                 } else {
                     imUtils.sendLeftTextMsg2(msgText);
-                    KLog.d("test+你发的");
                 }
                 break;
             case AppConstant.SEND_MSG_TYPE_IMAGE://图片

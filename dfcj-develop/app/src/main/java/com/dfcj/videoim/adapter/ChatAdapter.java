@@ -300,8 +300,9 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
             helper.setText(R.id.tvDuration, msgBody.getDuration() + "\"");
         }
 
+
         //头像
-        /*if (item.getSenderId().equals(MainActivity.mSenderId)) {
+        if (item.getSenderId().equals(MainActivity.mSenderId)) {
             Glide.with(getContext())
                     .load(SharedPrefsUtils.getValue(AppConstant.MyUserIcon))
                     .error(R.drawable.ic_head_default_right)
@@ -311,7 +312,7 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
                     .load(SharedPrefsUtils.getValue(AppConstant.STAFF_IMGE))
                     .error(R.drawable.ic_head_default_left)
                     .into((ImageView) helper.getView(R.id.chat_item_header));
-        }*/
+        }
 
     }
 

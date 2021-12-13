@@ -15,6 +15,7 @@ import android.text.style.BackgroundColorSpan;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.BusUtils;
 import com.blankj.utilcode.util.CloseUtils;
 import com.blankj.utilcode.util.FileUtils;
@@ -85,8 +86,8 @@ public class ImUtils {
 
     RecyclerView rvChatList;
 
-        public static String fsUserId = "106584";//客服
-//    public static String fsUserId = SharedPrefsUtils.getValue(AppConstant.STAFF_CODE);//客服
+    public static String fsUserId = "106584";//客服
+    //    public static String fsUserId = SharedPrefsUtils.getValue(AppConstant.STAFF_CODE);//客服
     public static String MyUserId = SharedPrefsUtils.getValue(AppConstant.MYUSERID);//顾客
 
     //public static  String fsUserId="customer1";
@@ -135,8 +136,7 @@ public class ImUtils {
                 super.onConnectFailed(code, error);
                 // 连接腾讯云服务器失败
                 KLog.d("连接腾讯云服务器失败");
-                MainActivity mainActivity = (MainActivity) context;
-                mainActivity.closeActivity(mainActivity);
+                ActivityUtils.finishActivity(MainActivity.class);
             }
 
             @Override
@@ -144,8 +144,7 @@ public class ImUtils {
                 super.onKickedOffline();
                 //用户被踢下线
                 KLog.d("用户被踢下线");
-                MainActivity mainActivity = (MainActivity) context;
-                mainActivity.closeActivity(mainActivity);
+                ActivityUtils.finishActivity(MainActivity.class);
             }
 
             @Override
