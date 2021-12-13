@@ -159,4 +159,11 @@ public class SharedPrefsUtils {
         return context.getSharedPreferences("xjdywappcacheinfo", Context.MODE_PRIVATE);
     }
 
+    //清空
+    public static  void clearShardInfo(){
+        SharedPreferences.Editor editor = getSharedPreferences().edit();
+        editor.clear();
+        editor.commit();
+    }
+
 }

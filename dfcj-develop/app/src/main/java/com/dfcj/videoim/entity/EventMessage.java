@@ -4,6 +4,7 @@ public class EventMessage<T> {
 
 
     private String code;
+    private int codeInt;
     private T data;
 
     public EventMessage(String code) {
@@ -12,6 +13,15 @@ public class EventMessage<T> {
 
     public EventMessage(String code, T data) {
         this.code = code;
+        this.data = data;
+    }
+
+    public EventMessage(int codeInt) {
+        this.codeInt = codeInt;
+    }
+
+    public EventMessage(int codeInt, T data) {
+        this.codeInt = codeInt;
         this.data = data;
     }
 
@@ -31,12 +41,20 @@ public class EventMessage<T> {
         this.data = data;
     }
 
+    public int getCodeInt() {
+        return codeInt;
+    }
+
+    public void setCodeInt(int codeInt) {
+        this.codeInt = codeInt;
+    }
+
     @Override
     public String toString() {
         return "EventMessage{" +
                 "code=" + code +
+                ",codeInt=" + codeInt +
                 ", data=" + data +
                 '}';
     }
-
 }

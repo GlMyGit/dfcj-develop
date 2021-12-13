@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.provider.Settings;
@@ -16,6 +17,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Toast;
@@ -24,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.bumptech.glide.Glide;
 import com.dfcj.videoim.BR;
 import com.dfcj.videoim.MainActivity;
 import com.dfcj.videoim.R;
@@ -64,6 +67,7 @@ import java.util.Map;
 @Route(path = Rout.VideoCallingActivity)
 public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, VideoCallingViewModel> {
 
+    private static final int VIDEO_OVERTIME = 10 * 1000;//设置拨打视频超时时间
 
     private String mRoomId = "96635124";
     private String mUserId = "" + ImUtils.MyUserId;
@@ -86,6 +90,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
     private int mBitRateFlag = VideoConstant.LIVE_540_960_VIDEO_BITRATE;
     private String vStatus;
 
+    private ImUtils imUtils;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -113,6 +118,14 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
         mBitRateMap.put(TRTCCloudDef.TRTC_VIDEO_RESOLUTION_1280_720 + "", new BitRateBean(500, 2000, 1250));
         mBitRateMap.put(TRTCCloudDef.TRTC_VIDEO_RESOLUTION_1920_1080 + "", new BitRateBean(800, 3000, 1900));
 
+        //客服数据显示
+        binding.staffName.setText(ImUtils.fsUserId);
+        Glide.with(this).
+                load(SharedPrefsUtils.getValue(AppConstant.STAFF_IMGE))
+                .error(R.drawable.ic_head_default_left).into(binding.staffIcon);
+
+        imUtils = new ImUtils(mContext);
+        timer.start();
     }
 
     @Override
@@ -280,7 +293,19 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
 
         //取消/挂断
         public void closeVideo() {
-            EventBusUtils.post(new EventMessage(MainActivity.VIDEO_CONNECT_CANCEL, binding.videoCallTopTv.getText()));
+            timer.cancel();
+
+            if (available) {//挂断
+                //通话时长
+                String callDuration = (String) binding.videoCallTopTv.getText();
+
+                imUtils.sendTextMsg(callDuration, AppConstant.SEND_VIDEO_TYPE_END);
+                EventBusUtils.post(new EventMessage<>(AppConstant.SEND_VIDEO_TYPE_END, callDuration));
+
+            } else {//取消
+                imUtils.sendTextMsg("取消视频", AppConstant.SEND_VIDEO_TYPE_CANCEL);
+                EventBusUtils.post(new EventMessage<>(AppConstant.SEND_VIDEO_TYPE_CANCEL));
+            }
             closeActivity(VideoCallingActivity.this);
         }
 
@@ -390,7 +415,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
         mTXDeviceManager = mTRTCCloud.getDeviceManager();
 
         TRTCCloudDef.TRTCParams trtcParams = new TRTCCloudDef.TRTCParams();
-        trtcParams.sdkAppId = SharedPrefsUtils.getValue(AppConstant.SDKAppId,0);
+        trtcParams.sdkAppId = SharedPrefsUtils.getValue(AppConstant.SDKAppId, 0);
         trtcParams.userId = mUserId;
         trtcParams.strRoomId = mRoomId;
         trtcParams.userDefineRecordId = mRoomId;
@@ -475,6 +500,8 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
 
     }
 
+    private boolean available = false;
+
     private class TRTCCloudImplListener extends TRTCCloudListener {
 
         private WeakReference<VideoCallingActivity> mContext;
@@ -495,14 +522,18 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
         @Override
         public void onUserVideoAvailable(String userId, boolean available) {
             KLog.d("onUserVideoAvailable userId " + userId + ", mUserCount " + mUserCount + ",available " + available);
+            timer.cancel();
+
             int index = mRemoteUidList.indexOf(userId);
             if (available) {
                 if (index != -1) {
                     return;
                 }
+
                 mRemoteUidList.add(userId);
                 refreshRemoteVideoViews();
                 getVideoOpen();
+                VideoCallingActivity.this.available = available;
             } else {
                 if (index == -1) {
                     return;
@@ -512,6 +543,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
                 refreshRemoteVideoViews();
                 binding.videoCallMeiyanImg.setVisibility(View.GONE);
             }
+
         }
 
 
@@ -532,19 +564,24 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
 //                closeActivity(VideoCallingActivity.this);
 //            }
 
+
+
         }
 
         @Override
         public void onRemoteUserLeaveRoom(String userId, int reason) {
             super.onRemoteUserLeaveRoom(userId, reason);
             KLog.d("有用户退出房间");
-            new Presenter().closeVideo();
         }
 
         @Override
         public void onEnterRoom(long result) {
             super.onEnterRoom(result);
-            KLog.d(result);
+            if (result > 0) {
+                KLog.d("进房成功");
+            } else {
+                KLog.d("进房失败");
+            }
         }
 
         @Override
@@ -618,6 +655,18 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
         return true;
     }
 
+    //视频超时计算
+    private CountDownTimer timer = new CountDownTimer(VIDEO_OVERTIME, 1000) {
+        public void onTick(long millisUntilFinished) {
+        }
+
+        public void onFinish() {
+            imUtils.sendTextMsg("对方无应答", AppConstant.SEND_VIDEO_TYPE_OVERTIME);
+            EventBusUtils.post(new EventMessage<>(AppConstant.SEND_VIDEO_TYPE_OVERTIME));
+            closeActivity(VideoCallingActivity.this);
+        }
+    };
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -640,6 +689,4 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
                 break;
         }
     }
-
-
 }

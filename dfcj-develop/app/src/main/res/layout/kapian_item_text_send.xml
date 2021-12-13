@@ -4,8 +4,10 @@
     android:id="@+id/ll_text_send"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-     android:orientation="vertical"
-    android:padding="5dp">
+    android:orientation="vertical"
+    android:paddingVertical="5dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="5dp">
 
     <TextView
         android:id="@+id/item_tv_time"
@@ -14,15 +16,15 @@
         android:layout_gravity="center_horizontal"
         android:textColor="#999999"
         android:textSize="12dp"
-         android:visibility="gone" />
+        android:visibility="gone" />
 
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp">
 
 
         <com.dfcj.videoim.view.widght.CircleImageView
@@ -34,110 +36,103 @@
             android:src="@drawable/touxian_df" />
 
 
-
         <LinearLayout
             android:id="@+id/chat_item_layout_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_marginRight="5dp"
             android:layout_toLeftOf="@id/chat_item_header"
             android:gravity="right|center_vertical"
-            >
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/kapian_top_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="right"
                 android:text="我"
                 android:textColor="@color/black"
-                android:textSize="@dimen/textSize12sp"
-                android:layout_gravity="right"
-                ></TextView>
+                android:textSize="@dimen/textSize12sp" />
 
             <LinearLayout
                 android:id="@+id/goods_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:gravity="right|center_vertical"
                 android:layout_marginTop="2dp"
+                android:gravity="right|center_vertical"
                 android:orientation="horizontal">
 
 
-
                 <LinearLayout
-                    android:layout_width="200dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:background="@drawable/custom_divider_right"
-                    >
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="15dp">
 
                     <ImageView
                         android:id="@+id/chat_item_img"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_gravity="center"
-                        ></ImageView>
+                        android:scaleType="centerCrop" />
 
-                    <TextView
-                        android:id="@+id/chat_item_content_text1"
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="商品编号：0878672455538"
-                        android:textColor="#333333"
-                        android:textSize="12sp"
-                        android:gravity="left"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginTop="13dp"
-                        android:layout_marginLeft="13dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="15dp"
+                        android:orientation="vertical">
 
-                        />
-                    <TextView
-                        android:id="@+id/chat_item_content_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="资生堂悦薇珀翡紧颜亮肤乳
-（滋润型）100ml"
-                        android:textColor="#333333"
-                        android:textSize="12sp"
-                        android:gravity="left"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="13dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginTop="5dp"
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
 
-                        />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/shop_tx1"
+                                android:textColor="#333333"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/chat_item_content_text1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0878672455538"
+                                android:textColor="#333333"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/chat_item_content_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:ellipsize="end"
+                            android:lines="2"
+                            android:text="资生堂悦薇珀翡紧颜亮肤乳（滋润型）100ml"
+                            android:textColor="#333333"
+                            android:textSize="12sp" />
 
 
-                    <TextView
-                        android:id="@+id/chat_item_price_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/red8"
-                        android:textSize="@dimen/textSize13sp"
-                        android:text="599.00"
-                        android:layout_marginLeft="13dp"
-                        android:layout_marginBottom="15dp"
-                        android:layout_marginTop="10dp"
-                        ></TextView>
-
+                        <TextView
+                            android:id="@+id/chat_item_price_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="bottom"
+                            android:text="599.00"
+                            android:textColor="@color/red8"
+                            android:textSize="@dimen/textSize13sp" />
+                    </LinearLayout>
 
                 </LinearLayout>
-
-
 
 
             </LinearLayout>
 
 
-
-
         </LinearLayout>
-
-
-
 
 
         <ImageView

@@ -16,7 +16,7 @@
 
 
 
-    <string name="shop_tx1">商品编号:</string>
+    <string name="shop_tx1">商品编号：</string>
     <string name="shop_tx2">名称：</string>
     <string name="shop_tx3">价格:</string>
     <string name="shop_tx4">发送商品</string>
