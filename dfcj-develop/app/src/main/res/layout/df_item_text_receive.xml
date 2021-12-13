@@ -50,7 +50,7 @@
                 android:id="@+id/kapian_top_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="客服001"
+                android:text="客服"
                 android:textColor="@color/black"
                 android:textSize="@dimen/textSize12sp"
                 android:layout_gravity="left"
@@ -69,9 +69,6 @@
                     android:id="@+id/chat_item_content_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="您好，先由机器人客服东东为您服务，请简要、完整地输入您的问题，如：我的商品今天会发货吗？
-若有其他问题，请在聊天对话框输入具体服务对应的数字：
-1. 人工客服 "
                     android:textColor="@color/color_676767"
                     android:textSize="12sp"
                     android:layout_marginTop="13dp"
@@ -90,6 +87,7 @@
                     android:textColor="@color/color_FF0000"
                     android:textSize="12sp"
                     android:paddingTop="5dp"
+                    android:visibility="gone"
                     ></TextView>
 
 

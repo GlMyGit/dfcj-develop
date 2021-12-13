@@ -205,9 +205,9 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         shopMsgBody.setGoodsIcon("https://t7.baidu.com/it/u=793426911,3641399153&fm=218&app=126&f=JPEG?w=121&h=75&s=DEA0546E36517A77458B2750020030FA");
         shopMsgBody.setGoodsCode("1001001");
         shopMsgBody.setGoodsName("资生堂悦薇珀翡紧颜亮肤乳（滋润型）100ml");
-        shopMsgBody.setGoodsPrice("20.00");
+        shopMsgBody.setGoodsPrice("20.00");*/
 
-        SharedPrefsUtils.putValue(AppConstant.USERTOKEN, "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMDA4MDEwMDAwNDQiLCJpc3MiOiJvY2otc3RhcnNreSIsImxvZ2lkIjoiNjg3NDYyNzk0OTA5MDMxMjE5MiIsImV4cCI6MTY0NjgxNTAyNywiaWF0IjoxNjM5MDM5MDI3LCJkZXZpY2VpZCI6IiJ9.hNcsiYer2GsAA_TbqPT8vyNrW1rfdVfV4YTbMs-Rrho");*/
+        SharedPrefsUtils.putValue(AppConstant.USERTOKEN, "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMDA4MDEwMDAwNDQiLCJpc3MiOiJvY2otc3RhcnNreSIsImxvZ2lkIjoiNjg3NDYyNzk0OTA5MDMxMjE5MiIsImV4cCI6MTY0NjgxNTAyNywiaWF0IjoxNjM5MDM5MDI3LCJkZXZpY2VpZCI6IiJ9.hNcsiYer2GsAA_TbqPT8vyNrW1rfdVfV4YTbMs-Rrho");
 
         token = SharedPrefsUtils.getValue(AppConstant.USERTOKEN);
         chatType = SharedPrefsUtils.getValue(AppConstant.CHAT_TYPE);
@@ -1056,7 +1056,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
                     SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
                     SharedPrefsUtils.putValue(AppConstant.STAFF_CODE, msg.getUserID());
-                    imUtils.sendCenterDefaultMsg(msg.getNickName() + "将为你服务");
+                    imUtils.sendCenterDefaultMsg("客服"+msg.getNickName() + "将为你服务");
                     imUtils.sendLeftTextMsg(msgText);
                     isSendMsg = true;
                     setVideoStatus(true);

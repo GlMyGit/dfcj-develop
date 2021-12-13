@@ -2,8 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.dfcj.videoim">
 
-    <!-- Required  一些系统要求的权限，如访问网络等-->
-    <uses-permission android:name="${applicationId}.permission.JPUSH_MESSAGE" />
     <!-- 允许应用可以接收点亮屏幕或解锁广播 -->
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <!-- 允许应用获取网络信息状态，如当前的网络连接是否有效 -->
@@ -57,8 +55,6 @@
     <uses-permission android:name="android.permission.MANAGE_APP_OPS_MODES"
         tools:ignore="ProtectedPermissions" />
 
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
@@ -81,8 +77,6 @@
    <!-- <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
         tools:ignore="ProtectedPermissions" />-->
 
-    <!-- Android10之后，计步器需要健身运动权限 -->
-    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
 
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" /><!-- 屏蔽HOME键需要的权限 -->
 
@@ -122,8 +116,6 @@
         </intent>
     </queries>
     <!--适配Android R包可见性 结束-->
-
-
 
 
     <application
@@ -197,14 +189,14 @@
 
 
 
-        <service
-            android:name="com.dfcj.videoim.util.notify.AlarmService"
-            android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="TIMER_ACTION" />
-            </intent-filter>
-        </service>
+<!--        <service-->
+<!--            android:name="com.dfcj.videoim.util.notify.AlarmService"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="false">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="TIMER_ACTION" />-->
+<!--            </intent-filter>-->
+<!--        </service>-->
 
 
 
@@ -239,23 +231,23 @@
 
 
         <!--//企业友盟账号在友盟注册app应用时产生的appkey-->
-        <meta-data
-            android:name="UMENG_APPKEY"
-            android:value="60583181b8c8d45c13a96d91"></meta-data>
+<!--        <meta-data-->
+<!--            android:name="UMENG_APPKEY"-->
+<!--            android:value="60583181b8c8d45c13a96d91"></meta-data>-->
 
-        <meta-data
-            android:name="UMENG_MESSAGE_SECRET"
-            android:value="1d0cbac2b63954150d4ddef636a1fe5e"></meta-data>
+<!--        <meta-data-->
+<!--            android:name="UMENG_MESSAGE_SECRET"-->
+<!--            android:value="1d0cbac2b63954150d4ddef636a1fe5e"></meta-data>-->
 
-        <!--//友盟渠道Id-->
-        <meta-data
-            android:name="UMENG_CHANNEL"
-            android:value="${UMENG_CHANNEL_VALUE}" />
+<!--        &lt;!&ndash;//友盟渠道Id&ndash;&gt;-->
+<!--        <meta-data-->
+<!--            android:name="UMENG_CHANNEL"-->
+<!--            android:value="${UMENG_CHANNEL_VALUE}" />-->
 
         <!--配置华为AppID  中xxxxxx为华为应用的AppID -->
-        <meta-data
-            android:name="com.huawei.hms.client.appid"
-            android:value="appid=104049287"/>
+<!--        <meta-data-->
+<!--            android:name="com.huawei.hms.client.appid"-->
+<!--            android:value="appid=104049287"/>-->
 
 
 

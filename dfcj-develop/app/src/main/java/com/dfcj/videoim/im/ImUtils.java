@@ -147,7 +147,15 @@ public class ImUtils {
     //登录
     public void loginIm() {
         initTencentImLogin();
-        V2TIMManager.getInstance().login("" + MyUserId, ImConstant.genTestUserSig("" + MyUserId), new V2TIMCallback() {
+
+
+        String value = SharedPrefsUtils.getValue(AppConstant.MYUSERID);
+        String SDKUserSig = SharedPrefsUtils.getValue(AppConstant.SDKUserSig);
+
+        KLog.d("用户名："+value);
+        KLog.d("用户名SDKUserSig："+SDKUserSig);
+
+        V2TIMManager.getInstance().login("" + value, SDKUserSig, new V2TIMCallback() {
             @Override
             public void onSuccess() {
                 KLog.d("登录成功");
