@@ -127,6 +127,8 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     private String token;
     private ShopMsgBody shopMsgBody;
     private boolean showShopCard = true;
+    private boolean isService=false;
+
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -216,8 +218,6 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
             @Override
             public void onYesClick(int st) {
                 if (st == 1) {
-                    binding.ivVideo.setImageResource(R.drawable.selector_ctype_video);
-                    isVidesClick = true;
                     KLog.d("onYesClick");
                 }
             }
@@ -432,6 +432,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
         //视频 点击
         public void toVideo() {
+
             KLog.d("视频点击");
             PermissionUtil.getIsPrmission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
             PermissionUtil.getIsPrmission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -451,6 +452,8 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                     imUtils.sendCenterDefaultMsg(loadEventMsg);
                 }
             }
+
+
         }
 
         //ocr 编辑
@@ -1001,13 +1004,13 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                         imUtils.sendLeftTextMsg(msgText);
                     }
                 } else if (msgType == AppConstant.SEND_MSG_TYPE_IMAGE) {//图片
-                    /*String msgText = customMsgEntity.getImgUrl();
+                    //String msgText = (String) customMsgEntity.getImgUrl();
 
                     if (msg.isSelf()) {
                         imUtils.takeRightImgMsg(msgText);
                     } else {
                         imUtils.takeLeftImgMsg(msgText);
-                    }*/
+                    }
 
                 } else if (msgType == AppConstant.SEND_MSG_TYPE_CARD) {//卡片
                     ShopMsgBody shopMsgBod = GsonUtil.newGson22().fromJson(msgText, ShopMsgBody.class);
@@ -1022,11 +1025,14 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                     EventBusUtils.post(new EventMessage<>(AppConstant.SEND_VIDEO_TYPE_REFUSE));
 
                 } else if (msgType == AppConstant.SEND_MSG_TYPE_SERVICE) {
+
                     SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
                     SharedPrefsUtils.putValue(AppConstant.STAFF_CODE, msg.getUserID());
                     imUtils.sendCenterDefaultMsg(msg.getNickName() + "将为你服务");
-
                     imUtils.sendLeftTextMsg(msgText);
+                    isSendMsg=true;
+                    setVideoStatus(true);
+
                 }
             }
 
@@ -1174,20 +1180,31 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                         myEventId = "" + loginBean.getData().getEventId();
                         SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
                         SharedPrefsUtils.putValue(AppConstant.STAFF_CODE, loginBean.getData().getStaffCode());
+
+                        setVideoStatus(true);
+
                         break;
                     case 1:
+
                         isSendMsg = false;
                         imUtils.initTencentImLogin();
 
                         loadEventMsg = loginBean.getData().getMsg();
                         imUtils.sendDefaultMsg("" + loadEventMsg);
+
+                        setVideoStatus(false);
+
                         break;
                     case 2:
+
                         isSendMsg = false;
                         imUtils.loginIm();
 
                         loadEventMsg = loginBean.getData().getMsg();
                         imUtils.sendCenterDefaultMsg("" + loadEventMsg);
+
+                        setVideoStatus(false);
+
                         break;
 
                 }
@@ -1242,6 +1259,8 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                             String message = changeCustomerServiceEntity.getMessage();
                             imUtils.sendCenterDefaultMsg("" + message);
 
+                            setVideoStatus(false);
+
                             break;
                         case "99990000"://有客服接入
                             //  String staffCode = changeCustomerServiceEntity.getData().getStaffCode();
@@ -1254,7 +1273,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                                 SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
                                 SharedPrefsUtils.putValue(AppConstant.STAFF_CODE, changeCustomerServiceEntity.getData().getStaffCode());
                             }
-
+                            setVideoStatus(true);
                             isSendMsg = true;
                             break;
                     }
@@ -1339,4 +1358,24 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     private void closeVideoActivity() {
         AppManagerMVVM.getAppManager().finishActivity(VideoCallingActivity.class);
     }
+
+
+    //设置视频是否可点击
+    private void setVideoStatus(boolean fg){
+
+        if(fg){
+            binding.ivVideo.setImageResource(R.drawable.g_pic112);
+        }else{
+
+            binding.ivVideo.setImageResource(R.drawable.g_pic124);
+
+        }
+
+        isVidesClick = fg;
+
+
+    }
+
+
+
 }
