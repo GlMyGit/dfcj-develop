@@ -275,10 +275,12 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
             helper.getView(R.id.goods_layout).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ShopManager.instance().goodsChange(msgBody);
+                    if (ShopManager.instance().getShopClickListener() != null) {
+                        ShopManager.instance().goodsChange(msgBody);
+                    }
                 }
             });
-            
+
         } else if (item.getMsgType().equals(MsgType.CENTERMS)) {//中间信息
 
             TextMsgBody msgBody = (TextMsgBody) item.getBody();

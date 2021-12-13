@@ -128,9 +128,9 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     private List<HistoryMsgEntity.DataDTO.DataDTO2> historyMsgEntityList = new ArrayList<>();
 
     //设定app传递数据
-   // private String token;
-   // private ShopMsgBody shopMsgBody;
-   // private String token;
+    // private String token;
+    // private ShopMsgBody shopMsgBody;
+    // private String token;
     //private ShopMsgBody shopMsgBody;
     private boolean showShopCard = false;//是否显示商品卡片
 
@@ -205,9 +205,9 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         shopMsgBody.setGoodsIcon("https://t7.baidu.com/it/u=793426911,3641399153&fm=218&app=126&f=JPEG?w=121&h=75&s=DEA0546E36517A77458B2750020030FA");
         shopMsgBody.setGoodsCode("1001001");
         shopMsgBody.setGoodsName("资生堂悦薇珀翡紧颜亮肤乳（滋润型）100ml");
-        shopMsgBody.setGoodsPrice("20.00");*/
+        shopMsgBody.setGoodsPrice("20.00");
 
-        SharedPrefsUtils.putValue(AppConstant.USERTOKEN,"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMDA4MDEwMDAwNDQiLCJpc3MiOiJvY2otc3RhcnNreSIsImxvZ2lkIjoiNjg3NDYyNzk0OTA5MDMxMjE5MiIsImV4cCI6MTY0NjgxNTAyNywiaWF0IjoxNjM5MDM5MDI3LCJkZXZpY2VpZCI6IiJ9.hNcsiYer2GsAA_TbqPT8vyNrW1rfdVfV4YTbMs-Rrho");
+        SharedPrefsUtils.putValue(AppConstant.USERTOKEN, "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMDA4MDEwMDAwNDQiLCJpc3MiOiJvY2otc3RhcnNreSIsImxvZ2lkIjoiNjg3NDYyNzk0OTA5MDMxMjE5MiIsImV4cCI6MTY0NjgxNTAyNywiaWF0IjoxNjM5MDM5MDI3LCJkZXZpY2VpZCI6IiJ9.hNcsiYer2GsAA_TbqPT8vyNrW1rfdVfV4YTbMs-Rrho");*/
 
         token = SharedPrefsUtils.getValue(AppConstant.USERTOKEN);
         chatType = SharedPrefsUtils.getValue(AppConstant.CHAT_TYPE);
@@ -241,30 +241,22 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         mAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
             @Override
             public void onItemChildClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                switch (view.getId()) {
-                    case R.id.goods_layout:
-                        break;
+                if (view.getId() == R.id.goods_layout) {
+
                 }
             }
         });
-
-
     }
 
     //获取顾客信息
     private void getCustomerInfo() {
         viewModel.getCustomerInfo(token);
-
     }
-
 
     //登录
     private void login() {
         viewModel.requestLogin();
-
-
     }
-
 
     //未连接客服回复消息
     private void sendOffineMsg(String msg) {
@@ -460,8 +452,8 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                 return;
             }
 
-            KLog.d("isSendMsg:"+isSendMsg);
-            KLog.d("imUtils.isLogin:"+imUtils.isLogin);
+            KLog.d("isSendMsg:" + isSendMsg);
+            KLog.d("imUtils.isLogin:" + imUtils.isLogin);
 
             if (imUtils.isLogin) {
                 if (isSendMsg) {
@@ -712,6 +704,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                 // super.onRecvNewMessage(msg);
                 KLog.d("消息接收");
                 KLog.d("消息接收昵称" + msg.getNickName());
+                SharedPrefsUtils.putValue(AppConstant.STAFF_NAME, msg.getNickName());
                 SharedPrefsUtils.putValue(AppConstant.STAFF_IMGE, msg.getFaceUrl());
 
                 int elemType = msg.getElemType();
@@ -1177,11 +1170,11 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                 }
                 if (userInfoEntity.getSuccess()) {
 
-                    SharedPrefsUtils.putValue(AppConstant.MYUSERID, ""+userInfoEntity.getData().getCustNo());
-                    SharedPrefsUtils.putValue(AppConstant.MyUserName, ""+userInfoEntity.getData().getCustName());
-                    SharedPrefsUtils.putValue(AppConstant.MyUserIcon, ""+userInfoEntity.getData().getCustFaceUrl());
+                    SharedPrefsUtils.putValue(AppConstant.MYUSERID, "" + userInfoEntity.getData().getCustNo());
+                    SharedPrefsUtils.putValue(AppConstant.MyUserName, "" + userInfoEntity.getData().getCustName());
+                    SharedPrefsUtils.putValue(AppConstant.MyUserIcon, "" + userInfoEntity.getData().getCustFaceUrl());
 
-                    KLog.d("Yonghu:"+ImUtils.MyUserId);
+                    KLog.d("Yonghu:" + ImUtils.MyUserId);
 
                     if (ObjectUtils.isEmpty(userInfoEntity.getData().getCustFaceUrl())) {
                         SharedPrefsUtils.putValue(AppConstant.MyUserIcon, "http://wwwww");
@@ -1218,7 +1211,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                         imUtils.loginIm();
 
                         Map<String, Object> value = new HashMap<>();
-                        value.put("eventId", Integer.parseInt(loginBean.getData().getEventId()));
+                        value.put("eventId", Long.parseLong(loginBean.getData().getEventId()));
                         cloudCustomData = GsonUtil.newGson22().toJson(value);
 
                         myEventId = "" + loginBean.getData().getEventId();
@@ -1424,7 +1417,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
         isVidesClick = fg;
 
-        KLog.d("视频是否可点击："+isVidesClick);
+        KLog.d("视频是否可点击：" + isVidesClick);
 
 
     }

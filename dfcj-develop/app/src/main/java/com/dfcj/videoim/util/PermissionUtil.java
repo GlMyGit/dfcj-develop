@@ -15,19 +15,16 @@ import com.dfcj.videoim.base.BaseActivity;
 public class PermissionUtil {
 
 
-    public static  void getIsPrmission(BaseActivity bs,String pm){
+    public static void getIsPrmission(BaseActivity bs, String pm) {
 
         boolean permission1 = AppUtils.isPermission(bs, pm);
 
-        if(!permission1){
-            AppUtils.readPermission(bs,Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (!permission1) {
+            AppUtils.readPermission(bs, Manifest.permission.WRITE_EXTERNAL_STORAGE);
             return;
         }
 
     }
-
-
-
 
 
     public static void gotoPermission(Context context) {
@@ -72,7 +69,8 @@ public class PermissionUtil {
         try {
             Intent intent = new Intent("com.meizu.safe.security.SHOW_APPSEC");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.putExtra("packageName", BuildConfig.APPLICATION_ID);
+            intent.putExtra("packageName", com.blankj.utilcode.util.AppUtils.getAppPackageName()
+            );
             context.startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,7 +106,6 @@ public class PermissionUtil {
 
         return localIntent;
     }
-
 
 
 }
