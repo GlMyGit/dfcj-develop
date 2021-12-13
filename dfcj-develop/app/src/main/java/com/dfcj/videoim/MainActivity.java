@@ -1,7 +1,10 @@
 package com.dfcj.videoim;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
+import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
@@ -43,6 +46,7 @@ import com.dfcj.videoim.entity.upLoadImgEntity;
 import com.dfcj.videoim.im.ImConstant;
 import com.dfcj.videoim.im.ImUtils;
 import com.dfcj.videoim.im.ocr.OcrUtil;
+import com.dfcj.videoim.listener.ShopClickListener;
 import com.dfcj.videoim.ui.video.VideoCallingActivity;
 import com.dfcj.videoim.util.AppUtils;
 import com.dfcj.videoim.util.ChatUiHelper;
@@ -124,10 +128,16 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     private List<HistoryMsgEntity.DataDTO.DataDTO2> historyMsgEntityList = new ArrayList<>();
 
     //设定app传递数据
-    private String token;
-    private ShopMsgBody shopMsgBody;
+   // private String token;
+   // private ShopMsgBody shopMsgBody;
+   // private String token;
+    //private ShopMsgBody shopMsgBody;
     private boolean showShopCard = false;//是否显示商品卡片
 
+    private String token;//用户token
+    private String chatType;//聊天类型
+    private ShopMsgBody shopMsgBody;//商品数据
+    private boolean isService = false;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -142,7 +152,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     @Override
     public void initViews() {
         super.initViews();
-        setAppValue();
+        initAppValue();
 
         initHttp();
 
@@ -189,25 +199,29 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         getCustomerInfo();
     }
 
-    private void setAppValue() {
-        token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMDA4MDEwMDAwNDQiLCJpc3MiOiJvY2otc3RhcnNreSIsImxvZ2lkIjoiNjg3NDYyNzk0OTA5MDMxMjE5MiIsImV4cCI6MTY0NjgxNTAyNywiaWF0IjoxNjM5MDM5MDI3LCJkZXZpY2VpZCI6IiJ9.hNcsiYer2GsAA_TbqPT8vyNrW1rfdVfV4YTbMs-Rrho";
-
+    private void initAppValue() {
+        /*token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMDA4MDEwMDAwNDQiLCJpc3MiOiJvY2otc3RhcnNreSIsImxvZ2lkIjoiNjg3NDYyNzk0OTA5MDMxMjE5MiIsImV4cCI6MTY0NjgxNTAyNywiaWF0IjoxNjM5MDM5MDI3LCJkZXZpY2VpZCI6IiJ9.hNcsiYer2GsAA_TbqPT8vyNrW1rfdVfV4YTbMs-Rrho";
         shopMsgBody = new ShopMsgBody();
         shopMsgBody.setGoodsIcon("https://t7.baidu.com/it/u=793426911,3641399153&fm=218&app=126&f=JPEG?w=121&h=75&s=DEA0546E36517A77458B2750020030FA");
         shopMsgBody.setGoodsCode("1001001");
         shopMsgBody.setGoodsName("资生堂悦薇珀翡紧颜亮肤乳（滋润型）100ml");
-        shopMsgBody.setGoodsPrice("20.00");
+        shopMsgBody.setGoodsPrice("20.00");*/
 
-        binding.mainShopLayout.setVisibility(showShopCard ? View.VISIBLE : View.GONE);
+        token = SharedPrefsUtils.getValue(AppConstant.USERTOKEN);
+        chatType = SharedPrefsUtils.getValue(AppConstant.CHAT_TYPE);
+        String shopMsgBodyStr = SharedPrefsUtils.getValue(AppConstant.SHOP_MSG_BODY_DATA);
+        if (!ObjectUtils.isEmpty(shopMsgBodyStr)) {
+            shopMsgBody = GsonUtil.newGson22().fromJson(shopMsgBodyStr, ShopMsgBody.class);
 
-        Glide.with(MainActivity.this)
-                .load(shopMsgBody.getGoodsIcon())
-                .error(R.drawable.default_img_failed)
-                .into(binding.mainLayoutShopImg);
-        binding.mianLayoutShopNumTv.setText(shopMsgBody.getGoodsCode());
-        binding.mianLayoutShopTitleTv.setText(shopMsgBody.getGoodsName());
-        binding.mianLayoutShopPriceTv.setText(shopMsgBody.getGoodsPrice());
-
+            binding.mainShopLayout.setVisibility(View.VISIBLE);
+            binding.mianLayoutShopNumTv.setText(shopMsgBody.getGoodsCode());
+            binding.mianLayoutShopTitleTv.setText(shopMsgBody.getGoodsName());
+            binding.mianLayoutShopPriceTv.setText(shopMsgBody.getGoodsPrice());
+            Glide.with(MainActivity.this)
+                    .load(shopMsgBody.getGoodsIcon())
+                    .error(R.drawable.default_img_failed)
+                    .into(binding.mainLayoutShopImg);
+        }
     }
 
 
@@ -938,16 +952,35 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         super.onReceiveEvent(event);
         switch (event.getCodeInt()) {
             case AppConstant.SEND_VIDEO_TYPE_END:
-                imUtils.sendVideoHintMsg("通话时长" + event.getData());
+                if (ObjectUtils.isEmpty(event.getCode())) {
+                    imUtils.sendVideoHintMsg("通话时长" + event.getData());
+                } else {
+                    imUtils.sendVideoHintMsg2("通话时长" + event.getData());
+                }
                 break;
+
             case AppConstant.SEND_VIDEO_TYPE_OVERTIME:
-                imUtils.sendVideoHintMsg("对方无应答");
+                if (ObjectUtils.isEmpty(event.getCode())) {
+                    imUtils.sendVideoHintMsg("对方无应答");
+                } else {
+                    imUtils.sendVideoHintMsg2("对方无应答");
+                }
                 break;
+
             case AppConstant.SEND_VIDEO_TYPE_REFUSE:
-                imUtils.sendVideoHintMsg("拒绝邀请");
+                if (ObjectUtils.isEmpty(event.getCode())) {
+                    imUtils.sendVideoHintMsg("拒绝邀请");
+                } else {
+                    imUtils.sendVideoHintMsg2("拒绝邀请");
+                }
                 break;
+
             case AppConstant.SEND_VIDEO_TYPE_CANCEL:
-                imUtils.sendVideoHintMsg("取消视频");
+                if (ObjectUtils.isEmpty(event.getCode())) {
+                    imUtils.sendVideoHintMsg("取消视频");
+                } else {
+                    imUtils.sendVideoHintMsg2("取消视频");
+                }
                 /*//信令方式视频提示
                 V2TIMManager.getSignalingManager().cancel(inviteID, "", new V2TIMCallback() {
                     @Override
@@ -1006,8 +1039,6 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                         imUtils.sendLeftTextMsg(msgText);
                     }
                 } else if (msgType == AppConstant.SEND_MSG_TYPE_IMAGE) {//图片
-                    //String msgText = (String) customMsgEntity.getImgUrl();
-
                     if (msg.isSelf()) {
                         imUtils.takeRightImgMsg(msgText);
                     } else {
@@ -1032,7 +1063,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                     SharedPrefsUtils.putValue(AppConstant.STAFF_CODE, msg.getUserID());
                     imUtils.sendCenterDefaultMsg(msg.getNickName() + "将为你服务");
                     imUtils.sendLeftTextMsg(msgText);
-                    isSendMsg=true;
+                    isSendMsg = true;
                     setVideoStatus(true);
 
                 }
@@ -1077,13 +1108,18 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                 }
                 break;
             case AppConstant.SEND_MSG_TYPE_IMAGE://图片
+                if (isSelf) {
+                    imUtils.takeRightImgMsg2(msgText);
+                } else {
+                    imUtils.takeLeftImgMsg2(msgText);
+                }
                 break;
             case AppConstant.SEND_MSG_TYPE_CARD://卡片
                 ShopMsgBody shopMsgBod = GsonUtil.newGson22().fromJson(msgText, ShopMsgBody.class);
                 if (isSelf) {
-                    imUtils.sRightShopMessage(shopMsgBod);
+                    imUtils.sRightShopMessage2(shopMsgBod);
                 } else {
-                    imUtils.sLeftShopMessage(shopMsgBod);
+                    imUtils.sLeftShopMessage2(shopMsgBod);
                 }
                 break;
             case AppConstant.SEND_VIDEO_TYPE_START://开始视频
@@ -1092,7 +1128,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
             case AppConstant.SEND_VIDEO_TYPE_CANCEL://取消视频
             case AppConstant.SEND_VIDEO_TYPE_REFUSE://拒绝视频
             case AppConstant.SEND_VIDEO_TYPE_OVERTIME://视频超时
-                EventBusUtils.post(new EventMessage<>(msgType, msgText));
+                EventBusUtils.post(new EventMessage<>(msgType + "", msgType, msgText));
                 break;
         }
     }
@@ -1231,6 +1267,8 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
                 //循环消息模拟发送赋值
                 for (HistoryMsgEntity.DataDTO.DataDTO2 dataDTO2 : historyMsgEntityList) {
+                    SharedPrefsUtils.putValue(AppConstant.STAFF_IMGE, dataDTO2.getStaffFaceUrl());
+                    SharedPrefsUtils.putValue(AppConstant.STAFF_NAME, dataDTO2.getStaffNick());
 
                     List<HistoryMsgEntity.DataDTO.DataDTO2.MsgBody> msgBody = GsonUtil.GsonToList(dataDTO2.getMsgBody(), HistoryMsgEntity.DataDTO.DataDTO2.MsgBody.class);
 
@@ -1242,6 +1280,10 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
                     sendZiDingYiMsg(customMsgEntity, StringUtils.equals(dataDTO2.getFromAccount(), ImUtils.MyUserId));
                 }
+                if (historyPage == 1) {
+                    binding.rvChatList.smoothScrollToPosition(mAdapter.getItemCount() - 1);
+                }
+
             }
         });
 
@@ -1357,17 +1399,18 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         });
     }
 
+    //关闭视频通话
     private void closeVideoActivity() {
         AppManagerMVVM.getAppManager().finishActivity(VideoCallingActivity.class);
     }
 
 
     //设置视频是否可点击
-    private void setVideoStatus(boolean fg){
+    private void setVideoStatus(boolean fg) {
 
-        if(fg){
+        if (fg) {
             binding.ivVideo.setImageResource(R.drawable.g_pic112);
-        }else{
+        } else {
 
             binding.ivVideo.setImageResource(R.drawable.g_pic124);
 
@@ -1379,7 +1422,6 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
 
     }
-
 
 
 }

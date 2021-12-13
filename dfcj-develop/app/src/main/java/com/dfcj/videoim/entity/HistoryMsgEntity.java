@@ -75,6 +75,8 @@ public class HistoryMsgEntity {
             private String custCode;
             private String custNick;
             private String custFaceUrl;
+            private String staffFaceUrl;
+            private String staffNick;
 
             public Integer getId() {
                 return id;
@@ -226,6 +228,22 @@ public class HistoryMsgEntity {
 
             public void setCustFaceUrl(String custFaceUrl) {
                 this.custFaceUrl = custFaceUrl;
+            }
+
+            public String getStaffFaceUrl() {
+                return staffFaceUrl;
+            }
+
+            public void setStaffFaceUrl(String staffFaceUrl) {
+                this.staffFaceUrl = staffFaceUrl;
+            }
+
+            public String getStaffNick() {
+                return staffNick;
+            }
+
+            public void setStaffNick(String staffNick) {
+                this.staffNick = staffNick;
             }
 
             public static class MsgBody {

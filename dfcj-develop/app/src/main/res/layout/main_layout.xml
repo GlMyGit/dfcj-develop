@@ -99,7 +99,7 @@
                     android:layout_height="100dp"
                     android:background="@color/color_66_E5E5E5"
                     android:paddingBottom="9dp"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
 
                     <RelativeLayout

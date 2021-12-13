@@ -2,24 +2,18 @@ package com.dfcj.videoim.im;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.style.BackgroundColorSpan;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ActivityUtils;
-import com.blankj.utilcode.util.BusUtils;
-import com.blankj.utilcode.util.CloseUtils;
 import com.blankj.utilcode.util.FileUtils;
-import com.blankj.utilcode.util.GsonUtils;
 import com.dfcj.videoim.MainActivity;
 import com.dfcj.videoim.adapter.ChatAdapter;
 import com.dfcj.videoim.appconfig.AppConstant;
@@ -27,45 +21,35 @@ import com.dfcj.videoim.appconfig.Rout;
 import com.dfcj.videoim.base.BaseActivity;
 import com.dfcj.videoim.entity.AudioMsgBody;
 import com.dfcj.videoim.entity.CustomMsgEntity;
-import com.dfcj.videoim.entity.EventMessage;
 import com.dfcj.videoim.entity.FileMsgBody;
 import com.dfcj.videoim.entity.ImageMsgBody;
 import com.dfcj.videoim.entity.Message;
 import com.dfcj.videoim.entity.MsgSendStatus;
 import com.dfcj.videoim.entity.MsgType;
-import com.dfcj.videoim.entity.RoomIdEntity;
 import com.dfcj.videoim.entity.SendOffineMsgEntity;
-import com.dfcj.videoim.entity.SenderType;
 import com.dfcj.videoim.entity.ShopMsgBody;
 import com.dfcj.videoim.entity.TextMsgBody;
 import com.dfcj.videoim.entity.VideoMsgBody;
 import com.dfcj.videoim.util.AppUtils;
 import com.dfcj.videoim.util.ChatUiHelper;
-import com.dfcj.videoim.util.other.EventBusUtils;
 import com.dfcj.videoim.util.other.GsonUtil;
 import com.dfcj.videoim.util.other.LogUtils;
 import com.dfcj.videoim.util.other.SharedPrefsUtils;
-import com.dfcj.videoim.view.dialog.Upp2Dialog;
-import com.google.gson.Gson;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.tencent.imsdk.v2.V2TIMCallback;
-import com.tencent.imsdk.v2.V2TIMCustomElem;
 import com.tencent.imsdk.v2.V2TIMDownloadCallback;
 import com.tencent.imsdk.v2.V2TIMElem;
 import com.tencent.imsdk.v2.V2TIMImageElem;
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMMessage;
-import com.tencent.imsdk.v2.V2TIMMessageManager;
 import com.tencent.imsdk.v2.V2TIMOfflinePushInfo;
 import com.tencent.imsdk.v2.V2TIMSDKConfig;
 import com.tencent.imsdk.v2.V2TIMSDKListener;
 import com.tencent.imsdk.v2.V2TIMSendCallback;
 import com.tencent.imsdk.v2.V2TIMSoundElem;
 import com.tencent.imsdk.v2.V2TIMUserFullInfo;
-import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.imsdk.v2.V2TIMVideoElem;
 import com.wzq.mvvmsmart.utils.KLog;
-import com.wzq.mvvmsmart.utils.ToastUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -410,7 +394,6 @@ public class ImUtils {
         mMessgae.setBody(mTextMsgBody);
         mMessgae.setType(ChatAdapter.TYPE_RECEIVE_TEXT);
         mMessgae.setSenderId(mTargetId);
-        mMessgae.setSenderType(SenderType.LEFT);
 
         //开始发送
         mAdapter.addData(mMessgae);
@@ -435,7 +418,6 @@ public class ImUtils {
         mMessgae.setType(ChatAdapter.TYPE_RECEIVE_TEXT);
         mMessgae.setSenderId(mTargetId);
         mMessgae.setSentStatus(MsgSendStatus.SENT);
-        mMessgae.setSenderType(SenderType.LEFT);
 
         //开始发送
         mAdapter.addData(0, mMessgae);
@@ -458,7 +440,6 @@ public class ImUtils {
         mMessgae.setBody(mTextMsgBody);
         mMessgae.setType(ChatAdapter.TYPE_SEND_TEXT);
         mMessgae.setSenderId(mSenderId);
-        mMessgae.setSenderType(SenderType.RIGHT);
 
         //开始发送
         mAdapter.addData(mMessgae);
@@ -482,7 +463,6 @@ public class ImUtils {
         mMessgae.setType(ChatAdapter.TYPE_SEND_TEXT);
         mMessgae.setSenderId(mSenderId);
         mMessgae.setSentStatus(MsgSendStatus.SENT);
-        mMessgae.setSenderType(SenderType.RIGHT);
 
         //开始发送
         mAdapter.addData(0, mMessgae);
@@ -499,12 +479,25 @@ public class ImUtils {
         mMessgae.setBody(mImageMsgBody);
         mMessgae.setSenderId(mTargetId);
         mMessgae.setType(ChatAdapter.TYPE_RECEIVE_IMAGE);
-        mMessgae.setSenderType(SenderType.LEFT);
 
         //开始发送
         mAdapter.addData(mMessgae);
         updateMsg(mMessgae);
 
+    }
+
+    public void takeLeftImgMsg2(String imagePath) {
+
+        final Message mMessgae = getBaseSendMessage(MsgType.IMAGE);
+        ImageMsgBody mImageMsgBody = new ImageMsgBody();
+        mImageMsgBody.setThumbUrl(imagePath);
+        // mImageMsgBody.setThumbPath(imagePath);
+        mMessgae.setBody(mImageMsgBody);
+        mMessgae.setSenderId(mTargetId);
+        mMessgae.setType(ChatAdapter.TYPE_RECEIVE_IMAGE);
+
+        //开始发送
+        mAdapter.addData(0, mMessgae);
     }
 
     public void takeRightImgMsg(String imagePath) {
@@ -516,12 +509,25 @@ public class ImUtils {
         mMessgae.setBody(mImageMsgBody);
         mMessgae.setSenderId(mSenderId);
         mMessgae.setType(ChatAdapter.TYPE_SEND_IMAGE);
-        mMessgae.setSenderType(SenderType.RIGHT);
 
         //开始发送
         mAdapter.addData(mMessgae);
         updateMsg(mMessgae);
 
+    }
+
+    public void takeRightImgMsg2(String imagePath) {
+
+        final Message mMessgae = getBaseSendMessage(MsgType.IMAGE);
+        ImageMsgBody mImageMsgBody = new ImageMsgBody();
+        mImageMsgBody.setThumbUrl(imagePath);
+        // mImageMsgBody.setThumbPath(imagePath);
+        mMessgae.setBody(mImageMsgBody);
+        mMessgae.setSenderId(mSenderId);
+        mMessgae.setType(ChatAdapter.TYPE_SEND_IMAGE);
+
+        //开始发送
+        mAdapter.addData(0, mMessgae);
     }
 
 
@@ -539,7 +545,6 @@ public class ImUtils {
         mMessgae.setBody(mImageMsgBody);
         mMessgae.setSenderId(mTargetId);
         mMessgae.setType(ChatAdapter.TYPE_KAPIAN_RECEIVE_TEXT);
-        mMessgae.setSenderType(SenderType.LEFT);
 
         //开始发送
         mAdapter.addData(mMessgae);
@@ -554,9 +559,33 @@ public class ImUtils {
         final Message mMessgae = getBaseSendMessage(MsgType.KAPIAN);
 
         mMessgae.setBody(shopMsgBody);
-        mMessgae.setSenderId(mTargetId);
+        mMessgae.setSenderId(mSenderId);
         mMessgae.setType(ChatAdapter.TYPE_KAPIAN_SEND_TEXT);
-        mMessgae.setSenderType(SenderType.RIGHT);
+        //开始发送
+        mAdapter.addData(mMessgae);
+
+        //模拟两秒后发送成功
+        updateMsg(mMessgae);
+    }
+
+    //商品消息 右边
+    public void sRightShopMessage2(ShopMsgBody shopMsgBody) {
+        final Message mMessgae = getBaseSendMessage(MsgType.KAPIAN);
+
+        mMessgae.setBody(shopMsgBody);
+        mMessgae.setSenderId(mSenderId);
+        mMessgae.setType(ChatAdapter.TYPE_KAPIAN_SEND_TEXT);
+        //开始发送
+        mAdapter.addData(0, mMessgae);
+    }
+
+    //商品消息 左边
+    public void sLeftShopMessage(ShopMsgBody shopMsgBody) {
+        final Message mMessgae = getBaseSendMessage(MsgType.KAPIAN);
+
+        mMessgae.setBody(shopMsgBody);
+        mMessgae.setSenderId(mTargetId);
+        mMessgae.setType(ChatAdapter.TYPE_KAPIAN_RECEIVE_TEXT);
         //开始发送
         mAdapter.addData(mMessgae);
 
@@ -565,18 +594,14 @@ public class ImUtils {
     }
 
     //商品消息 左边
-    public void sLeftShopMessage(ShopMsgBody shopMsgBody) {
+    public void sLeftShopMessage2(ShopMsgBody shopMsgBody) {
         final Message mMessgae = getBaseSendMessage(MsgType.KAPIAN);
 
         mMessgae.setBody(shopMsgBody);
-        mMessgae.setSenderId(mSenderId);
+        mMessgae.setSenderId(mTargetId);
         mMessgae.setType(ChatAdapter.TYPE_KAPIAN_RECEIVE_TEXT);
-        mMessgae.setSenderType(SenderType.LEFT);
         //开始发送
-        mAdapter.addData(mMessgae);
-
-        //模拟两秒后发送成功
-        updateMsg(mMessgae);
+        mAdapter.addData(0, mMessgae);
     }
 
 
@@ -589,7 +614,6 @@ public class ImUtils {
         mMessgae.setBody(mImageMsgBody);
         mMessgae.setSenderId(mSenderId);
         mMessgae.setType(ChatAdapter.TYPE_SEND_IMAGE);
-        mMessgae.setSenderType(SenderType.RIGHT);
         //开始发送
         mAdapter.addData(mMessgae);
 
@@ -655,7 +679,6 @@ public class ImUtils {
         mFileMsgBody.setDisplayName(FileUtils.getFileName(path));
         mFileMsgBody.setSize(FileUtils.getFileLength(path));
         mMessgae.setBody(mFileMsgBody);
-        mMessgae.setSenderType(SenderType.RIGHT);
         //开始发送
         mAdapter.addData(mMessgae);
         //模拟两秒后发送成功
@@ -688,7 +711,6 @@ public class ImUtils {
         mMessgae.setType(ChatAdapter.TYPE_DF_TEXT);
         mMessgae.setSenderId(mTargetId);
         mMessgae.setSentStatus(MsgSendStatus.SENT);
-        mMessgae.setSenderType(SenderType.LEFT);
         //开始发送
         mAdapter.addData(mMessgae);
 
@@ -705,7 +727,6 @@ public class ImUtils {
         mMessgae.setType(ChatAdapter.TYPE_SEND_TEXT);
         mMessgae.setSenderId(mSenderId);
         mMessgae.setSentStatus(MsgSendStatus.DEFAULT);
-        mMessgae.setSenderType(SenderType.RIGHT);
         //开始发送
         mAdapter.addData(mMessgae);
     }
@@ -721,7 +742,6 @@ public class ImUtils {
         mMessgae.setType(ChatAdapter.TYPE_CENTER_TEXT);
         mMessgae.setSenderId(mSenderId);
         mMessgae.setSentStatus(MsgSendStatus.DEFAULT);
-        mMessgae.setSenderType(SenderType.CENTRE);
         //开始发送
         mAdapter.addData(mMessgae);
         rvChatList.scrollToPosition(mAdapter.getItemCount() - 1);
@@ -762,7 +782,6 @@ public class ImUtils {
         mMessgae.setBody(mTextMsgBody);
         mMessgae.setType(2);
         mMessgae.setSenderId(mTargetId);
-        mMessgae.setSenderType(SenderType.LEFT);
 
         //开始发送
         mAdapter.addData(mMessgae);
@@ -778,10 +797,22 @@ public class ImUtils {
         mTextMsgBody.setCharsequence(content);
         mMessgae.setBody(mTextMsgBody);
         mMessgae.setType(ChatAdapter.TYPE_SEND_TEXT);
-        mMessgae.setSenderType(SenderType.RIGHT);
 
         mAdapter.addData(mMessgae);
         updateMsg(mMessgae);
+    }
+
+    //发送视频提示消息
+    public void sendVideoHintMsg2(String content) {
+        Message mMessgae = getBaseSendMessage(MsgType.TEXT);
+        TextMsgBody mTextMsgBody = new TextMsgBody();
+        mTextMsgBody.setMessage(content);
+        mTextMsgBody.setVideo(true);
+        mTextMsgBody.setCharsequence(content);
+        mMessgae.setBody(mTextMsgBody);
+        mMessgae.setType(ChatAdapter.TYPE_SEND_TEXT);
+
+        mAdapter.addData(0, mMessgae);
     }
 
     //接收图片消息

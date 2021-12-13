@@ -25,6 +25,12 @@ public class EventMessage<T> {
         this.data = data;
     }
 
+    public EventMessage(String code, int codeInt, T data) {
+        this.code = code;
+        this.codeInt = codeInt;
+        this.data = data;
+    }
+
     public String getCode() {
         return code;
     }

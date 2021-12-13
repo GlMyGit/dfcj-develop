@@ -6,6 +6,7 @@ package com.dfcj.videoim.appconfig;
 
 public class AppConstant {
 
+    public static final String USERTOKEN = "USERTOKEN";
     public static final String MYUSERID = "UserId";
     public static final String MyUserName = "MyUserName";
     public static final String MyUserIcon = "MyUserIcon";
@@ -14,12 +15,15 @@ public class AppConstant {
     public static final String DEVICETOKEN = "DeviceToken";
     public static final String ISSECURITPWD = "Is_Securitypwd";
     public static final String IMEIVAL = "ImeiVal";
-    public static final String USERTOKEN = "USERTOKEN";
     public static final String USERopenid = "USERopenid";
 
     public static final String STAFF_CODE = "staffCode";
     public static final String STAFF_NAME = "staffName";
     public static final String STAFF_IMGE = "staffImge";
+
+    public static final String SHOP_MSG_BODY_DATA = "shopMsgBodyData";
+
+    public static final String CHAT_TYPE = "chatType";
 
     public static final String CloudCustomData = "Cloud_Custom_Data";
     public static final String SDKAppId = "SDK_APP_ID";
