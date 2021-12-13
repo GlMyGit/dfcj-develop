@@ -303,17 +303,21 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
         }
 
 
-        //头像
-        if (item.getSenderId().equals(MainActivity.mSenderId)) {
-            Glide.with(getContext())
-                    .load(SharedPrefsUtils.getValue(AppConstant.MyUserIcon))
-                    .apply(RequestOptions.bitmapTransform(new CircleCrop()).error(R.drawable.g_pic108))
-                    .into((ImageView) helper.getView(R.id.chat_item_header));
-        } else {
-            Glide.with(getContext())
-                    .load(SharedPrefsUtils.getValue(AppConstant.STAFF_IMGE))
-                    .apply(RequestOptions.bitmapTransform(new CircleCrop()).error(R.drawable.g_pic108))
-                    .into((ImageView) helper.getView(R.id.chat_item_header));
+        if (item.getMsgType().equals(MsgType.TEXT) || item.getMsgType().equals(MsgType.IMAGE) || item.getMsgType().equals(MsgType.KAPIAN)) {
+
+            //头像
+            if (item.getSenderId().equals(MainActivity.mSenderId)) {
+                Glide.with(getContext())
+                        .load(SharedPrefsUtils.getValue(AppConstant.MyUserIcon))
+                        .apply(RequestOptions.bitmapTransform(new CircleCrop()).error(R.drawable.g_pic108))
+                        .into((ImageView) helper.getView(R.id.chat_item_header));
+            } else {
+                Glide.with(getContext())
+                        .load(SharedPrefsUtils.getValue(AppConstant.STAFF_IMGE))
+                        .apply(RequestOptions.bitmapTransform(new CircleCrop()).error(R.drawable.g_pic108))
+                        .into((ImageView) helper.getView(R.id.chat_item_header));
+            }
+
         }
 
     }

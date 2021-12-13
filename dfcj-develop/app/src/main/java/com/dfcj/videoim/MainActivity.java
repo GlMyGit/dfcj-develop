@@ -126,8 +126,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     //设定app传递数据
     private String token;
     private ShopMsgBody shopMsgBody;
-    private boolean showShopCard = true;
-    private boolean isService=false;
+    private boolean showShopCard = false;//是否显示商品卡片
 
 
     @Override
@@ -302,7 +301,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                 // 记录当前滑动状态
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) { //当前状态为停止滑动
                     if (!binding.rvChatList.canScrollVertically(1)) { // 到达底部
-                        KLog.d("到达底部");
+//                        KLog.d("到达底部");
 
                     } else if (!binding.rvChatList.canScrollVertically(-1)) { // 到达顶部
                         KLog.d("到顶了");
@@ -445,6 +444,9 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                 return;
             }
 
+            KLog.d("isSendMsg:"+isSendMsg);
+            KLog.d("imUtils.isLogin:"+imUtils.isLogin);
+
             if (imUtils.isLogin) {
                 if (isSendMsg) {
                     getTrtcRoomId();
@@ -565,7 +567,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                 mUiHelper.hideBottomLayout(false);
                 mUiHelper.hideSoftInput();
                 binding.etContent.clearFocus();
-                binding.ivEmo.setImageResource(R.drawable.ic_emoji);
+                binding.ivEmo.setImageResource(R.drawable.g_pic102);
                 return false;
             }
         });
@@ -1140,7 +1142,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                     SharedPrefsUtils.putValue(AppConstant.MyUserName, userInfoEntity.getData().getCustName());
                     SharedPrefsUtils.putValue(AppConstant.MyUserIcon, userInfoEntity.getData().getCustFaceUrl());
                     if (ObjectUtils.isEmpty(userInfoEntity.getData().getCustFaceUrl())) {
-                        SharedPrefsUtils.putValue(AppConstant.MyUserIcon, "");
+                        SharedPrefsUtils.putValue(AppConstant.MyUserIcon, "http://wwwww");
                     }
 
                     login();
@@ -1372,6 +1374,8 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         }
 
         isVidesClick = fg;
+
+        KLog.d("视频是否可点击："+isVidesClick);
 
 
     }
