@@ -17,7 +17,6 @@ public class Message implements MultiItemEntity {
     private String senderId;
     private String targetId;
     private long sentTime;
-    private SenderType senderType;
 
     public int getType() {
         return type;
@@ -92,14 +91,6 @@ public class Message implements MultiItemEntity {
 
     public void setSentTime(long sentTime) {
         this.sentTime = sentTime;
-    }
-
-    public SenderType getSenderType() {
-        return senderType;
-    }
-
-    public void setSenderType(SenderType senderType) {
-        this.senderType = senderType;
     }
 
     @Override

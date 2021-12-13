@@ -1,15 +1,11 @@
 package com.dfcj.videoim.adapter;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
-import androidx.camera.core.internal.utils.ImageUtil;
-
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.blankj.utilcode.util.ObjectUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
@@ -27,12 +23,10 @@ import com.dfcj.videoim.entity.Message;
 import com.dfcj.videoim.entity.MsgBody;
 import com.dfcj.videoim.entity.MsgSendStatus;
 import com.dfcj.videoim.entity.MsgType;
-import com.dfcj.videoim.entity.SenderType;
 import com.dfcj.videoim.entity.ShopMsgBody;
 import com.dfcj.videoim.entity.TextMsgBody;
 import com.dfcj.videoim.entity.VideoMsgBody;
-import com.dfcj.videoim.im.ImageBean;
-import com.dfcj.videoim.im.ImageElemBean;
+import com.dfcj.videoim.listener.ShopManager;
 import com.dfcj.videoim.util.AppUtils;
 import com.dfcj.videoim.util.AutoLinKTextViewUtil;
 import com.dfcj.videoim.util.other.GlideUtils;
@@ -203,7 +197,6 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
             } else {
                 helper.setText(R.id.kapian_top_tv, SharedPrefsUtils.getValue(AppConstant.STAFF_NAME));
             }
-
         } else if (item.getMsgType().equals(MsgType.IMAGE)) {
 
             ImageMsgBody msgBody = (ImageMsgBody) item.getBody();
@@ -279,6 +272,13 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
                 helper.setText(R.id.kapian_top_tv, SharedPrefsUtils.getValue(AppConstant.STAFF_NAME));
             }
 
+            helper.getView(R.id.goods_layout).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ShopManager.instance().goodsChange(msgBody);
+                }
+            });
+            
         } else if (item.getMsgType().equals(MsgType.CENTERMS)) {//中间信息
 
             TextMsgBody msgBody = (TextMsgBody) item.getBody();
