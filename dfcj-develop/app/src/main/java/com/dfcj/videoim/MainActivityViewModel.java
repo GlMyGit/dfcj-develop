@@ -87,7 +87,7 @@ public class MainActivityViewModel extends BaseViewModel {
     public void requestLogin() {
 
         Map<String, Object> params = new HashMap<>();
-        params.put("customerCode", "" + ImUtils.MyUserId);
+        params.put("customerCode", "" +  SharedPrefsUtils.getValue(AppConstant.MYUSERID));
         params.put("faceUrl", SharedPrefsUtils.getValue(AppConstant.MyUserIcon));
         params.put("nick", SharedPrefsUtils.getValue(AppConstant.MyUserName));
         params.put("osInfo", AppUtils.getSystemModel());
@@ -129,7 +129,7 @@ public class MainActivityViewModel extends BaseViewModel {
         Map<String, Object> params = new HashMap<>();
 
         params.put("question", "" + question);
-        params.put("userId", "" + ImUtils.MyUserId);
+        params.put("userId", "" + SharedPrefsUtils.getValue(AppConstant.MYUSERID));
 
         RetrofitClient.getInstance(HostType.lOAN_STEWARD_MAIN_HOST).create(ApiService.class)
                 .requestSendOffineMsg(params)
@@ -167,7 +167,7 @@ public class MainActivityViewModel extends BaseViewModel {
         String systemModel = AppUtils.getSystemModel();
 
         Map<String, Object> params = new HashMap<>();
-        params.put("customerCode", "" + ImUtils.MyUserId);
+        params.put("customerCode", "" + SharedPrefsUtils.getValue(AppConstant.MYUSERID));
         params.put("faceUrl", SharedPrefsUtils.getValue(AppConstant.MyUserIcon));
         params.put("nick", "" + SharedPrefsUtils.getValue(AppConstant.MyUserName));
         params.put("osInfo", "" + systemModel);
@@ -245,7 +245,7 @@ public class MainActivityViewModel extends BaseViewModel {
         String systemModel = AppUtils.getSystemModel();
 
         Map<String, Object> params = new HashMap<>();
-        params.put("customerCode", "" + ImUtils.MyUserId);
+        params.put("customerCode", "" + SharedPrefsUtils.getValue(AppConstant.MYUSERID));
         params.put("eventId", "" + eventId);
         params.put("osInfo", "" + systemModel);
         params.put("osType", "2");//1、iOS系统、2、Android系统、3、微信小程序4、Mobile 5、电脑端PC网页浏览器
@@ -287,7 +287,7 @@ public class MainActivityViewModel extends BaseViewModel {
         params2.put("pageSize", 20);
 
         params.put("page", params2);
-        params.put("custCode", ImUtils.MyUserId);
+        params.put("custCode", SharedPrefsUtils.getValue(AppConstant.MYUSERID));
         params.put("startDate", time);
 
         RetrofitClient.getInstance(HostType.lOAN_STEWARD_MAIN_HOST).create(ApiService.class)

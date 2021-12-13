@@ -207,6 +207,8 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         shopMsgBody.setGoodsName("资生堂悦薇珀翡紧颜亮肤乳（滋润型）100ml");
         shopMsgBody.setGoodsPrice("20.00");*/
 
+        SharedPrefsUtils.putValue(AppConstant.USERTOKEN,"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMDA4MDEwMDAwNDQiLCJpc3MiOiJvY2otc3RhcnNreSIsImxvZ2lkIjoiNjg3NDYyNzk0OTA5MDMxMjE5MiIsImV4cCI6MTY0NjgxNTAyNywiaWF0IjoxNjM5MDM5MDI3LCJkZXZpY2VpZCI6IiJ9.hNcsiYer2GsAA_TbqPT8vyNrW1rfdVfV4YTbMs-Rrho");
+
         token = SharedPrefsUtils.getValue(AppConstant.USERTOKEN);
         chatType = SharedPrefsUtils.getValue(AppConstant.CHAT_TYPE);
         String shopMsgBodyStr = SharedPrefsUtils.getValue(AppConstant.SHOP_MSG_BODY_DATA);
@@ -1174,9 +1176,13 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                     return;
                 }
                 if (userInfoEntity.getSuccess()) {
-                    SharedPrefsUtils.putValue(AppConstant.MYUSERID, userInfoEntity.getData().getCustNo());
-                    SharedPrefsUtils.putValue(AppConstant.MyUserName, userInfoEntity.getData().getCustName());
-                    SharedPrefsUtils.putValue(AppConstant.MyUserIcon, userInfoEntity.getData().getCustFaceUrl());
+
+                    SharedPrefsUtils.putValue(AppConstant.MYUSERID, ""+userInfoEntity.getData().getCustNo());
+                    SharedPrefsUtils.putValue(AppConstant.MyUserName, ""+userInfoEntity.getData().getCustName());
+                    SharedPrefsUtils.putValue(AppConstant.MyUserIcon, ""+userInfoEntity.getData().getCustFaceUrl());
+
+                    KLog.d("Yonghu:"+ImUtils.MyUserId);
+
                     if (ObjectUtils.isEmpty(userInfoEntity.getData().getCustFaceUrl())) {
                         SharedPrefsUtils.putValue(AppConstant.MyUserIcon, "http://wwwww");
                     }
