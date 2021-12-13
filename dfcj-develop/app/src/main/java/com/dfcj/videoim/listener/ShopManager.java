@@ -20,6 +20,10 @@ public class ShopManager {
         return shopManager;
     }
 
+    public ShopClickListener getShopClickListener() {
+        return shopClickListener;
+    }
+
     /**
      * 注册监听器
      **/

@@ -427,20 +427,16 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
                     return;
                 }
 
-                switch (radioGroup.getCheckedRadioButtonId()) {
-                    case R.id.meiyan_qx_radio1:
-                        mQualityFlag = TRTCCloudDef.TRTC_VIDEO_RESOLUTION_640_360;
-                        setVideoEncoderParam(true);
-                        break;
-                    case R.id.meiyan_qx_radio2:
-                        mQualityFlag = TRTCCloudDef.TRTC_VIDEO_RESOLUTION_1280_720;
-                        setVideoEncoderParam(true);
-                        break;
-                    case R.id.meiyan_qx_radio3:
-                        mQualityFlag = TRTCCloudDef.TRTC_VIDEO_RESOLUTION_1920_1080;
-                        setVideoEncoderParam(true);
-                        break;
-
+                int checkedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+                if (checkedRadioButtonId == R.id.meiyan_qx_radio1) {
+                    mQualityFlag = TRTCCloudDef.TRTC_VIDEO_RESOLUTION_640_360;
+                    setVideoEncoderParam(true);
+                } else if (checkedRadioButtonId == R.id.meiyan_qx_radio2) {
+                    mQualityFlag = TRTCCloudDef.TRTC_VIDEO_RESOLUTION_1280_720;
+                    setVideoEncoderParam(true);
+                } else if (checkedRadioButtonId == R.id.meiyan_qx_radio3) {
+                    mQualityFlag = TRTCCloudDef.TRTC_VIDEO_RESOLUTION_1920_1080;
+                    setVideoEncoderParam(true);
                 }
             }
         });
