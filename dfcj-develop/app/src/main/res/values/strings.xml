@@ -30,6 +30,8 @@
     <string name="shop_tx3">价格:</string>
     <string name="shop_tx4">发送商品</string>
 
+    <string name="shop_tx5">￥</string>
+
 
     <string name="my_tx1">相机权限未开启</string>
     <string name="my_tx2">请在iphone的“设置>东方购物”选项中，允许东方购物访问你的摄像头和麦克风。</string>

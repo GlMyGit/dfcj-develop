@@ -35,14 +35,17 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/white"
+            >
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                >
 
                 <ProgressBar
                     android:id="@+id/main_top_progress"
@@ -96,21 +99,32 @@
                     android:layout_height="100dp"
                     android:background="@color/color_66_E5E5E5"
                     android:paddingBottom="9dp"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
-                    <ImageView
-                        android:id="@+id/main_layout_shop_img"
+
+                    <RelativeLayout
+                        android:id="@+id/main_layout_shop_img_layout"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="14dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/g_pic109" />
+                        android:padding="3dp"
+                        >
+
+                        <ImageView
+                            android:id="@+id/main_layout_shop_img"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/g_pic109" />
+
+                    </RelativeLayout>
 
 
                     <ImageView
                         android:id="@+id/main_layout_shop_close_img"
-                        android:layout_width="wrap_content"
+                        android:layout_width="37dp"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:onClick="@{() -> presenter.close_shop()}"
@@ -118,7 +132,7 @@
                         android:paddingTop="10dp"
                         android:paddingRight="15dp"
                         android:paddingBottom="10dp"
-                        android:src="@drawable/guanbi_hei" />
+                        android:src="@drawable/g_pic122" />
 
 
                     <TextView
@@ -146,7 +160,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="14dp"
                         android:layout_toLeftOf="@+id/mian_layout_shop_send_tv"
-                        android:layout_toRightOf="@+id/main_layout_shop_img"
+                        android:layout_toRightOf="@+id/main_layout_shop_img_layout"
                         android:gravity="center_vertical"
                         android:orientation="vertical">
 
@@ -209,8 +223,8 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/shop_tx3"
-                                android:textColor="@color/color_676767"
+                                android:text="@string/shop_tx5"
+                                android:textColor="@color/black"
                                 android:textSize="@dimen/textSize12sp"></TextView>
 
                             <TextView
@@ -218,7 +232,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="999"
-                                android:textColor="@color/color_676767"
+                                android:textColor="@color/black"
                                 android:textSize="@dimen/textSize12sp"></TextView>
 
 
@@ -234,7 +248,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.8dp"
-                    android:background="@color/color_a6a6a6" />
+                    android:background="@color/color_03_FF000000" />
 
                 <LinearLayout
                     android:id="@+id/main_input_msg_layout"

@@ -11,6 +11,8 @@ import androidx.camera.core.internal.utils.ImageUtil;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
@@ -305,12 +307,12 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
         if (item.getSenderId().equals(MainActivity.mSenderId)) {
             Glide.with(getContext())
                     .load(SharedPrefsUtils.getValue(AppConstant.MyUserIcon))
-                    .error(R.drawable.ic_head_default_right)
+                    .apply(RequestOptions.bitmapTransform(new CircleCrop()).error(R.drawable.g_pic108))
                     .into((ImageView) helper.getView(R.id.chat_item_header));
         } else {
             Glide.with(getContext())
                     .load(SharedPrefsUtils.getValue(AppConstant.STAFF_IMGE))
-                    .error(R.drawable.ic_head_default_left)
+                    .apply(RequestOptions.bitmapTransform(new CircleCrop()).error(R.drawable.g_pic108))
                     .into((ImageView) helper.getView(R.id.chat_item_header));
         }
 

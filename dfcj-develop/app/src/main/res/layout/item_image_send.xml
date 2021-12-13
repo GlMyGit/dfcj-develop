@@ -23,13 +23,13 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp">
 
-        <com.dfcj.videoim.view.widght.CircleImageView
+        <ImageView
             android:id="@+id/chat_item_header"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="5dp"
-            android:scaleType="centerInside"
+            android:scaleType="centerCrop"
             android:src="@drawable/g_pic108" />
 
 
@@ -51,7 +51,7 @@
                 android:layout_marginStart="0dp"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                 android:transitionName="sharedView"
+                android:transitionName="sharedView"
                 app:angle="6dp"
                 app:arrowHeight="8dp"
                 app:arrowLocation="right"

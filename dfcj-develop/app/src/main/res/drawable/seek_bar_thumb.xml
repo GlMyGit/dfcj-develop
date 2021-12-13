@@ -3,19 +3,19 @@
     <item android:state_selected="true">
         <shape android:shape="oval">
             <size android:height="20dp" android:width="20dp" />
-            <solid android:color="#fff54b19"  />
+            <solid android:color="#adadad"  />
         </shape>
     </item>
     <item android:state_pressed="true">
         <shape android:shape="oval">
             <size android:height="20dp" android:width="20dp" />
-            <solid android:color="#fff54b19" />
+            <solid android:color="#adadad" />
         </shape>
     </item>
     <item>
         <shape android:shape="oval">
             <size android:height="20dp" android:width="20dp" />
-            <solid android:color="#fff1922d" />
+            <solid android:color="#adadad" />
         </shape>
     </item>
 </selector>

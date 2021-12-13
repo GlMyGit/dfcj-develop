@@ -221,10 +221,10 @@
                         android:paddingRight="10dp">
 
                         <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
                             android:layout_centerVertical="true"
-                            android:src="@drawable/suoxiao2"></ImageView>
+                            android:src="@drawable/g_pic121"></ImageView>
 
                     </RelativeLayout>
 
@@ -287,18 +287,19 @@
                     android:onClick="@{() -> presenter.clickMeiYan()}"
                     android:orientation="vertical">
 
-                    <RadioButton
+                    <TextView
                         android:id="@+id/video_meiyan_top_layout_tv1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:button="@null"
+                        android:text="美颜"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:paddingTop="10dp"
                         android:checked="true"
                         android:gravity="center"
-                        android:paddingTop="10dp"
-                        android:text="美颜"
-                        android:textColor="@color/tab_text_font2"
-                        android:textSize="16sp"></RadioButton>
+                        android:button="@null"
+                        android:background="@null"
+                        ></TextView>
 
                     <View
                         android:id="@+id/video_meiyan_top_layout1_view"
@@ -306,7 +307,8 @@
                         android:layout_height="2dp"
                         android:layout_gravity="center"
                         android:layout_marginTop="5dp"
-                        android:background="@color/color_3D3D3D"></View>
+                        android:background="@color/color_3D3D3D"
+                        ></View>
 
                 </LinearLayout>
 
@@ -319,18 +321,19 @@
                     android:onClick="@{() -> presenter.clickClear()}"
                     android:orientation="vertical">
 
-                    <RadioButton
+                    <TextView
                         android:id="@+id/video_meiyan_top_layout_tv2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:button="@null"
+                        android:text="清晰"
+                        android:textColor="@color/color_a3a3a3"
+                        android:textSize="16sp"
+                        android:paddingTop="10dp"
                         android:checked="true"
                         android:gravity="center"
-                        android:paddingTop="10dp"
-                        android:text="清晰"
-                        android:textColor="@color/tab_text_font2"
-                        android:textSize="16sp"></RadioButton>
+                        android:button="@null"
+                        android:background="@null"
+                        ></TextView>
 
                     <View
                         android:id="@+id/video_meiyan_top_layout2_view"
@@ -339,7 +342,9 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="5dp"
                         android:background="@color/color_3D3D3D"
-                        android:visibility="invisible"></View>
+                        android:visibility="invisible"
+                        ></View>
+
 
                 </LinearLayout>
 
@@ -371,7 +376,7 @@
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:src="@drawable/meiyan"></ImageView>
+                            android:src="@drawable/g_pic115"></ImageView>
 
 
                         <TextView
@@ -410,7 +415,7 @@
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:src="@drawable/meiyan"></ImageView>
+                            android:src="@drawable/g_pic116"></ImageView>
 
 
                         <TextView
@@ -448,7 +453,7 @@
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:src="@drawable/meiyan"></ImageView>
+                            android:src="@drawable/g_pic118"></ImageView>
 
 
                         <TextView
@@ -524,6 +529,7 @@
                             android:gravity="center"
                             android:text="720P高清"
                             android:textColor="@color/black"
+                            android:checked="true"
                             android:textSize="14sp"></com.dfcj.videoim.view.myview.CustomRadioButton>
 
                         <com.dfcj.videoim.view.myview.CustomRadioButton

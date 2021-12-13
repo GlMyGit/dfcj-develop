@@ -342,7 +342,7 @@ public class ChatUiHelper {
                 if (event.getAction() == MotionEvent.ACTION_UP && mBottomLayout.isShown()) {
                     lockContentHeight();//显示软件盘时，锁定内容高度，防止跳闪。
                     hideBottomLayout(true);//隐藏表情布局，显示软件盘
-                    mIvEmoji.setImageResource(R.drawable.ic_emoji);
+                    mIvEmoji.setImageResource(R.drawable.g_pic102);
                     //软件盘显示后，释放内容高度
                     mEditText.postDelayed(new Runnable() {
                         @Override
@@ -440,14 +440,15 @@ public class ChatUiHelper {
     private void hideAudioButton() {
         mAudioButton.setVisibility(View.GONE);
         mEditText.setVisibility(View.VISIBLE);
-        mAudioIv.setImageResource(R.drawable.ic_audio);
+        mAudioIv.setImageResource(R.drawable.g_pic101);
     }
 
 
     private void showAudioButton() {
         mAudioButton.setVisibility(View.VISIBLE);
         mEditText.setVisibility(View.GONE);
-        mAudioIv.setImageResource(R.drawable.ic_keyboard);
+       // mAudioIv.setImageResource(R.drawable.ic_keyboard);
+        mAudioIv.setImageResource(R.drawable.g_pic123);
         if (mBottomLayout.isShown()) {
             hideBottomLayout(false);
         } else {
@@ -471,7 +472,7 @@ public class ChatUiHelper {
                         return;
                     }
                 } else if (mEmojiLayout.isShown() && !mAddLayout.isShown()) {
-                    mIvEmoji.setImageResource(R.drawable.ic_emoji);
+                    mIvEmoji.setImageResource(R.drawable.g_pic102);
                     if (mBottomLayout.isShown()) {
                         lockContentHeight();//显示软件盘时，锁定内容高度，防止跳闪。
                         hideBottomLayout(true);//隐藏表情布局，显示软件盘
@@ -583,12 +584,13 @@ public class ChatUiHelper {
 
     private void showEmotionLayout() {
         mEmojiLayout.setVisibility(View.VISIBLE);
-        mIvEmoji.setImageResource(R.drawable.ic_keyboard);
+     //   mIvEmoji.setImageResource(R.drawable.ic_keyboard);
+        mIvEmoji.setImageResource(R.drawable.g_pic123);
     }
 
     private void hideEmotionLayout() {
         mEmojiLayout.setVisibility(View.GONE);
-        mIvEmoji.setImageResource(R.drawable.ic_emoji);
+        mIvEmoji.setImageResource(R.drawable.g_pic102);
     }
 
     /**

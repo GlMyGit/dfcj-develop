@@ -2,23 +2,23 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--定义seekbar滑动条的底色-->
-    <item android:id="@android:id/background" android:height="5dp" android:gravity="center">
+    <item android:id="@android:id/background" android:height="3dp" android:gravity="center">
         <shape>
             <corners android:radius="25dp" />
             <gradient
                 android:angle="270"
-                android:centerColor="@color/color_737373"
+                android:centerColor="@color/color_adadad"
                 android:centerY="0.75"
-                android:endColor="@color/color_737373"
-                android:startColor="@color/color_737373" />
+                android:endColor="@color/color_adadad"
+                android:startColor="@color/color_adadad" />
         </shape>
     </item>
     <!--定义seekbar滑动条进度颜色-->
-    <item android:id="@android:id/progress" android:height="5dp" android:gravity="center">
+    <item android:id="@android:id/progress" android:height="3dp" android:gravity="center">
         <clip>
             <shape>
                 <corners android:radius="25dp"/>
-                <solid android:color="#FD5655"/>
+                <solid android:color="#adadad"/>
             </shape>
         </clip>
     </item>

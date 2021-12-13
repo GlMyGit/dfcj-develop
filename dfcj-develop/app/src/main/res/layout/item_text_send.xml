@@ -23,14 +23,13 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp">
 
-        <com.dfcj.videoim.view.widght.CircleImageView
+        <ImageView
             android:id="@+id/chat_item_header"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
             android:layout_alignParentRight="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/g_pic108" />
-
+            />
 
 
         <LinearLayout
@@ -55,40 +54,74 @@
                 android:layout_marginBottom="1dp"
                 ></TextView>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:orientation="horizontal"
-                android:background="@drawable/custom_divider_right"
-                android:paddingRight="7dp"
-                >
 
-                <com.dfcj.videoim.view.myview.ClickableSpanTextView
-                    android:id="@+id/chat_item_content_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="你好"
-                    android:textColor="@color/black"
-                    android:textSize="12sp"
-                    android:layout_marginTop="13dp"
-                    android:layout_marginBottom="13dp"
-                    android:layout_marginLeft="13dp"
-                    android:layout_marginRight="6dp"
-                    />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
 
                 <ImageView
-                    android:id="@+id/chat_item_content_video_text"
-                    android:layout_width="20dp"
-                    android:layout_height="15dp"
-                    android:src="@drawable/g_pic113"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="3dp"
-                    android:visibility="gone"
-                    ></ImageView>
+                    android:id="@+id/chat_item_fail"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:layout_toLeftOf="@+id/chat_item_layout_content_ly"
+                    android:focusable="false"
+                    android:src="@drawable/msg_state_fail_resend"
+                    android:visibility="invisible" />
+
+                <ProgressBar
+                    android:id="@+id/chat_item_progress"
+                    style="@android:style/Widget.ProgressBar.Small.Inverse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/chat_item_layout_content_ly"
+                    android:visibility="invisible" />
 
 
-            </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/chat_item_layout_content_ly"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:orientation="horizontal"
+                    android:background="@drawable/custom_divider_right"
+                    android:paddingRight="7dp"
+                    >
+
+                    <com.dfcj.videoim.view.myview.ClickableSpanTextView
+                        android:id="@+id/chat_item_content_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="你好"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:layout_marginTop="13dp"
+                        android:layout_marginBottom="13dp"
+                        android:layout_marginLeft="13dp"
+                        android:layout_marginRight="6dp"
+                        />
+
+                    <ImageView
+                        android:id="@+id/chat_item_content_video_text"
+                        android:layout_width="20dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/g_pic113"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="3dp"
+                        android:visibility="gone"
+                        ></ImageView>
+
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
 
 
 
@@ -98,26 +131,7 @@
 
 
 
-        <ImageView
-            android:id="@+id/chat_item_fail"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@+id/chat_item_layout_content"
-            android:focusable="false"
-            android:src="@drawable/msg_state_fail_resend"
-            android:visibility="invisible" />
 
-        <ProgressBar
-            android:id="@+id/chat_item_progress"
-            style="@android:style/Widget.ProgressBar.Small.Inverse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@+id/chat_item_layout_content"
-            android:visibility="invisible" />
     </RelativeLayout>
 
 </LinearLayout>

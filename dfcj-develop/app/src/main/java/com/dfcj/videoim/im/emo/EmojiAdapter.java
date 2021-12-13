@@ -19,16 +19,14 @@ public class EmojiAdapter extends BaseQuickAdapter< EmojiBean, BaseViewHolder> {
     @Override
     protected void convert(BaseViewHolder helper, EmojiBean item) {
         //判断是否为最后一个item
-      /*  if (item.getId()==999) {
+        if (item.getId()==999) {
              helper.setBackgroundResource(R.id.et_emoji,R.drawable.rc_icon_emoji_delete );
         } else {
             // helper.setText(R.id.et_emoji,item.getUnicodeInt() );
 
         }
-*/
 
         helper.setImageBitmap(R.id.et_emoji,item.getIcon());
-
 
 
     }

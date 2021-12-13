@@ -323,7 +323,11 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
 
         //取消/挂断
         public void closeVideo() {
-            timer.cancel();
+            if(timer!=null){
+                timer.cancel();
+                timer=null;
+            }
+
 
             if (available) {//挂断
                 //通话时长
@@ -341,7 +345,21 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
 
         //视频切换
         public void videoSwitch() {
+            if(myIndex%2==0){
 
+                zoomRemoteout(beforRemoteweith, beforRemoteheigth, local_sv,
+                        remote_sv);
+                zoomlocalViewint(beforLocalweith, beforLocalheigth);
+
+            }else{
+
+                zoomlocalViewout(beforRemoteweith, beforRemoteheigth, local_sv,
+                        remote_sv);
+                zoomRemoteViewint(beforLocalweith, beforLocalheigth);
+
+            }
+
+            myIndex+=1;
         }
 
         //美颜
@@ -361,21 +379,20 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
         //美颜点击
         public void clickMeiYan() {
 
-            binding.videoMeiyanTopLayoutTv1.setChecked(true);
-            binding.videoMeiyanTopLayoutTv2.setChecked(false);
+            binding.videoMeiyanTopLayoutTv1.setTextColor(getResources().getColor(R.color.black));
+            binding.videoMeiyanTopLayoutTv2.setTextColor(getResources().getColor(R.color.color_a3a3a3));
 
             binding.meiyanSetLayout.setVisibility(View.VISIBLE);
             binding.videoCallQingxiLayout.setVisibility(View.GONE);
             binding.videoMeiyanTopLayout1View.setVisibility(View.VISIBLE);
             binding.videoMeiyanTopLayout2View.setVisibility(View.INVISIBLE);
-
         }
 
         //清晰
         public void clickClear() {
 
-            binding.videoMeiyanTopLayoutTv1.setChecked(false);
-            binding.videoMeiyanTopLayoutTv2.setChecked(true);
+            binding.videoMeiyanTopLayoutTv1.setTextColor(getResources().getColor(R.color.color_a3a3a3));
+            binding.videoMeiyanTopLayoutTv2.setTextColor(getResources().getColor(R.color.black));
 
             binding.meiyanSetLayout.setVisibility(View.GONE);
             binding.videoCallQingxiLayout.setVisibility(View.VISIBLE);
@@ -444,16 +461,30 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
         mTRTCCloud.setListener(new TRTCCloudImplListener(VideoCallingActivity.this));
         mTXDeviceManager = mTRTCCloud.getDeviceManager();
 
+//        TRTCCloudDef.TRTCParams trtcParams = new TRTCCloudDef.TRTCParams();
+//        trtcParams.sdkAppId = SharedPrefsUtils.getValue(AppConstant.SDKAppId, 0);
+//        trtcParams.userId = mUserId;
+//        trtcParams.strRoomId = mRoomId;
+//        trtcParams.userDefineRecordId = mRoomId;
+//        trtcParams.userSig = GenerateUserSig.genTestUserSig(trtcParams.userId);
+//
+//        mTRTCCloud.startLocalPreview(mIsFrontCamera, binding.txcvvMainMine);
+//        mTRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_SPEECH);
+//        mTRTCCloud.enterRoom(trtcParams, TRTCCloudDef.TRTC_APP_SCENE_VIDEOCALL);
+
         TRTCCloudDef.TRTCParams trtcParams = new TRTCCloudDef.TRTCParams();
-        trtcParams.sdkAppId = SharedPrefsUtils.getValue(AppConstant.SDKAppId, 0);
+        trtcParams.sdkAppId = SharedPrefsUtils.getValue(AppConstant.SDKAppId,0);
         trtcParams.userId = mUserId;
         trtcParams.strRoomId = mRoomId;
-        trtcParams.userDefineRecordId = mRoomId;
-        trtcParams.userSig = GenerateUserSig.genTestUserSig(trtcParams.userId);
+        trtcParams.userSig = SharedPrefsUtils.getValue(AppConstant.SDKUserSig);
+        trtcParams.role = TRTCCloudDef.TRTCRoleAnchor;
 
         mTRTCCloud.startLocalPreview(mIsFrontCamera, binding.txcvvMainMine);
-        mTRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_SPEECH);
-        mTRTCCloud.enterRoom(trtcParams, TRTCCloudDef.TRTC_APP_SCENE_VIDEOCALL);
+        mTRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_DEFAULT);
+        mTRTCCloud.enterRoom(trtcParams, TRTCCloudDef.TRTC_APP_SCENE_LIVE);
+
+
+
     }
 
 
@@ -721,9 +752,6 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
                 break;
         }
     }
-
-
-
 
 
 

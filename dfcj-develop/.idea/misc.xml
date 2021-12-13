@@ -77,6 +77,8 @@
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/drawable/custom_divider_white4.xml" value="0.22291666666666668" />
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/drawable/progress_small_holo.xml" value="0.246875" />
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/drawable/radio_btn.xml" value="0.24947916666666667" />
+        <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/drawable/seek_bar_bg.xml" value="0.2109375" />
+        <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/drawable/seek_bar_thumb.xml" value="0.2109375" />
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/layout/authority_dialog.xml" value="0.21875" />
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/layout/center_item_msg.xml" value="0.21822916666666667" />
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/layout/df_item_text_receive.xml" value="0.21822916666666667" />
@@ -95,6 +97,7 @@
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/layout/mine_fragment.xml" value="0.18854166666666666" />
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/layout/mydialog_loading_layout.xml" value="0.23072916666666668" />
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/layout/phone_view_activtiy.xml" value="0.22604166666666667" />
+        <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/layout/unified_head.xml" value="0.21197916666666666" />
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/layout/unified_head2.xml" value="0.23229166666666667" />
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/layout/video_call_layout.xml" value="0.1890625" />
         <entry key="..\:/worck/maizhi/maizhiworck/app/src/main/res/layout/main_fragment.xml" value="0.23854166666666668" />

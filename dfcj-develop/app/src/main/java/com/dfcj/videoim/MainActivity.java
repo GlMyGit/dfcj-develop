@@ -1030,7 +1030,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                 }
             }
 
-            V2TIMManager.getMessageManager().markC2CMessageAsRead(imUtils.MyUserId, new V2TIMCallback() {
+            V2TIMManager.getMessageManager().markC2CMessageAsRead(ImUtils.MyUserId, new V2TIMCallback() {
                 @Override
                 public void onSuccess() {
                 }
@@ -1134,7 +1134,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                     SharedPrefsUtils.putValue(AppConstant.MyUserName, userInfoEntity.getData().getCustName());
                     SharedPrefsUtils.putValue(AppConstant.MyUserIcon, userInfoEntity.getData().getCustFaceUrl());
                     if (ObjectUtils.isEmpty(userInfoEntity.getData().getCustFaceUrl())) {
-                        SharedPrefsUtils.putValue(AppConstant.MyUserIcon, "https://t7.baidu.com/it/u=793426911,3641399153&fm=218&app=126&f=JPEG?w=121&h=75&s=DEA0546E36517A77458B2750020030FA");
+                        SharedPrefsUtils.putValue(AppConstant.MyUserIcon, "");
                     }
 
                     login();
