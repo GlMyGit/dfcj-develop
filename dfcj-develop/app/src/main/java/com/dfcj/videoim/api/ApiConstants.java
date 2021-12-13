@@ -7,8 +7,8 @@ public class ApiConstants {
 
 
 
-   // public static final String lOAN_STEWARD_MAIN_HOST = "http://10.23.24.207:8082/";// 测试
-    public static final String lOAN_STEWARD_MAIN_HOST = "http://10.221.57.117:6082//";// 正式
+    public static final String lOAN_STEWARD_MAIN_HOST = "http://10.23.24.207:8082/";// 测试
+    //public static final String lOAN_STEWARD_MAIN_HOST = "http://10.221.57.117:6082//";// 正式
 
 
     public static final String lOAN_STEWARD_MAIN_HOST_JK = "https://route.showapi.com/90-86?";// 正式

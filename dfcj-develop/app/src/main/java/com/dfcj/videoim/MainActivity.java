@@ -1181,7 +1181,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                     SharedPrefsUtils.putValue(AppConstant.MyUserName, ""+userInfoEntity.getData().getCustName());
                     SharedPrefsUtils.putValue(AppConstant.MyUserIcon, ""+userInfoEntity.getData().getCustFaceUrl());
 
-                    KLog.d("Yonghu:"+ImUtils.MyUserId);
+                    KLog.d("Yonghu:"+userInfoEntity.getData().getCustNo());
 
                     if (ObjectUtils.isEmpty(userInfoEntity.getData().getCustFaceUrl())) {
                         SharedPrefsUtils.putValue(AppConstant.MyUserIcon, "http://wwwww");

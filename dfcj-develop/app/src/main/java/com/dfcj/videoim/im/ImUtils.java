@@ -70,8 +70,8 @@ public class ImUtils {
 
     RecyclerView rvChatList;
 
-    public static String fsUserId = "106584";//客服
-    //    public static String fsUserId = SharedPrefsUtils.getValue(AppConstant.STAFF_CODE);//客服
+    //public static String fsUserId = "106584";//客服
+    public static String fsUserId = SharedPrefsUtils.getValue(AppConstant.STAFF_CODE);//客服
     public static String MyUserId = SharedPrefsUtils.getValue(AppConstant.MYUSERID);//顾客
 
     //public static  String fsUserId="customer1";

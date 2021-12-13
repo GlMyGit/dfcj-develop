@@ -314,7 +314,7 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
             } else {
                 Glide.with(getContext())
                         .load(SharedPrefsUtils.getValue(AppConstant.STAFF_IMGE))
-                        .apply(RequestOptions.bitmapTransform(new CircleCrop()).error(R.drawable.g_pic108))
+                        .apply(RequestOptions.bitmapTransform(new CircleCrop()).error(R.drawable.g_pic107))
                         .into((ImageView) helper.getView(R.id.chat_item_header));
             }
 
