@@ -96,7 +96,7 @@
                     android:layout_height="100dp"
                     android:background="@color/color_66_E5E5E5"
                     android:paddingBottom="9dp"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <ImageView
                         android:id="@+id/main_layout_shop_img"
@@ -105,7 +105,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="14dp"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/ic_head_default_left" />
+                        android:src="@drawable/g_pic109" />
 
 
                     <ImageView
@@ -252,7 +252,7 @@
                         android:layout_height="30dp"
                         android:layout_margin="10px"
                         android:onClick="@{() -> presenter.ivAudioClick()}"
-                        android:src="@drawable/ic_audio" />
+                        android:src="@drawable/g_pic101" />
 
                     <RelativeLayout
                         android:layout_width="0dp"
@@ -269,7 +269,6 @@
                             android:layout_height="match_parent"
                             android:background="@drawable/message_shap_chat_bg"
                             android:hint="有问题找客服"
-                            android:maxLines="3"
                             android:minHeight="36dp"
                             android:paddingLeft="13dp"
                             android:textColor="@color/black"
@@ -292,22 +291,22 @@
                         android:id="@+id/ivEmo"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:layout_margin="10px"
-                        android:src="@drawable/ic_emoji" />
+                        android:layout_margin="5dp"
+                        android:src="@drawable/g_pic102" />
 
                     <ImageView
                         android:id="@+id/ivAdd"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:layout_marginLeft="10px"
-                        android:layout_marginRight="14px"
-                        android:src="@drawable/ic_add" />
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="7dp"
+                        android:src="@drawable/g_pic103" />
 
                     <com.dfcj.videoim.view.widght.StateButton
                         android:id="@+id/btn_send"
                         android:layout_width="50dp"
                         android:layout_height="30dp"
-                        android:layout_marginRight="10dp"
+                        android:paddingRight="10dp"
                         android:onClick="@{() -> presenter.btn_send()}"
                         android:padding="1dp"
                         android:text="发送"
@@ -570,21 +569,24 @@
                             android:layout_weight="1"
                             android:onClick="@{() -> presenter.toImgPic()}">
 
+
                             <ImageView
                                 android:id="@+id/ivPhoto"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginTop="30dp"
-                                android:background="@drawable/selector_ctype_image" />
+                                android:background="@drawable/g_pic110" />
+
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/ivPhoto"
                                 android:layout_centerHorizontal="true"
-                                android:layout_marginTop="15px"
+                                android:layout_marginTop="6dp"
                                 android:text="相册"
+                                android:textColor="@color/black"
                                 android:textSize="12sp" />
                         </RelativeLayout>
 
@@ -601,15 +603,16 @@
                                 android:layout_height="50dp"
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginTop="30dp"
-                                android:src="@drawable/selector_ctype_file" />
+                                android:src="@drawable/g_pic111" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/ivFile"
                                 android:layout_centerHorizontal="true"
-                                android:layout_marginTop="15px"
+                                android:layout_marginTop="6dp"
                                 android:text="拍照"
+                                android:textColor="@color/black"
                                 android:textSize="12sp" />
                         </RelativeLayout>
 
@@ -627,15 +630,16 @@
                                 android:layout_height="50dp"
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginTop="30dp"
-                                android:src="@drawable/ship_hui" />
+                                android:src="@drawable/g_pic112" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/ivVideo"
                                 android:layout_centerHorizontal="true"
-                                android:layout_marginTop="15px"
+                                android:layout_marginTop="6dp"
                                 android:text="视频"
+                                android:textColor="@color/black"
                                 android:textSize="12sp" />
                         </RelativeLayout>
 

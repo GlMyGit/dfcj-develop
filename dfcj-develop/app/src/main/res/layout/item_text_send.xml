@@ -25,11 +25,11 @@
 
         <com.dfcj.videoim.view.widght.CircleImageView
             android:id="@+id/chat_item_header"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_alignParentRight="true"
-            android:scaleType="centerInside"
-            android:src="@drawable/touxian_df" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/g_pic108" />
 
 
 
@@ -61,6 +61,7 @@
                 android:layout_centerVertical="true"
                 android:orientation="horizontal"
                 android:background="@drawable/custom_divider_right"
+                android:paddingRight="7dp"
                 >
 
                 <com.dfcj.videoim.view.myview.ClickableSpanTextView
@@ -73,16 +74,16 @@
                     android:layout_marginTop="13dp"
                     android:layout_marginBottom="13dp"
                     android:layout_marginLeft="13dp"
-                    android:layout_marginRight="13dp"
+                    android:layout_marginRight="6dp"
                     />
 
                 <ImageView
                     android:id="@+id/chat_item_content_video_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ship_pic11"
+                    android:layout_width="20dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/g_pic113"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginRight="3dp"
                     android:visibility="gone"
                     ></ImageView>
 

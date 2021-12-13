@@ -13,12 +13,14 @@ import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.provider.Settings;
+import android.util.DisplayMetrics;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -92,6 +94,31 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
 
     private ImUtils imUtils;
 
+    private int myIndex=0;
+
+
+    private RelativeLayout remote_rl;//远程 trtc_view_to_layout
+    private RelativeLayout local_rl;//本地
+
+    //远端的视图
+    private TXCloudVideoView remote_sv;//远程
+    // 本地的视图
+    private TXCloudVideoView local_sv;//本地
+    private int screenWidth;
+    private int screenHeight;
+
+    private int beforRemoteweith;
+    private int beforLocalweith;
+    private int beforRemoteheigth;
+    private int beforLocalheigth;
+    private int StateAB = 0;
+    private int StateBA = 1;
+    private int mSate;
+
+
+
+
+
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.video_call_layout;
@@ -151,6 +178,9 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
         super.initViewObservable();
 
         setMyListener();
+
+
+        initVis();
 
     }
 
@@ -657,9 +687,11 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
 
     //视频超时计算
     private CountDownTimer timer = new CountDownTimer(VIDEO_OVERTIME, 1000) {
+        @Override
         public void onTick(long millisUntilFinished) {
         }
 
+        @Override
         public void onFinish() {
             imUtils.sendTextMsg("对方无应答", AppConstant.SEND_VIDEO_TYPE_OVERTIME);
             EventBusUtils.post(new EventMessage<>(AppConstant.SEND_VIDEO_TYPE_OVERTIME));
@@ -689,4 +721,134 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
                 break;
         }
     }
+
+
+
+
+
+
+    private void initVis(){
+
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        screenWidth = dm.widthPixels;
+        screenHeight = dm.heightPixels - 500;
+
+        remote_rl=binding.trtcViewToLayout;
+        local_rl=binding.trtcViewToZiji;
+
+
+        remote_sv =binding.trtcViewTo;
+        local_sv =binding.txcvvMainMine;
+
+
+
+    }
+
+    private void zoomRemoteout(int weith2, int heigth2, TXCloudVideoView localView,
+                               TXCloudVideoView remoteView) {
+
+        beforLocalheigth = localView.getMeasuredHeight();
+        beforLocalweith = localView.getMeasuredWidth();
+        beforRemoteheigth = remoteView.getMeasuredHeight();
+        beforRemoteweith = remoteView.getMeasuredWidth();
+        KLog.d("zoomRemoteout beforLocalheigth" + beforLocalheigth
+                + "beforLocalweith" + beforLocalweith + "beforRemoteheigth"
+                + beforRemoteheigth + "beforRemoteweith" + beforLocalweith);
+        zoomOpera22(local_rl, local_sv, remote_sv, remote_rl, screenWidth,
+                beforLocalheigth, RelativeLayout.CENTER_IN_PARENT);
+
+    }
+
+    //具体的视图操作
+    private void zoomOpera(View sourcView, TXCloudVideoView beforeview,
+                           TXCloudVideoView afterview, View detView, int beforLocalweith,
+                           int beforLocalHeigth, int rule) {
+
+        RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT);
+
+        KLog.d("beforLocalheigth = " + beforLocalheigth
+                + "; beforLocalweith = " + beforLocalweith);
+        params1.addRule(rule, RelativeLayout.TRUE);
+
+        afterview.setLayoutParams(params1);
+        afterview.setBackgroundResource(android.R.color.transparent);
+        params1 = new RelativeLayout.LayoutParams(beforLocalweith, beforLocalHeigth);
+        params1.addRule(rule, RelativeLayout.TRUE);
+
+        params1.setMargins(0,200,10,0);
+
+        detView.setLayoutParams(params1);
+
+    }
+
+    private void zoomOpera22(View sourcView, TXCloudVideoView beforeview,
+                             TXCloudVideoView afterview, View detView, int beforLocalweith,
+                             int beforLocalHeigth, int rule) {
+
+        RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT);
+
+        KLog.d("beforLocalheigth = " + beforLocalheigth
+                + "; beforLocalweith = " + beforLocalweith);
+        params1.addRule(rule, RelativeLayout.TRUE);
+
+        afterview.setLayoutParams(params1);
+        afterview.setBackgroundResource(android.R.color.transparent);
+        params1 = new RelativeLayout.LayoutParams(beforLocalweith, beforLocalHeigth);
+        params1.addRule(rule, RelativeLayout.TRUE);
+
+        detView.setLayoutParams(params1);
+
+    }
+
+
+    //缩小远端的视图
+    private void zoomRemoteViewint(int weith2, int heigth2) {
+        RelativeLayout paretview = (RelativeLayout) local_rl.getParent();
+        paretview.removeView(remote_rl);
+        paretview.removeView(local_rl);
+        zoomOpera(local_rl, local_sv, remote_sv, remote_rl, beforLocalweith,
+                beforLocalheigth, RelativeLayout.ALIGN_PARENT_RIGHT);
+        KLog.d("paretview" + paretview.getChildCount());
+        paretview.addView(local_rl);
+        paretview.addView(remote_rl);
+
+        remote_rl.bringToFront();
+
+
+    }
+
+    //放大本端的视图
+    private void zoomlocalViewout(int weith2, int heigth2,
+                                  TXCloudVideoView localView, TXCloudVideoView remoteView) {
+        beforLocalheigth = localView.getMeasuredHeight();
+        beforLocalweith = localView.getMeasuredWidth();
+        beforRemoteheigth = remoteView.getMeasuredHeight();
+        beforRemoteweith = remoteView.getMeasuredWidth();
+        KLog.d("zoomlocalViewout beforLocalheigth" + beforLocalheigth
+                + "beforLocalweith" + beforLocalweith + "beforRemoteheigth"
+                + beforRemoteheigth + "beforRemoteweith" + beforRemoteweith);
+        zoomOpera22(remote_rl, remote_sv, local_sv, local_rl, beforRemoteweith,
+                beforRemoteheigth, RelativeLayout.CENTER_IN_PARENT);
+
+    }
+
+    //减小本端的视图
+    private void zoomlocalViewint(int weith2, int heigth2) {
+        RelativeLayout paretview = (RelativeLayout) local_rl.getParent();
+        paretview.removeView(remote_rl);
+        paretview.removeView(local_rl);
+        zoomOpera(remote_rl, remote_sv, local_sv, local_rl, beforRemoteweith,
+                beforRemoteheigth, RelativeLayout.ALIGN_PARENT_RIGHT);
+        paretview.addView(remote_rl);
+        paretview.addView(local_rl);
+
+        local_rl.bringToFront();
+
+    }
+
+
+
+
 }
