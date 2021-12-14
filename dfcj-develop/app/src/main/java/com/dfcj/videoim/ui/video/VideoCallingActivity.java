@@ -69,7 +69,7 @@ import java.util.Map;
 @Route(path = Rout.VideoCallingActivity)
 public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, VideoCallingViewModel> {
 
-    private static final int VIDEO_OVERTIME = 10 * 1000;//设置拨打视频超时时间
+    private static final int VIDEO_OVERTIME = 60 * 1000;//设置拨打视频超时时间
 
     private String mRoomId = "96635124";
     private String mUserId = "" + ImUtils.MyUserId;
@@ -94,7 +94,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
 
     private ImUtils imUtils;
 
-    private int myIndex=0;
+    private int myIndex = 0;
 
 
     private RelativeLayout remote_rl;//远程 trtc_view_to_layout
@@ -114,9 +114,6 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
     private int StateAB = 0;
     private int StateBA = 1;
     private int mSate;
-
-
-
 
 
     @Override
@@ -323,9 +320,9 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
 
         //取消/挂断
         public void closeVideo() {
-            if(timer!=null){
+            if (timer != null) {
                 timer.cancel();
-                timer=null;
+                timer = null;
             }
 
 
@@ -345,13 +342,13 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
 
         //视频切换
         public void videoSwitch() {
-            if(myIndex%2==0){
+            if (myIndex % 2 == 0) {
 
                 zoomRemoteout(beforRemoteweith, beforRemoteheigth, local_sv,
                         remote_sv);
                 zoomlocalViewint(beforLocalweith, beforLocalheigth);
 
-            }else{
+            } else {
 
                 zoomlocalViewout(beforRemoteweith, beforRemoteheigth, local_sv,
                         remote_sv);
@@ -359,7 +356,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
 
             }
 
-            myIndex+=1;
+            myIndex += 1;
         }
 
         //美颜
@@ -457,28 +454,28 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
         mTRTCCloud.setListener(new TRTCCloudImplListener(VideoCallingActivity.this));
         mTXDeviceManager = mTRTCCloud.getDeviceManager();
 
+        TRTCCloudDef.TRTCParams trtcParams = new TRTCCloudDef.TRTCParams();
+        trtcParams.sdkAppId = SharedPrefsUtils.getValue(AppConstant.SDKAppId, 0);
+        trtcParams.userId = mUserId;
+        trtcParams.strRoomId = mRoomId;
+        //trtcParams.userDefineRecordId = mRoomId;
+        trtcParams.userSig = GenerateUserSig.genTestUserSig(trtcParams.userId);
+
+        mTRTCCloud.startLocalPreview(mIsFrontCamera, binding.txcvvMainMine);
+        mTRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_SPEECH);
+        mTRTCCloud.enterRoom(trtcParams, TRTCCloudDef.TRTC_APP_SCENE_VIDEOCALL);
+
 //        TRTCCloudDef.TRTCParams trtcParams = new TRTCCloudDef.TRTCParams();
 //        trtcParams.sdkAppId = SharedPrefsUtils.getValue(AppConstant.SDKAppId, 0);
 //        trtcParams.userId = mUserId;
 //        trtcParams.strRoomId = mRoomId;
 //        trtcParams.userDefineRecordId = mRoomId;
-//        trtcParams.userSig = GenerateUserSig.genTestUserSig(trtcParams.userId);
-//
+//        trtcParams.userSig = SharedPrefsUtils.getValue(AppConstant.SDKUserSig);
+//        trtcParams.role = TRTCCloudDef.TRTCRoleAnchor;
+
 //        mTRTCCloud.startLocalPreview(mIsFrontCamera, binding.txcvvMainMine);
-//        mTRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_SPEECH);
-//        mTRTCCloud.enterRoom(trtcParams, TRTCCloudDef.TRTC_APP_SCENE_VIDEOCALL);
-
-        TRTCCloudDef.TRTCParams trtcParams = new TRTCCloudDef.TRTCParams();
-        trtcParams.sdkAppId = SharedPrefsUtils.getValue(AppConstant.SDKAppId,0);
-        trtcParams.userId = mUserId;
-        trtcParams.strRoomId = mRoomId;
-        trtcParams.userSig = SharedPrefsUtils.getValue(AppConstant.SDKUserSig);
-        trtcParams.role = TRTCCloudDef.TRTCRoleAnchor;
-
-        mTRTCCloud.startLocalPreview(mIsFrontCamera, binding.txcvvMainMine);
-        mTRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_DEFAULT);
-        mTRTCCloud.enterRoom(trtcParams, TRTCCloudDef.TRTC_APP_SCENE_LIVE);
-
+//        mTRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_DEFAULT);
+//        mTRTCCloud.enterRoom(trtcParams, TRTCCloudDef.TRTC_APP_SCENE_LIVE);
 
 
     }
@@ -622,7 +619,6 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
 //            }
 
 
-
         }
 
         @Override
@@ -646,7 +642,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
             KLog.d("sdk callback onError");
             VideoCallingActivity activity = mContext.get();
             if (activity != null) {
-                Toast.makeText(activity, "onError: " + errMsg + "[" + errCode + "]", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(activity, "onError: " + errMsg + "[" + errCode + "]", Toast.LENGTH_SHORT).show();
                 if (errCode == TXLiteAVCode.ERR_ROOM_ENTER_FAIL) {
                     activity.exitRoom();
                 }
@@ -750,20 +746,18 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
     }
 
 
-
-    private void initVis(){
+    private void initVis() {
 
         DisplayMetrics dm = getResources().getDisplayMetrics();
         screenWidth = dm.widthPixels;
         screenHeight = dm.heightPixels - 500;
 
-        remote_rl=binding.trtcViewToLayout;
-        local_rl=binding.trtcViewToZiji;
+        remote_rl = binding.trtcViewToLayout;
+        local_rl = binding.trtcViewToZiji;
 
 
-        remote_sv =binding.trtcViewTo;
-        local_sv =binding.txcvvMainMine;
-
+        remote_sv = binding.trtcViewTo;
+        local_sv = binding.txcvvMainMine;
 
 
     }
@@ -800,7 +794,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
         params1 = new RelativeLayout.LayoutParams(beforLocalweith, beforLocalHeigth);
         params1.addRule(rule, RelativeLayout.TRUE);
 
-        params1.setMargins(0,200,10,0);
+        params1.setMargins(0, 200, 10, 0);
 
         detView.setLayoutParams(params1);
 
@@ -871,8 +865,6 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
         local_rl.bringToFront();
 
     }
-
-
 
 
 }

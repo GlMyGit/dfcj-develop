@@ -1,20 +1,40 @@
 package com.dfcj.videoim;
 
+import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.blankj.utilcode.util.ActivityUtils;
+import com.dfcj.videoim.appconfig.AppApplicationMVVM;
 import com.dfcj.videoim.appconfig.AppConstant;
 import com.dfcj.videoim.entity.ShopMsgBody;
 import com.dfcj.videoim.listener.ShopClickListener;
 import com.dfcj.videoim.listener.ShopManager;
+import com.dfcj.videoim.util.etoast.etoast2.EToastUtils;
 import com.dfcj.videoim.util.other.GsonUtil;
+import com.dfcj.videoim.util.other.LogUtils;
 import com.dfcj.videoim.util.other.SharedPrefsUtils;
+import com.jeremyliao.liveeventbus.LiveEventBus;
+import com.wzq.mvvmsmart.base.BaseApplicationMVVM;
+import com.wzq.mvvmsmart.utils.KLog;
 
 public class IMSDK {
     private static IMSDK imsdk;
 
     public static int CHAT_TYPE = 0;
     public static int CHAT_TYPE_VIDEO = 1;
+
+    public static void initIMSDK(Application application) {
+        BaseApplicationMVVM.setApplication(application);
+        KLog.init(BuildConfig.DEBUG);
+        AppApplicationMVVM.initCrash();
+        LiveEventBus.config().supportBroadcast(application).lifecycleObserverAlwaysActive(true);
+        LogUtils.logInit(BuildConfig.My_LOG_DEBUG);
+        SharedPrefsUtils prefsUtils = new SharedPrefsUtils(application);
+        application.registerActivityLifecycleCallbacks(EToastUtils.init());
+        ARouter.init(application);
+    }
 
     public static IMSDK getImsdk() {
         if (imsdk == null) {
@@ -79,4 +99,6 @@ public class IMSDK {
         ShopManager.instance().setGoodsChangeListener(shopClickListener);
         return imsdk;
     }
+
+
 }

@@ -76,10 +76,11 @@ public class AppConstant {
 
 
     //自定义消息类型(EventBus code)
-    public static final int SEND_MSG_TYPE_SERVICE = 100;//文本类型
+    public static final int SEND_MSG_TYPE_SERVICE = 100;//接入会话
     public static final int SEND_MSG_TYPE_TEXT = 101;//文本类型
     public static final int SEND_MSG_TYPE_IMAGE = 102;//图片类型
     public static final int SEND_MSG_TYPE_CARD = 103;//卡片类型
+    public static final int SEND_MSG_TYPE_CLOSE = 104;//结束会话
     public static final int SEND_VIDEO_TYPE_START = 201;//开始视频
     public static final int SEND_VIDEO_TYPE_END = 202;//结束视频
     public static final int SEND_VIDEO_TYPE_CANCEL = 203;//取消视频
