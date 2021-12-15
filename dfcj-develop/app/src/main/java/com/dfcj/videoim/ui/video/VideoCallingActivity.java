@@ -123,7 +123,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
 
     @Override
     public int initVariableId() {
-        return BR.viewModel;
+        return BR._all;
     }
 
     @Override

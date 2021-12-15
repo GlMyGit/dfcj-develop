@@ -146,7 +146,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
     @Override
     public int initVariableId() {
-        return BR.viewModel;
+        return BR._all;
     }
 
     @Override
@@ -193,10 +193,32 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         super.initViewObservable();
 
         getHistoryMessageList();
-
         setMyListener();
-
         getCustomerInfo();
+
+        showVideoIm();
+
+    }
+
+
+    //视频聊天选择进来
+    private void showVideoIm(){
+
+        switch (chatType){
+
+            case "1"://聊天
+
+                break;
+
+            case "2"://视频
+                KLog.d("视频点击11");
+                showVideoClick();
+                break;
+
+        }
+
+        SharedPrefsUtils.putValue(AppConstant.CHAT_TYPE, "0");
+
     }
 
     private void initAppValue() {
@@ -210,7 +232,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         SharedPrefsUtils.putValue(AppConstant.USERTOKEN, "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMDA4MDEwMDAwNDQiLCJpc3MiOiJvY2otc3RhcnNreSIsImxvZ2lkIjoiNjg3NDYyNzk0OTA5MDMxMjE5MiIsImV4cCI6MTY0NjgxNTAyNywiaWF0IjoxNjM5MDM5MDI3LCJkZXZpY2VpZCI6IiJ9.hNcsiYer2GsAA_TbqPT8vyNrW1rfdVfV4YTbMs-Rrho");
 
         token = SharedPrefsUtils.getValue(AppConstant.USERTOKEN);
-        chatType = SharedPrefsUtils.getValue(AppConstant.CHAT_TYPE);
+        chatType = ""+SharedPrefsUtils.getValue(AppConstant.CHAT_TYPE);
         String shopMsgBodyStr = SharedPrefsUtils.getValue(AppConstant.SHOP_MSG_BODY_DATA);
         if (!ObjectUtils.isEmpty(shopMsgBodyStr)) {
             shopMsgBody = GsonUtil.newGson22().fromJson(shopMsgBodyStr, ShopMsgBody.class);
@@ -440,29 +462,8 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         //视频 点击
         public void toVideo() {
 
-            KLog.d("视频点击");
-            PermissionUtil.getIsPrmission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            PermissionUtil.getIsPrmission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
-
-            boolean permission3 = AppUtils.isPermission(mContext, Manifest.permission.CAMERA);
-            boolean permission4 = AppUtils.isPermission(mContext, Manifest.permission.RECORD_AUDIO);
-
-            if (!permission3 || !permission4) {
-                sPermission();
-                return;
-            }
-
-            KLog.d("isSendMsg:" + isSendMsg);
-            KLog.d("imUtils.isLogin:" + imUtils.isLogin);
-
-            if (imUtils.isLogin) {
-                if (isSendMsg) {
-                    getTrtcRoomId();
-                } else {
-                    imUtils.sendCenterDefaultMsg(loadEventMsg);
-                }
-            }
-
+            KLog.d("视频点击22");
+            showVideoClick();
 
         }
 
@@ -479,6 +480,35 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
             //showMyLanguageDialog();
 
         }
+
+    }
+
+
+    //打视频
+    private  void showVideoClick(){
+        PermissionUtil.getIsPrmission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        PermissionUtil.getIsPrmission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+        boolean permission3 = AppUtils.isPermission(mContext, Manifest.permission.CAMERA);
+        boolean permission4 = AppUtils.isPermission(mContext, Manifest.permission.RECORD_AUDIO);
+
+        if (!permission3 || !permission4) {
+            sPermission();
+            return;
+        }
+
+        KLog.d("isSendMsg:" + isSendMsg);
+        KLog.d("imUtils.isLogin:" + imUtils.isLogin);
+
+        if (imUtils.isLogin) {
+            if (isSendMsg) {
+                getTrtcRoomId();
+            } else {
+                imUtils.sendCenterDefaultMsg(loadEventMsg);
+            }
+        }
+
+
 
     }
 
@@ -505,6 +535,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
 
     private void ocrEditMsgDialog() {
+
 
 
         OcrMsgEditDialog fxdialog = MyDialogUtil.ocrEditMsgDialog(binding.mainOcrContentTv.getText().toString());
@@ -1283,8 +1314,14 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
                 //循环消息模拟发送赋值
                 for (HistoryMsgEntity.DataDTO.DataDTO2 dataDTO2 : historyMsgEntityList) {
+
                     SharedPrefsUtils.putValue(AppConstant.STAFF_IMGE, dataDTO2.getStaffFaceUrl());
                     SharedPrefsUtils.putValue(AppConstant.STAFF_NAME, dataDTO2.getStaffNick());
+
+
+                    SharedPrefsUtils.putValue(AppConstant.MyUserName, "" + dataDTO2.getCustNick());
+                    SharedPrefsUtils.putValue(AppConstant.MyUserIcon, "" + dataDTO2.getCustFaceUrl());
+
 
                     List<HistoryMsgEntity.DataDTO.DataDTO2.MsgBody> msgBody = GsonUtil.GsonToList(dataDTO2.getMsgBody(), HistoryMsgEntity.DataDTO.DataDTO2.MsgBody.class);
 
@@ -1294,7 +1331,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                     String data = msgBodyBean.getMsgContent().getData();
                     CustomMsgEntity customMsgEntity = GsonUtil.newGson22().fromJson(data, CustomMsgEntity.class);
 
-                    sendZiDingYiMsg(customMsgEntity, StringUtils.equals(dataDTO2.getFromAccount(), ImUtils.MyUserId));
+                    sendZiDingYiMsg(customMsgEntity, StringUtils.equals(dataDTO2.getFromAccount(), ""+SharedPrefsUtils.getValue(AppConstant.MYUSERID)));
                 }
                 if (historyPage == 1) {
                     binding.rvChatList.smoothScrollToPosition(mAdapter.getItemCount() - 1);

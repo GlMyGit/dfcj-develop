@@ -29,7 +29,7 @@ public class WebViewActivity extends BaseActivity<WebviewActivityBinding, BaseVi
 
     @Override
     public int initVariableId() {
-        return BR.viewModel;
+        return BR._all;
     }
 
     @Override

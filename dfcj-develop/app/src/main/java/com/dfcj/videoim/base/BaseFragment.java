@@ -16,7 +16,10 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
 
     public void showLoading(String title) {
 
-        dialog = new MyDialogLoading(getActivity());
+        if(dialog==null){
+            dialog = new MyDialogLoading(getActivity());
+        }
+
         dialog.setDialogLabel(title);
         dialog.show();
 

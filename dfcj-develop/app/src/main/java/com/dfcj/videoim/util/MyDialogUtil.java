@@ -1,17 +1,63 @@
 package com.dfcj.videoim.util;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.alibaba.android.arouter.launcher.ARouter;
+import com.dfcj.videoim.R;
+import com.dfcj.videoim.appconfig.AppApplicationMVVM;
+import com.dfcj.videoim.appconfig.AppConstant;
+import com.dfcj.videoim.appconfig.Rout;
+import com.dfcj.videoim.util.other.SharedPrefsUtils;
 import com.dfcj.videoim.view.dialog.BaseDialogFragment;
 import com.dfcj.videoim.view.dialog.OcrMsgEditDialog;
 import com.dfcj.videoim.view.dialog.QuanXianDialog;
+import com.dfcj.videoim.view.dialog.SelectImDialog;
 import com.dfcj.videoim.view.dialog.WhellViewDialog;
 import com.tencent.aai.model.type.EngineModelType;
 
 import java.util.ArrayList;
 
 public class MyDialogUtil {
+
+
+    public static SelectImDialog showSelectImDialog(AppCompatActivity appCompatActivity){
+
+        Bundle bundle3 = new Bundle();
+        bundle3.putBoolean(SelectImDialog.DIALOG_BACK, true);
+        bundle3.putBoolean(SelectImDialog.DIALOG_CANCELABLE_TOUCH_OUT_SIDE, true);
+
+        SelectImDialog fxdialog = SelectImDialog.newInstance(SelectImDialog.class, bundle3);
+        fxdialog.show(appCompatActivity.getSupportFragmentManager(), OcrMsgEditDialog.class.getName());
+
+
+        fxdialog.setYesOnclickListener(new SelectImDialog.onYesOnclickListener() {
+            @Override
+            public void onYesClick(int sel) {
+
+
+                if(sel==1){//会话
+                    SharedPrefsUtils.putValue(AppConstant.CHAT_TYPE, "1");
+
+                }else{//视频
+                    SharedPrefsUtils.putValue(AppConstant.CHAT_TYPE, "2");
+                }
+
+                ARouter.getInstance().build(Rout.toMain)
+                        .withTransition(R.anim.push_left_in,R.anim.push_left_out)
+                        .navigation(appCompatActivity);
+
+            }
+        });
+
+        return fxdialog;
+
+    }
+
 
 
     public static OcrMsgEditDialog ocrEditMsgDialog(String onc){

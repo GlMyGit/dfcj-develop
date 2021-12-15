@@ -57,17 +57,6 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
      * 设置layout前 统一配置activity基本属性
      */
     private void doBeforeSetcontentView() {
-        //设置昼夜主题
-        //initTheme();
-        // 把actvity放到application栈中管理
-        /// AppManager.getAppManager().addActivity(this);
-        // 无标题
-        // supportRequestWindowFeature(Window.FEATURE_NO_TITLE);//requestWindowFeature(Window.FEATURE_NO_TITLE);
-        // 竖屏
-        // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);  //全屏
-        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        // 默认着色状态栏
-        //  SetStatusBarColor();
 
         ImmersionBar.with(this)
                 .statusBarDarkFont(true) //深色字体
@@ -85,8 +74,11 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
 
     public void showLoading(String title) {
 
-        dialog = new MyDialogLoading(this);
+        if(dialog==null){
+            dialog = new MyDialogLoading(this);
+        }
         dialog.setDialogLabel(title);
+
         dialog.show();
 
     }
@@ -145,7 +137,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
 
         ARouter.getInstance().build(path)
                 .withTransition(R.anim.push_left_in,R.anim.push_left_out)
-                .navigation();
+                .navigation(this);
         //overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
@@ -161,7 +153,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         ARouter.getInstance().build(path)
                 .with(bundle)
                 .withTransition(R.anim.push_left_in,R.anim.push_left_out)
-                .navigation();
+                .navigation(this);
         //overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
