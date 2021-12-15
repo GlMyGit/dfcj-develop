@@ -473,15 +473,84 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
         trtcParams.userId = mUserId;
         trtcParams.strRoomId = mRoomId;
         trtcParams.userSig = SharedPrefsUtils.getValue(AppConstant.SDKUserSig);
-        trtcParams.role = TRTCCloudDef.TRTCRoleAnchor;
+       // trtcParams.role = TRTCCloudDef.TRTCRoleAnchor;
 
         mTRTCCloud.startLocalPreview(mIsFrontCamera, binding.txcvvMainMine);
         mTRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_DEFAULT);
-        mTRTCCloud.enterRoom(trtcParams, TRTCCloudDef.TRTC_APP_SCENE_LIVE);
+
+        //setMixTranscodingConfigInfo();
+
+
+        mTRTCCloud.enterRoom(trtcParams, TRTCCloudDef.TRTC_APP_SCENE_VIDEOCALL);
 
 
 
     }
+
+
+    private void setMixTranscodingConfigInfo(){
+
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+
+
+
+        TRTCCloudDef.TRTCTranscodingConfig  trtcTranscodingConfig=new TRTCCloudDef.TRTCTranscodingConfig();
+
+        trtcTranscodingConfig.videoWidth      =  720;
+        trtcTranscodingConfig.videoHeight     = 1280;
+        trtcTranscodingConfig.videoBitrate    = 1500;
+        trtcTranscodingConfig.videoFramerate  = 20;
+        trtcTranscodingConfig.videoGOP        = 2;
+        trtcTranscodingConfig.audioSampleRate = 48000;
+        trtcTranscodingConfig.audioBitrate    = 64;
+        trtcTranscodingConfig.audioChannels   = 2;
+        trtcTranscodingConfig.streamId="abc123";
+        // trtcTranscodingConfig.appId=SharedPrefsUtils.getValue(AppConstant.APP_ID,0);
+        trtcTranscodingConfig.mode=TRTCCloudDef.TRTC_TranscodingConfigMode_Template_PresetLayout;
+        trtcTranscodingConfig.mixUsers = new ArrayList<>();
+
+
+        //自己的画面
+        TRTCCloudDef.TRTCMixUser mixUser = new TRTCCloudDef.TRTCMixUser();
+        /*" $PLACE_HOLDER_REMOTE$" : 指代远程用户的画面，可以设置多个。
+            "$PLACE_HOLDER_LOCAL_MAIN$" ： 指代本地摄像头画面，只允许设置一个。
+            "$PLACE_HOLDER_LOCAL_SUB$" : 指代本地屏幕分享画面，只允许设置一个 */
+        mixUser.userId = "$PLACE_HOLDER_LOCAL_MAIN$";
+        //  mixUser.streamType = TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG;
+        mixUser.zOrder = 0;//指定该路画面的层级（取值范围：1 - 15，不可重复）
+        mixUser.x = 0;
+        mixUser.y = 0;
+        mixUser.width = 720;
+        mixUser.height = 1280;
+        mixUser.roomId = null;
+        // mixUser.inputType = TRTCCloudDef.TRTC_MixInputType_AudioVideo;
+        // mixUser.streamType=TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG;//主路画面（TRTCVideoStreamTypeBig）还是辅路画面（TRTCVideoStreamTypeSub）。
+        trtcTranscodingConfig.mixUsers.add(mixUser);
+
+
+        KLog.d("视频起始位置x0:"+(dm.widthPixels-190-30));
+        KLog.d("视频起始位置x1:"+(dm.widthPixels));
+        KLog.d("视频起始位置x2:"+(dm.heightPixels));
+
+        //连麦者画面位置
+        TRTCCloudDef.TRTCMixUser remote = new TRTCCloudDef.TRTCMixUser();
+        remote.userId = "$PLACE_HOLDER_REMOTE$";
+        //remote.streamType=TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG;
+        remote.zOrder = 1;
+        remote.x      =720-190-30;
+        remote.y      = 140;
+        remote.width  = 190;
+        remote.height = 340;
+        remote.roomId = mRoomId;
+        //remote.inputType = TRTCCloudDef.TRTC_MixInputType_AudioVideo;
+        trtcTranscodingConfig.mixUsers.add(remote);
+
+        // 发起云端混流
+        mTRTCCloud.setMixTranscodingConfig(trtcTranscodingConfig);
+
+    }
+
+
 
 
     private void setVideoEncoderParam(boolean isSwitchQuality) {
