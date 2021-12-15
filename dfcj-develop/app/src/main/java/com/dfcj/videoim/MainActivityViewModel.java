@@ -87,7 +87,7 @@ public class MainActivityViewModel extends BaseViewModel {
     public void requestLogin() {
 
         Map<String, Object> params = new HashMap<>();
-        params.put("customerCode", "" +  SharedPrefsUtils.getValue(AppConstant.MYUSERID));
+        params.put("customerCode", "" + SharedPrefsUtils.getValue(AppConstant.MYUSERID));
         params.put("faceUrl", SharedPrefsUtils.getValue(AppConstant.MyUserIcon));
         params.put("nick", SharedPrefsUtils.getValue(AppConstant.MyUserName));
         params.put("osInfo", AppUtils.getSystemModel());
@@ -246,7 +246,7 @@ public class MainActivityViewModel extends BaseViewModel {
 
         Map<String, Object> params = new HashMap<>();
         params.put("customerCode", "" + SharedPrefsUtils.getValue(AppConstant.MYUSERID));
-        params.put("eventId", "" + eventId);
+        params.put("eventId", "" +eventId);
         params.put("osInfo", "" + systemModel);
         params.put("osType", "2");//1、iOS系统、2、Android系统、3、微信小程序4、Mobile 5、电脑端PC网页浏览器
 

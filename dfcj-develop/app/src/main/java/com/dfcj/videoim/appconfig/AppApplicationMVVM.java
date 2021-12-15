@@ -27,7 +27,6 @@ import com.wzq.mvvmsmart.crash.CaocConfig;
 import com.wzq.mvvmsmart.utils.KLog;
 
 
-
 public class AppApplicationMVVM extends BaseApplicationMVVM {
 
     private SharedPrefsUtils prefsUtils;
@@ -37,7 +36,6 @@ public class AppApplicationMVVM extends BaseApplicationMVVM {
     public static AppApplicationMVVM instance() {
         return instance;
     }
-
 
 
     @Override
@@ -54,7 +52,7 @@ public class AppApplicationMVVM extends BaseApplicationMVVM {
                 .lifecycleObserverAlwaysActive(true); //    整个生命周期（从onCreate到onDestroy）都可以实时收到消息
 
         LogUtils.logInit(BuildConfig.My_LOG_DEBUG);
-        prefsUtils=new SharedPrefsUtils(this);
+        prefsUtils = new SharedPrefsUtils(this);
         registerActivityLifecycleCallbacks(EToastUtils.init());
 
        /* if (BuildConfig.DEBUG) {           // 这两行必须写在init之前，否则这些配置在init过程中将无效
@@ -64,10 +62,9 @@ public class AppApplicationMVVM extends BaseApplicationMVVM {
         ARouter.init(this); // 尽可能早，推荐在Application中初始化
 
 
-
     }
 
-    private void initTenceImSdk(){
+    private void initTenceImSdk() {
 
 
         MultiDex.install(this);
@@ -77,12 +74,9 @@ public class AppApplicationMVVM extends BaseApplicationMVVM {
 //        CrashReport.initCrashReport(getApplicationContext(), PrivateConstants.BUGLY_APPID, true, strategy);
 
 
-
     }
 
-
-
-    private void initCrash() {
+    public static void initCrash() {
         CaocConfig.Builder.create()
                 .backgroundMode(CaocConfig.BACKGROUND_MODE_SILENT) //背景模式,开启沉浸式
                 .enabled(true) //是否启动全局异常捕获

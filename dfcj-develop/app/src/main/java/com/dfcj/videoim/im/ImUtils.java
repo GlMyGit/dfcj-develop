@@ -295,7 +295,7 @@ public class ImUtils {
             //是否只有在线用户才能收到，如果设置为 true ，接收方历史消息拉取不到，常被用于实现“对方正在输入”或群组里的非重要提示等弱提示功能
             KLog.d("发送成功：" + fsUserId);
 
-            V2TIMManager.getMessageManager().sendMessage(customMessage, fsUserId, null, V2TIMMessage.V2TIM_PRIORITY_DEFAULT,
+            V2TIMManager.getMessageManager().sendMessage(customMessage, SharedPrefsUtils.getValue(AppConstant.STAFF_CODE), null, V2TIMMessage.V2TIM_PRIORITY_DEFAULT,
                     false, new V2TIMOfflinePushInfo(), new V2TIMSendCallback<V2TIMMessage>() {
                         @Override
                         public void onProgress(int i) {

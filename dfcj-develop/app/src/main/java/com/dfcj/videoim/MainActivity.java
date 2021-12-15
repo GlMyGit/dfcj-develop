@@ -484,8 +484,14 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
     //获取房间号
     private void getTrtcRoomId() {
-        viewModel.getTrtcRoomId(myEventId);
-
+        String CloudCustomData = SharedPrefsUtils.getValue(AppConstant.CloudCustomData);
+        KLog.d("获取eventId字符串:" + CloudCustomData);
+        if (ObjectUtils.isEmpty(CloudCustomData)) {
+            KLog.d("获取eventId失败");
+        } else {
+            Map<String, String> map = GsonUtil.GsonToMaps(cloudCustomData);
+            viewModel.getTrtcRoomId(map.get("eventId"));
+        }
     }
 
 
@@ -1052,15 +1058,25 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                     closeVideoActivity();
                     EventBusUtils.post(new EventMessage<>(AppConstant.SEND_VIDEO_TYPE_REFUSE));
 
-                } else if (msgType == AppConstant.SEND_MSG_TYPE_SERVICE) {
+                } else if (msgType == AppConstant.SEND_MSG_TYPE_SERVICE) {//会话接入
 
                     SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
                     SharedPrefsUtils.putValue(AppConstant.STAFF_CODE, msg.getUserID());
-                    imUtils.sendCenterDefaultMsg("客服"+msg.getNickName() + "将为你服务");
-                    imUtils.sendLeftTextMsg(msgText);
                     isSendMsg = true;
                     setVideoStatus(true);
 
+                    imUtils.sendCenterDefaultMsg("客服" + msg.getNickName() + "将为你服务");
+                    imUtils.sendLeftTextMsg(msgText);
+
+
+                } else if (msgType == AppConstant.SEND_MSG_TYPE_CLOSE) {//结束会话
+
+                    SharedPrefsUtils.putValue(AppConstant.STAFF_CODE, "");
+                    SharedPrefsUtils.putValue(AppConstant.CloudCustomData, "");
+                    isSendMsg = false;
+                    setVideoStatus(false);
+
+                    imUtils.sendLeftTextMsg(msgText);
                 }
             }
 
@@ -1174,7 +1190,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                     SharedPrefsUtils.putValue(AppConstant.MyUserName, "" + userInfoEntity.getData().getCustName());
                     SharedPrefsUtils.putValue(AppConstant.MyUserIcon, "" + userInfoEntity.getData().getCustFaceUrl());
 
-                    KLog.d("Yonghu:"+userInfoEntity.getData().getCustNo());
+                    KLog.d("Yonghu:" + userInfoEntity.getData().getCustNo());
                     KLog.d("Yonghu:" + ImUtils.MyUserId);
 
                     if (ObjectUtils.isEmpty(userInfoEntity.getData().getCustFaceUrl())) {
@@ -1311,8 +1327,12 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                             myEventId = "" + changeCustomerServiceEntity.getData().getEventId();
 
                             if (changeCustomerServiceEntity.getData() != null) {
-                                Gson gson = new Gson();
-                                cloudCustomData = gson.toJson(changeCustomerServiceEntity.getData());
+//                                Gson gson = new Gson();
+//                                cloudCustomData = gson.toJson(changeCustomerServiceEntity.getData());
+
+                                Map<String, Object> value = new HashMap<>();
+                                value.put("eventId", changeCustomerServiceEntity.getData().getEventId());
+                                cloudCustomData = GsonUtil.newGson22().toJson(value);
 
                                 SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
                                 SharedPrefsUtils.putValue(AppConstant.STAFF_CODE, changeCustomerServiceEntity.getData().getStaffCode());
@@ -1357,7 +1377,11 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
                     }
 
-
+                    //如果获取到1163则转人工
+                    String menu = sendOffineMsgEntity.getData().getMenu();
+                    if ("1163".equals(menu)) {
+                        getChangeToLable();
+                    }
                 }
 
 

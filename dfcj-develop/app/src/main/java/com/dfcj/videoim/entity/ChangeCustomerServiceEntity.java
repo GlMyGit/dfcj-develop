@@ -49,7 +49,7 @@ public class ChangeCustomerServiceEntity {
 
     public static class DataBean {
         private String staffCode;
-        private Integer eventId;
+        private Long eventId;
 
         public String getStaffCode() {
             return staffCode;
@@ -59,11 +59,11 @@ public class ChangeCustomerServiceEntity {
             this.staffCode = staffCode;
         }
 
-        public Integer getEventId() {
+        public Long getEventId() {
             return eventId;
         }
 
-        public void setEventId(Integer eventId) {
+        public void setEventId(Long eventId) {
             this.eventId = eventId;
         }
     }
