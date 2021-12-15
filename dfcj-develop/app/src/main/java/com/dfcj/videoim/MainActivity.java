@@ -101,9 +101,6 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     //int age;
 
     private String myOcrVal = "";
-    public static final String mSenderId = "right";
-    public static final String mTargetId = "left";
-    public static final String mCenterId = "center";
     public static final int REQUEST_CODE_IMAGE = 0000;
     public static final int REQUEST_CODE_VEDIO = 1111;
     public static final int REQUEST_CODE_IMAGE_VIDEO = 9999;
@@ -192,7 +189,6 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     public void initViewObservable() {
         super.initViewObservable();
 
-        getHistoryMessageList();
         setMyListener();
         getCustomerInfo();
 
@@ -980,10 +976,6 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     }*/
 
 
-    //获取历史消息（后台接口返回）
-    private void getHistoryMessageList() {
-
-    }
 
     @Override
     public void onReceiveEvent(EventMessage event) {
@@ -1155,6 +1147,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
             return;
         }
 
+        KLog.d("tttttttt:"+msgType);
         switch (msgType) {
             case AppConstant.SEND_MSG_TYPE_TEXT://文本
                 if (isSelf) {
@@ -1163,6 +1156,8 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                     imUtils.sendLeftTextMsg2(msgText);
                 }
                 break;
+
+
             case AppConstant.SEND_MSG_TYPE_IMAGE://图片
                 if (isSelf) {
                     imUtils.takeRightImgMsg2(msgText);
@@ -1405,35 +1400,96 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
             @Override
             public void onChanged(SendOffineMsgEntity sendOffineMsgEntity) {
 
-                if (sendOffineMsgEntity != null && sendOffineMsgEntity.getData() != null) {
-
-                    Integer showType = sendOffineMsgEntity.getData().getShowType();
-                    //0代表小I回复 1代表返回商品
-                    if (showType == 0) {
-
-                        String msgType = sendOffineMsgEntity.getData().getMsg().getMsgType();
-                        String content = sendOffineMsgEntity.getData().getMsg().getContent();
-                        if (!TextUtils.isEmpty(content)) {
-                            imUtils.sendLeftTextMsg("" + content);
-                        }
 
 
-                    } else if (showType == 1) {
-
-                        SendOffineMsgEntity.DataBean.ProductInfoBean productInfo = sendOffineMsgEntity.getData().getProductInfo();
-
-                        if (productInfo != null) {
-                            imUtils.sendLeftShopMessage(productInfo);
-                        }
+                if (sendOffineMsgEntity != null) {
 
 
+                    String code = sendOffineMsgEntity.getCode();
+
+                    switch (code) {
+                        case "18790301"://排队中
+                        case "18790303"://客服下班了
+                            isSendMsg = false;
+
+                            String message = sendOffineMsgEntity.getMessage();
+                            imUtils.sendCenterDefaultMsg("" + message);
+
+                            setVideoStatus(false);
+
+                            break;
+                        case "99990000"://有客服接入
+                            //  String staffCode = changeCustomerServiceEntity.getData().getStaffCode();
+
+
+                            if(sendOffineMsgEntity.getData() != null){
+
+                                Integer showType = sendOffineMsgEntity.getData().getShowType();
+                                //0代表小I回复 1代表返回商品 2客服
+                                if (showType == 0) {
+
+                                    String msgType = sendOffineMsgEntity.getData().getMsg().getMsgType();
+                                    String content = sendOffineMsgEntity.getData().getMsg().getContent();
+                                    if (!TextUtils.isEmpty(content)) {
+                                        imUtils.sendLeftTextMsg("" + content);
+                                    }
+
+
+                                } else if (showType == 1) {
+
+                                    SendOffineMsgEntity.DataBean.ProductInfoBean productInfo = sendOffineMsgEntity.getData().getProductInfo();
+
+                                    if (productInfo != null) {
+                                        imUtils.sendLeftShopMessage(productInfo);
+                                    }
+
+
+                                } else if (showType == 2) {
+
+                                    myEventId = "" + sendOffineMsgEntity.getData().getDistributeStaffInfo().getEventId();
+
+                                    if (sendOffineMsgEntity.getData() != null) {
+
+                                        Map<String, Object> value = new HashMap<>();
+                                        value.put("eventId", sendOffineMsgEntity.getData().getDistributeStaffInfo().getEventId());
+                                        cloudCustomData =new Gson().toJson(value);
+
+                                        KLog.d("cloudCustomData11:"+cloudCustomData);
+
+                                        SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
+                                        SharedPrefsUtils.putValue(AppConstant.STAFF_CODE, sendOffineMsgEntity.getData().getDistributeStaffInfo().getStaffCode());
+
+                                      //  String roomId = sendOffineMsgEntity.getData().getDistributeStaffInfo().getRoomId();
+
+
+                                    }
+
+                                    setVideoStatus(true);
+                                    isSendMsg = true;
+
+
+                                }
+
+
+                            }
+
+
+                            break;
                     }
 
-                    //如果获取到1163则转人工
-                    String menu = sendOffineMsgEntity.getData().getMenu();
-                    if ("1163".equals(menu)) {
-                        getChangeToLable();
-                    }
+
+
+
+
+
+
+//                    //如果获取到1163则转人工
+//                    String menu = sendOffineMsgEntity.getData().getMenu();
+//                    if ("1163".equals(menu)) {
+//                        getChangeToLable();
+//                    }
+
+
                 }
 
 

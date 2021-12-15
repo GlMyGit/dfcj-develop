@@ -7,6 +7,25 @@ public class SendOffineMsgEntity {
     private DataBean data;
     private String fail;
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    private String message;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    private String code;
     public Boolean getSuccess() {
         return success;
     }
@@ -38,6 +57,16 @@ public class SendOffineMsgEntity {
         private String contextMenu;
         private String menu;
         private ProductInfoBean productInfo;
+
+        public DistriButeStaffInfo getDistributeStaffInfo() {
+            return distributeStaffInfo;
+        }
+
+        public void setDistributeStaffInfo(DistriButeStaffInfo distributeStaffInfo) {
+            this.distributeStaffInfo = distributeStaffInfo;
+        }
+
+        private DistriButeStaffInfo distributeStaffInfo;
         private String type;
         private MsgBean msg;
 
@@ -103,6 +132,39 @@ public class SendOffineMsgEntity {
 
         public void setMsg(MsgBean msg) {
             this.msg = msg;
+        }
+
+        public static  class  DistriButeStaffInfo{
+            private String staffCode;
+
+            public String getStaffCode() {
+                return staffCode;
+            }
+
+            public void setStaffCode(String staffCode) {
+                this.staffCode = staffCode;
+            }
+
+            public Long getEventId() {
+                return eventId;
+            }
+
+            public void setEventId(Long eventId) {
+                this.eventId = eventId;
+            }
+
+            public String getRoomId() {
+                return roomId;
+            }
+
+            public void setRoomId(String roomId) {
+                this.roomId = roomId;
+            }
+
+            private Long eventId;
+            private String roomId;
+
+
         }
 
         public static class ProductInfoBean {

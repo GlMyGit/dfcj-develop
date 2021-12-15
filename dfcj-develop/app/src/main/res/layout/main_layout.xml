@@ -90,6 +90,7 @@
                     android:paddingTop="7dp"
                     android:paddingRight="15dp"
                     android:paddingBottom="7dp"
+                    android:visibility="gone"
                     android:text="转人工"></TextView>
 
 

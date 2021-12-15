@@ -290,10 +290,8 @@ public class ImUtils {
             }
 
 
-
             String sVal = GsonUtil.newGson22().toJson(customMsgEntity);
             byte[] strs = sVal.getBytes("UTF8");
-
 
             if (msgType == AppConstant.SEND_MSG_TYPE_TEXT) {
 
@@ -474,6 +472,7 @@ public class ImUtils {
         mMessgae.setBody(mTextMsgBody);
         mMessgae.setType(ChatAdapter.TYPE_RECEIVE_TEXT);
         mMessgae.setSenderId(mTargetId);
+        mMessgae.setSentStatus(MsgSendStatus.SENT);
 
         //开始发送
         mAdapter.addData(mMessgae);
@@ -513,7 +512,7 @@ public class ImUtils {
 
         SpannableStringBuilder replace = ChatUiHelper.handlerEmojiText(hello, true);
 
-        final Message mMessgae = getBaseSendMessage(MsgType.TEXT);
+        Message mMessgae = getBaseSendMessage(MsgType.TEXT);
         TextMsgBody mTextMsgBody = new TextMsgBody();
         mTextMsgBody.setMessage(replace.toString());
         mTextMsgBody.setCharsequence(replace);
@@ -547,7 +546,7 @@ public class ImUtils {
         //开始发送
         mAdapter.addData(0, mMessgae);
 
-        KLog.d("消息的内容：" + hello);
+        KLog.d("消息的内容right：" + hello);
     }
 
     public void takeLeftImgMsg(String imagePath) {
@@ -575,7 +574,7 @@ public class ImUtils {
         mMessgae.setBody(mImageMsgBody);
         mMessgae.setSenderId(mTargetId);
         mMessgae.setType(ChatAdapter.TYPE_RECEIVE_IMAGE);
-
+        mMessgae.setSentStatus(MsgSendStatus.SENT);
         //开始发送
         mAdapter.addData(0, mMessgae);
     }
@@ -605,6 +604,7 @@ public class ImUtils {
         mMessgae.setBody(mImageMsgBody);
         mMessgae.setSenderId(mSenderId);
         mMessgae.setType(ChatAdapter.TYPE_SEND_IMAGE);
+        mMessgae.setSentStatus(MsgSendStatus.SENT);
 
         //开始发送
         mAdapter.addData(0, mMessgae);
@@ -655,6 +655,7 @@ public class ImUtils {
         mMessgae.setBody(shopMsgBody);
         mMessgae.setSenderId(mSenderId);
         mMessgae.setType(ChatAdapter.TYPE_KAPIAN_SEND_TEXT);
+        mMessgae.setSentStatus(MsgSendStatus.SENT);
         //开始发送
         mAdapter.addData(0, mMessgae);
     }
@@ -680,6 +681,7 @@ public class ImUtils {
         mMessgae.setBody(shopMsgBody);
         mMessgae.setSenderId(mTargetId);
         mMessgae.setType(ChatAdapter.TYPE_KAPIAN_RECEIVE_TEXT);
+        mMessgae.setSentStatus(MsgSendStatus.SENT);
         //开始发送
         mAdapter.addData(0, mMessgae);
     }
@@ -839,6 +841,17 @@ public class ImUtils {
         return mMessgae;
     }
 
+    public Message getBaseSendMessage22(MsgType msgType) {
+        Message mMessgae = new Message();
+        mMessgae.setUuid(UUID.randomUUID() + "");
+        mMessgae.setSenderId(mSenderId);
+        mMessgae.setTargetId(mTargetId);
+        mMessgae.setSentTime(System.currentTimeMillis());
+        mMessgae.setSentStatus(MsgSendStatus.SENT);
+        mMessgae.setMsgType(msgType);
+        return mMessgae;
+    }
+
     //语音消息
     public void sendAudioMessage(final String path, int time) {
         final Message mMessgae = getBaseSendMessage(MsgType.AUDIO);
@@ -877,7 +890,7 @@ public class ImUtils {
         mTextMsgBody.setCharsequence(content);
         mMessgae.setBody(mTextMsgBody);
         mMessgae.setType(ChatAdapter.TYPE_SEND_TEXT);
-
+        mMessgae.setSentStatus(MsgSendStatus.SENT);
         mAdapter.addData(mMessgae);
         updateMsg(mMessgae);
     }
@@ -891,7 +904,7 @@ public class ImUtils {
         mTextMsgBody.setCharsequence(content);
         mMessgae.setBody(mTextMsgBody);
         mMessgae.setType(ChatAdapter.TYPE_SEND_TEXT);
-
+        mMessgae.setSentStatus(MsgSendStatus.SENT);
         mAdapter.addData(0, mMessgae);
     }
 

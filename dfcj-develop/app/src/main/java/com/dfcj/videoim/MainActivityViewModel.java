@@ -84,6 +84,7 @@ public class MainActivityViewModel extends BaseViewModel {
     }
 
 
+    //登录
     public void requestLogin() {
 
         Map<String, Object> params = new HashMap<>();
@@ -124,7 +125,7 @@ public class MainActivityViewModel extends BaseViewModel {
     }
 
 
-    //发送离线消息
+    //发送离线消息 智能客服 小I机器人
     public void sendOfflineMsg(String question) {
         Map<String, Object> params = new HashMap<>();
 

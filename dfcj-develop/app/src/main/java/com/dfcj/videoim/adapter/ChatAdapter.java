@@ -26,6 +26,7 @@ import com.dfcj.videoim.entity.MsgType;
 import com.dfcj.videoim.entity.ShopMsgBody;
 import com.dfcj.videoim.entity.TextMsgBody;
 import com.dfcj.videoim.entity.VideoMsgBody;
+import com.dfcj.videoim.im.ImUtils;
 import com.dfcj.videoim.listener.ShopManager;
 import com.dfcj.videoim.util.AppUtils;
 import com.dfcj.videoim.util.AutoLinKTextViewUtil;
@@ -104,7 +105,7 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
     }
 
     private int getMsgStatus(Message entity) {
-        boolean isSend = entity.getSenderId().equals(MainActivity.mSenderId);
+        boolean isSend = entity.getSenderId().equals(ImUtils.mSenderId);
 
         if (MsgType.TEXT == entity.getMsgType()) {
             return isSend ? TYPE_SEND_TEXT : TYPE_RECEIVE_TEXT;
@@ -126,9 +127,11 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
         if (msgContent instanceof TextMsgBody
                 || msgContent instanceof AudioMsgBody || msgContent instanceof VideoMsgBody
                 || msgContent instanceof FileMsgBody||  msgContent instanceof ShopMsgBody) {
+
+            KLog.d("消息1");
             //只需要设置自己发送的状态
             MsgSendStatus sentStatus = item.getSentStatus();
-            boolean isSend = item.getSenderId().equals(MainActivity.mSenderId);
+            boolean isSend = item.getSenderId().equals(ImUtils.mSenderId);
             if (isSend) {
                 if (sentStatus == MsgSendStatus.SENDING) {//发送中
                     helper.setVisible(R.id.chat_item_progress, true).setVisible(R.id.chat_item_fail, false);
@@ -139,7 +142,7 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
                 }
             }
         } else if (msgContent instanceof ImageMsgBody) {
-            boolean isSend = item.getSenderId().equals(MainActivity.mSenderId);
+            boolean isSend = item.getSenderId().equals(ImUtils.mSenderId);
             if (isSend) {
                 MsgSendStatus sentStatus = item.getSentStatus();
                 if (sentStatus == MsgSendStatus.SENDING) {//发送中
@@ -193,11 +196,13 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
 
             }
 
-            if (item.getSenderId().equals(MainActivity.mSenderId)) {
+            if (item.getSenderId().equals(ImUtils.mSenderId)) {
                 helper.setText(R.id.kapian_top_tv, SharedPrefsUtils.getValue(AppConstant.MyUserName));
             } else {
                 helper.setText(R.id.kapian_top_tv, SharedPrefsUtils.getValue(AppConstant.STAFF_NAME));
             }
+
+
         } else if (item.getMsgType().equals(MsgType.IMAGE)) {
 
             ImageMsgBody msgBody = (ImageMsgBody) item.getBody();
@@ -267,7 +272,7 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
                     load(msgBody.getGoodsIcon())
                     .error(R.drawable.default_img_failed).into((ImageView) helper.getView(R.id.chat_item_img));
 
-            if (item.getSenderId().equals(MainActivity.mSenderId)) {
+            if (item.getSenderId().equals(ImUtils.mSenderId)) {
                 helper.setText(R.id.kapian_top_tv, SharedPrefsUtils.getValue(AppConstant.MyUserName));
             } else {
                 helper.setText(R.id.kapian_top_tv, SharedPrefsUtils.getValue(AppConstant.STAFF_NAME));
@@ -309,7 +314,7 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
         if (item.getMsgType().equals(MsgType.TEXT) || item.getMsgType().equals(MsgType.IMAGE) || item.getMsgType().equals(MsgType.KAPIAN)) {
 
             //头像
-            if (item.getSenderId().equals(MainActivity.mSenderId)) {
+            if (item.getSenderId().equals(ImUtils.mSenderId)) {
                 Glide.with(getContext())
                         .load(SharedPrefsUtils.getValue(AppConstant.MyUserIcon))
                         .apply(RequestOptions.bitmapTransform(new CircleCrop()).error(R.drawable.g_pic108))
