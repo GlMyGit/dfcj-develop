@@ -74,6 +74,7 @@
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/drawable/a_check_bg.xml" value="0.20520833333333333" />
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/drawable/custom_divider1.xml" value="0.234375" />
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/drawable/custom_divider2.xml" value="0.234375" />
+        <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/drawable/custom_divider_right.xml" value="0.21145833333333333" />
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/drawable/custom_divider_white4.xml" value="0.22291666666666668" />
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/drawable/progress_small_holo.xml" value="0.246875" />
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/drawable/radio_btn.xml" value="0.24947916666666667" />
@@ -86,6 +87,7 @@
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/layout/include_emoji_layout.xml" value="0.23177083333333334" />
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/layout/item_emoji.xml" value="0.23177083333333334" />
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/layout/item_emoji_vprecy.xml" value="0.23177083333333334" />
+        <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/layout/item_file_send.xml" value="0.1953125" />
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/layout/item_image_receive.xml" value="0.21822916666666667" />
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/layout/item_image_send.xml" value="0.22604166666666667" />
         <entry key="..\:/worck/maizhi/dfcjimgit/dfcj-develop/app/src/main/res/layout/item_text_receive.xml" value="0.22604166666666667" />

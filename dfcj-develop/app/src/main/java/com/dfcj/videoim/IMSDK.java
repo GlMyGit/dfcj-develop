@@ -42,7 +42,7 @@ public class IMSDK {
         MultiDex.install(application);
     }
 
-    public static IMSDK getImsdk() {
+    public static IMSDK getImSdk() {
         if (imsdk == null) {
             imsdk = new IMSDK();
         }
@@ -54,11 +54,10 @@ public class IMSDK {
      * @param token 用户token
      * @return IMSDK
      */
-    public IMSDK setToken(String token) {
+    public void setToken(String token) {
         SharedPrefsUtils.putValue(AppConstant.USERTOKEN, token);
-        SharedPrefsUtils.putValue(AppConstant.SHOP_MSG_BODY_DATA, "");
+        //
         SharedPrefsUtils.putValue(AppConstant.CHAT_TYPE, CHAT_TYPE);
-        return imsdk;
     }
 
     /**
@@ -66,9 +65,8 @@ public class IMSDK {
      *
      * @param goodsData 商品数据对象
      */
-    public IMSDK setGoodsData(ShopMsgBody goodsData) {
+    public void setGoodsData(ShopMsgBody goodsData) {
         SharedPrefsUtils.putValue(AppConstant.SHOP_MSG_BODY_DATA, GsonUtil.newGson22().toJson(goodsData));
-        return imsdk;
     }
 
     /**
@@ -76,51 +74,53 @@ public class IMSDK {
      *
      * @param chatType 聊天类型  1会话  2视频
      */
-    public IMSDK setChatType(int chatType) {
+    public void setChatType(int chatType) {
         SharedPrefsUtils.putValue(AppConstant.CHAT_TYPE, chatType);
-        return imsdk;
     }
 
     /**
      * 打开聊天界面
      */
-    public IMSDK show() {
+    public void show() {
         ActivityUtils.startActivity(new Intent(ActivityUtils.getTopActivity(), MainActivity.class));
-        return imsdk;
     }
 
     /**
      * 关闭聊天界面
      */
-    public IMSDK closeIMActivity() {
+    public void closeIMActivity() {
         ActivityUtils.finishActivity(MainActivity.class);
-        return imsdk;
     }
 
     /**
      * 关闭视频界面
      */
-    public IMSDK closeVideoActivity() {
+    public void closeVideoActivity() {
         ActivityUtils.finishActivity(VideoCallingActivity.class);
-        return imsdk;
     }
 
     /**
      * 设置卡片点击监听
      */
-    public IMSDK setShopClickListener(ShopClickListener shopClickListener) {
+    public void setShopClickListener(ShopClickListener shopClickListener) {
         ShopManager.instance().setGoodsChangeListener(shopClickListener);
-        return imsdk;
     }
 
 
     /**
-     * 打开im选择会话还是选择视频
+     * 打开im  选择会话还是选择视频
      */
-    public IMSDK showSelImDialog(AppCompatActivity appCompatActivity) {
+    public void showSelImDialog(AppCompatActivity appCompatActivity) {
         MyDialogUtil.showSelectImDialog(appCompatActivity);
-        return imsdk;
     }
 
+
+    /**
+     * 打开im  选择会话还是选择视频
+     */
+    public void setUserInfo(String userName,String userImg) {
+       SharedPrefsUtils.putValue(AppConstant.MyUserIcon,userImg);
+       SharedPrefsUtils.putValue(AppConstant.MyUserName,userName);
+    }
 
 }

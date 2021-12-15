@@ -808,7 +808,13 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         }
 
         RichText.recycle();
+        String value = SharedPrefsUtils.getValue(AppConstant.USERTOKEN);
+        KLog.d("用户token:"+value);
+        SharedPrefsUtils.putValue(AppConstant.SHOP_MSG_BODY_DATA, "");
         SharedPrefsUtils.clearShardInfo();
+
+        SharedPrefsUtils.putValue(AppConstant.USERTOKEN,value);
+
     }
 
     //设置ocr识别文字
@@ -1091,6 +1097,9 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
                 } else if (msgType == AppConstant.SEND_MSG_TYPE_SERVICE) {//会话接入
 
+                    KLog.d("cloudCustomData55:"+cloudCustomData);
+
+
                     SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
                     SharedPrefsUtils.putValue(AppConstant.STAFF_CODE, msg.getUserID());
                     isSendMsg = true;
@@ -1130,7 +1139,12 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
     //接收自定义消息（处理接口拉取的历史数据）
     private void sendZiDingYiMsg(CustomMsgEntity customMsgEntity, boolean isSelf) {
-        KLog.d("自定义消息接收cloudCustomData：" + GsonUtil.GsonString(customMsgEntity) + isSelf);
+       // KLog.d("自定义消息接收cloudCustomData：" + GsonUtil.GsonString(customMsgEntity) + isSelf);
+
+        if(customMsgEntity==null){
+            return;
+        }
+
         int msgType = customMsgEntity.getMsgType();
 
         String msgText = "";
@@ -1260,8 +1274,9 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
                         Map<String, Object> value = new HashMap<>();
                         value.put("eventId", Long.parseLong(loginBean.getData().getEventId()));
-                        cloudCustomData = GsonUtil.newGson22().toJson(value);
 
+                        cloudCustomData = new Gson().toJson(value);
+                        KLog.d("cloudCustomData33:"+cloudCustomData);
                         myEventId = "" + loginBean.getData().getEventId();
                         SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
                         SharedPrefsUtils.putValue(AppConstant.STAFF_CODE, loginBean.getData().getStaffCode());
@@ -1364,12 +1379,12 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                             myEventId = "" + changeCustomerServiceEntity.getData().getEventId();
 
                             if (changeCustomerServiceEntity.getData() != null) {
-//                                Gson gson = new Gson();
-//                                cloudCustomData = gson.toJson(changeCustomerServiceEntity.getData());
 
                                 Map<String, Object> value = new HashMap<>();
                                 value.put("eventId", changeCustomerServiceEntity.getData().getEventId());
-                                cloudCustomData = GsonUtil.newGson22().toJson(value);
+                                cloudCustomData =new Gson().toJson(value);
+
+                                KLog.d("cloudCustomData11:"+cloudCustomData);
 
                                 SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
                                 SharedPrefsUtils.putValue(AppConstant.STAFF_CODE, changeCustomerServiceEntity.getData().getStaffCode());
@@ -1430,7 +1445,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         viewModel.trtcRoomEntity.observe(this, new Observer<TrtcRoomEntity>() {
             @Override
             public void onChanged(TrtcRoomEntity trtcRoomEntity) {
-                if (trtcRoomEntity != null) {
+                if (trtcRoomEntity != null && trtcRoomEntity.getData()!=null) {
 
                     mRoomId = trtcRoomEntity.getData();
                     KLog.d("房间号：" + mRoomId);
@@ -1450,12 +1465,17 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
             @Override
             public void onChanged(upLoadImgEntity upLoadImgEntity) {
 
-                String data = upLoadImgEntity.getData();
+                if(upLoadImgEntity!=null && upLoadImgEntity.getData()!=null){
 
-                if (!TextUtils.isEmpty(data)) {
-                    dismissLoading();
-                    imUtils.sendTextMsg(data, AppConstant.SEND_MSG_TYPE_IMAGE);
+                    String data = upLoadImgEntity.getData();
+
+                    if (!TextUtils.isEmpty(data)) {
+                       // dismissLoading();
+                        imUtils.sendTextMsg(data, AppConstant.SEND_MSG_TYPE_IMAGE);
+                    }
+
                 }
+
             }
         });
     }

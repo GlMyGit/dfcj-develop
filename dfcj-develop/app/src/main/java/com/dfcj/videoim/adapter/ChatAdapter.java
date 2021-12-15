@@ -124,16 +124,17 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
     private void setStatus(BaseViewHolder helper, Message item) {
         MsgBody msgContent = item.getBody();
         if (msgContent instanceof TextMsgBody
-                || msgContent instanceof AudioMsgBody || msgContent instanceof VideoMsgBody || msgContent instanceof FileMsgBody) {
+                || msgContent instanceof AudioMsgBody || msgContent instanceof VideoMsgBody
+                || msgContent instanceof FileMsgBody||  msgContent instanceof ShopMsgBody) {
             //只需要设置自己发送的状态
             MsgSendStatus sentStatus = item.getSentStatus();
             boolean isSend = item.getSenderId().equals(MainActivity.mSenderId);
             if (isSend) {
-                if (sentStatus == MsgSendStatus.SENDING) {
+                if (sentStatus == MsgSendStatus.SENDING) {//发送中
                     helper.setVisible(R.id.chat_item_progress, true).setVisible(R.id.chat_item_fail, false);
-                } else if (sentStatus == MsgSendStatus.FAILED) {
+                } else if (sentStatus == MsgSendStatus.FAILED) {//发送失败
                     helper.setVisible(R.id.chat_item_progress, false).setVisible(R.id.chat_item_fail, true);
-                } else if (sentStatus == MsgSendStatus.SENT) {
+                } else if (sentStatus == MsgSendStatus.SENT) {//发送成功
                     helper.setVisible(R.id.chat_item_progress, false).setVisible(R.id.chat_item_fail, false);
                 }
             }
@@ -141,11 +142,11 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
             boolean isSend = item.getSenderId().equals(MainActivity.mSenderId);
             if (isSend) {
                 MsgSendStatus sentStatus = item.getSentStatus();
-                if (sentStatus == MsgSendStatus.SENDING) {
+                if (sentStatus == MsgSendStatus.SENDING) {//发送中
                     helper.setVisible(R.id.chat_item_progress, false).setVisible(R.id.chat_item_fail, false);
-                } else if (sentStatus == MsgSendStatus.FAILED) {
+                } else if (sentStatus == MsgSendStatus.FAILED) {//发送失败
                     helper.setVisible(R.id.chat_item_progress, false).setVisible(R.id.chat_item_fail, true);
-                } else if (sentStatus == MsgSendStatus.SENT) {
+                } else if (sentStatus == MsgSendStatus.SENT) {//发送成功
                     helper.setVisible(R.id.chat_item_progress, false).setVisible(R.id.chat_item_fail, false);
                 }
             } else {
@@ -203,31 +204,31 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<Message, BaseViewHold
             if (TextUtils.isEmpty(msgBody.getThumbPath())) {
 
                 GlideUtils.loadChatImage(getContext(), msgBody.getThumbUrl(), (ImageView) helper.getView(R.id.bivPic));
-                KLog.d("图片接收33333");
-                KLog.d("图片接收33333:" + msgBody.getThumbUrl());
+              //  KLog.d("图片接收33333");
+              //  KLog.d("图片接收33333:" + msgBody.getThumbUrl());
 
             } else {
 
                 File file = new File(msgBody.getThumbPath());
                 if (file.exists()) {
-                    KLog.d("图片接收11111");
-                    KLog.d("图片接收11111:" + msgBody.getThumbPath());
+                  //  KLog.d("图片接收11111");
+                 //   KLog.d("图片接收11111:" + msgBody.getThumbPath());
 
                     GlideUtils.loadChatImage(getContext(), msgBody.getThumbPath(), (ImageView) helper.getView(R.id.bivPic));
 
                 } else {
 
-                    KLog.d("图片接收2222:" + msgBody.getThumbPath());
+                   // KLog.d("图片接收2222:" + msgBody.getThumbPath());
                     //  KLog.d("图片接收2222url:"+msgBody.getThumbUrl());
 
                     //  ImageView contentImage= ( (ImageView) helper.getView(R.id.bivPic));
 
-                    GlideUtils.loadChatImage(getContext(), msgBody.getThumbPath(), (ImageView) helper.getView(R.id.bivPic));
+                   // GlideUtils.loadChatImage(getContext(), msgBody.getThumbPath(), (ImageView) helper.getView(R.id.bivPic));
 
 
-                   /* Glide.with(getContext()).
+                    Glide.with(getContext()).
                             load(msgBody.getThumbPath())
-                            .placeholder(R.drawable.default_img_failed).into((ImageView) helper.getView(R.id.bivPic));*/
+                            .placeholder(R.drawable.default_img_failed).into((ImageView) helper.getView(R.id.bivPic));
 
                     // GlideUtils.loadChatImage(getContext(),msgBody.getThumbUrl(),(ImageView) helper.getView(R.id.bivPic));
 

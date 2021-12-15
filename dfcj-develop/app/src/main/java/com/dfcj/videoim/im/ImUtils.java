@@ -35,6 +35,7 @@ import com.dfcj.videoim.util.ChatUiHelper;
 import com.dfcj.videoim.util.other.GsonUtil;
 import com.dfcj.videoim.util.other.LogUtils;
 import com.dfcj.videoim.util.other.SharedPrefsUtils;
+import com.google.gson.Gson;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.tencent.imsdk.v2.V2TIMCallback;
 import com.tencent.imsdk.v2.V2TIMDownloadCallback;
@@ -48,8 +49,10 @@ import com.tencent.imsdk.v2.V2TIMSDKListener;
 import com.tencent.imsdk.v2.V2TIMSendCallback;
 import com.tencent.imsdk.v2.V2TIMSoundElem;
 import com.tencent.imsdk.v2.V2TIMUserFullInfo;
+import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.imsdk.v2.V2TIMVideoElem;
 import com.wzq.mvvmsmart.utils.KLog;
+import com.wzq.mvvmsmart.utils.ToastUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -84,7 +87,6 @@ public class ImUtils {
     public void initViewInfo(ChatAdapter mAdapter, RecyclerView rvChatList) {
         this.mAdapter = mAdapter;
         this.rvChatList = rvChatList;
-
 
     }
 
@@ -196,6 +198,7 @@ public class ImUtils {
 
         KLog.d("消息的内容：" + hello);
         KLog.d("消息的内容cloudCustomData：" + cloudCustomData);
+        KLog.d("客服id：" + SharedPrefsUtils.getValue(AppConstant.STAFF_CODE));
 
         try {
 
@@ -286,61 +289,130 @@ public class ImUtils {
 
             }
 
+
+
             String sVal = GsonUtil.newGson22().toJson(customMsgEntity);
             byte[] strs = sVal.getBytes("UTF8");
 
-            V2TIMMessage customMessage = V2TIMManager.getMessageManager().createCustomMessage(strs);
-            customMessage.setCloudCustomData(cloudCustomData);
 
-            //是否只有在线用户才能收到，如果设置为 true ，接收方历史消息拉取不到，常被用于实现“对方正在输入”或群组里的非重要提示等弱提示功能
-            KLog.d("发送成功：" + fsUserId);
+            if (msgType == AppConstant.SEND_MSG_TYPE_TEXT) {
 
-            V2TIMManager.getMessageManager().sendMessage(customMessage, SharedPrefsUtils.getValue(AppConstant.STAFF_CODE), null, V2TIMMessage.V2TIM_PRIORITY_DEFAULT,
-                    false, new V2TIMOfflinePushInfo(), new V2TIMSendCallback<V2TIMMessage>() {
-                        @Override
-                        public void onProgress(int i) {
-                        }
 
-                        @Override
-                        public void onSuccess(V2TIMMessage v2TIMMessage) {
-                            KLog.d("发送成功：");
-                            if (msgType == AppConstant.SEND_VIDEO_TYPE_START ||
-                                    msgType == AppConstant.SEND_VIDEO_TYPE_CANCEL ||
-                                    msgType == AppConstant.SEND_VIDEO_TYPE_END ||
-                                    msgType == AppConstant.SEND_VIDEO_TYPE_OVERTIME) {
-                            } else {
-                                updateMsg(mMessgae);
+                KLog.d("普通文本消息："+replace.toString());
+
+                V2TIMMessage textMessage = V2TIMManager.getMessageManager().createTextMessage(replace.toString());
+                textMessage.setCloudCustomData(cloudCustomData);
+                V2TIMManager.getMessageManager().sendMessage(textMessage, SharedPrefsUtils.getValue(AppConstant.STAFF_CODE),
+                        null, V2TIMMessage.V2TIM_PRIORITY_DEFAULT,false,new V2TIMOfflinePushInfo(), new V2TIMSendCallback<V2TIMMessage>() {
+
+                            @Override
+                            public void onSuccess(V2TIMMessage v2TIMMessage) {
+                                KLog.d("发送成功普通文本");
+                                if (msgType == AppConstant.SEND_VIDEO_TYPE_START ||
+                                        msgType == AppConstant.SEND_VIDEO_TYPE_CANCEL ||
+                                        msgType == AppConstant.SEND_VIDEO_TYPE_END ||
+                                        msgType == AppConstant.SEND_VIDEO_TYPE_OVERTIME) {
+                                } else {
+                                    updateMsg(mMessgae);
+                                }
+
+                                if (yesMsgOnclickListener != null) {
+                                    yesMsgOnclickListener.onYesMsgClick(true, msgType);
+                                }
+
+                                KLog.d("发送成功普通文本:"+new Gson().toJson(v2TIMMessage));
+
                             }
 
-                            if (yesMsgOnclickListener != null) {
-                                yesMsgOnclickListener.onYesMsgClick(true, msgType);
-                            }
-                        }
+                            @Override
+                            public void onError(int code, String s) {
+                                KLog.d("发送失败普通文本：" + s+"    错误："+code);
 
-                        @Override
-                        public void onError(int i, String s) {
-                            KLog.d("发送失败：" + s);
-                            if (msgType == AppConstant.SEND_VIDEO_TYPE_START ||
-                                    msgType == AppConstant.SEND_VIDEO_TYPE_CANCEL ||
-                                    msgType == AppConstant.SEND_VIDEO_TYPE_END ||
-                                    msgType == AppConstant.SEND_VIDEO_TYPE_OVERTIME) {
-                            } else {
-                                updateFailedMsg(mMessgae);
-                            }
-                            if (yesMsgOnclickListener != null) {
-                                yesMsgOnclickListener.onYesMsgClick(false, msgType);
+                                if(code==80001){
+                                    ToastUtils.showShort("发送文本包含敏感词");
+                                }
+
+                                if (msgType == AppConstant.SEND_VIDEO_TYPE_START ||
+                                        msgType == AppConstant.SEND_VIDEO_TYPE_CANCEL ||
+                                        msgType == AppConstant.SEND_VIDEO_TYPE_END ||
+                                        msgType == AppConstant.SEND_VIDEO_TYPE_OVERTIME) {
+                                } else {
+
+                                    updateFailedMsg(mMessgae);
+                                }
+                                if (yesMsgOnclickListener != null) {
+                                    yesMsgOnclickListener.onYesMsgClick(false, msgType);
+                                }
                             }
 
-                        }
-                    });
+                            @Override
+                            public void onProgress(int i) {
+
+                            }
+                        });
+
+            }else{
+
+
+                V2TIMMessage customMessage = V2TIMManager.getMessageManager().createCustomMessage(strs);
+                customMessage.setCloudCustomData(cloudCustomData);
+
+                //是否只有在线用户才能收到，如果设置为 true ，接收方历史消息拉取不到，常被用于实现“对方正在输入”或群组里的非重要提示等弱提示功能
+                KLog.d("发送成功：" + fsUserId);
+
+                V2TIMManager.getMessageManager().sendMessage(customMessage, SharedPrefsUtils.getValue(AppConstant.STAFF_CODE),
+                        null, V2TIMMessage.V2TIM_PRIORITY_DEFAULT,
+                        false, new V2TIMOfflinePushInfo(), new V2TIMSendCallback<V2TIMMessage>() {
+                            @Override
+                            public void onProgress(int i) {
+
+                            }
+
+                            @Override
+                            public void onSuccess(V2TIMMessage v2TIMMessage) {
+                                KLog.d("发送成功：");
+                                if (msgType == AppConstant.SEND_VIDEO_TYPE_START ||
+                                        msgType == AppConstant.SEND_VIDEO_TYPE_CANCEL ||
+                                        msgType == AppConstant.SEND_VIDEO_TYPE_END ||
+                                        msgType == AppConstant.SEND_VIDEO_TYPE_OVERTIME) {
+                                } else {
+                                    updateMsg(mMessgae);
+                                }
+
+                                if (yesMsgOnclickListener != null) {
+                                    yesMsgOnclickListener.onYesMsgClick(true, msgType);
+                                }
+                            }
+
+                            @Override
+                            public void onError(int i, String s) {
+                                KLog.d("发送失败：" + s);
+                                if (msgType == AppConstant.SEND_VIDEO_TYPE_START ||
+                                        msgType == AppConstant.SEND_VIDEO_TYPE_CANCEL ||
+                                        msgType == AppConstant.SEND_VIDEO_TYPE_END ||
+                                        msgType == AppConstant.SEND_VIDEO_TYPE_OVERTIME) {
+                                } else {
+                                    updateFailedMsg(mMessgae);
+                                }
+                                if (yesMsgOnclickListener != null) {
+                                    yesMsgOnclickListener.onYesMsgClick(false, msgType);
+                                }
+
+                            }
+                        });
+
+
+            }
+
+
+
 
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
-
-//        V2TIMManager.getInstance().sendC2CTextMessage(hello, ""+fsUserId, new V2TIMValueCallback<V2TIMMessage>() {
+// V2TIMManager.getInstance().sendC2CTextMessage(hello, ""+fsUserId, new V2TIMValueCallback<V2TIMMessage>() {
 //            @Override
 //            public void onSuccess(V2TIMMessage v2TIMMessage) {
 //                updateMsg(mMessgae);
@@ -1090,7 +1162,7 @@ public class ImUtils {
                 }
                 mAdapter.notifyItemChanged(position);
             }
-        }, 500);
+        }, 200);
 
 
 //        //将来自 haven 的消息均标记为已读
@@ -1111,18 +1183,32 @@ public class ImUtils {
             return;
         }
 
-        int position = 0;
-        mMessgae.setSentStatus(MsgSendStatus.FAILED);
+        rvChatList.scrollToPosition(mAdapter.getItemCount() - 1);
 
-        //更新单个子条目
-        for (int i = 0; i < mAdapter.getData().size(); i++) {
-            Message mAdapterMessage = mAdapter.getData().get(i);
-            if (mMessgae.getUuid().equals(mAdapterMessage.getUuid())) {
-                position = i;
+        new Handler(context.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                int position = 0;
+                mMessgae.setSentStatus(MsgSendStatus.FAILED);
+                if(mAdapter!=null){
+                    //更新单个子条目
+                    for (int i = 0; i < mAdapter.getData().size(); i++) {
+                        Message mAdapterMessage = mAdapter.getData().get(i);
+                        if (mMessgae.getUuid().equals(mAdapterMessage.getUuid())) {
+                            position = i;
+                        }
+                    }
+
+                    mAdapter.notifyItemChanged(position);
+                }
+
             }
-        }
+        }, 200);
 
-        mAdapter.notifyItemChanged(position);
+
+
+
     }
 
 
