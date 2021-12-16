@@ -51,6 +51,9 @@ public class MainActivityViewModel extends BaseViewModel {
 
     public LoginBean mLoginBean;
 
+
+    //
+    //获取顾客信息
     public void getCustomerInfo(String token) {
         Map<String, Object> params = new HashMap<>();
         params.put("token", token);
@@ -92,7 +95,7 @@ public class MainActivityViewModel extends BaseViewModel {
         params.put("faceUrl", SharedPrefsUtils.getValue(AppConstant.MyUserIcon));
         params.put("nick", SharedPrefsUtils.getValue(AppConstant.MyUserName));
         params.put("osInfo", AppUtils.getSystemModel());
-        params.put("osType", "2");//1、iOS系统、2、Android系统、3、微信小程序4、Mobile 5、电脑端PC网页浏览器
+        params.put("osType", "2");// ostype  1、iOS系统、2、Android系统、3、微信小程序4、Mobile 5、电脑端PC网页浏览器
 
         RetrofitClient.getInstance(HostType.lOAN_STEWARD_MAIN_HOST).create(ApiService.class)
                 .requestLogin(params)

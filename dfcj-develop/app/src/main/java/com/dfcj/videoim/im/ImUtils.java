@@ -808,7 +808,7 @@ public class ImUtils {
         mMessgae.setBody(mTextMsgBody);
         mMessgae.setType(ChatAdapter.TYPE_SEND_TEXT);
         mMessgae.setSenderId(mSenderId);
-        mMessgae.setSentStatus(MsgSendStatus.DEFAULT);
+        mMessgae.setSentStatus(MsgSendStatus.SENT);
         //开始发送
         mAdapter.addData(mMessgae);
     }

@@ -1230,8 +1230,8 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                     SharedPrefsUtils.putValue(AppConstant.MyUserName, "" + userInfoEntity.getData().getCustName());
                     SharedPrefsUtils.putValue(AppConstant.MyUserIcon, "" + userInfoEntity.getData().getCustFaceUrl());
 
-                    KLog.d("Yonghu:" + userInfoEntity.getData().getCustNo());
-                    KLog.d("Yonghu:" + ImUtils.MyUserId);
+                    KLog.d("Yonghu1:" + userInfoEntity.getData().getCustNo());
+                    KLog.d("Yonghu22:" + ImUtils.MyUserId);
 
                     if (ObjectUtils.isEmpty(userInfoEntity.getData().getCustFaceUrl())) {
                         SharedPrefsUtils.putValue(AppConstant.MyUserIcon, "http://wwwww");
@@ -1261,11 +1261,13 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
                 SharedPrefsUtils.putValue(AppConstant.SDKUserSig, loginBean.getData().getUserSig());
 
+                imUtils.loginIm();
+
                 //0正在会话，1未会话，2排队中
                 switch (loginBean.getData().getStatus()) {
                     case 0:
                         isSendMsg = true;
-                        imUtils.loginIm();
+
 
                         Map<String, Object> value = new HashMap<>();
                         value.put("eventId", Long.parseLong(loginBean.getData().getEventId()));
@@ -1293,7 +1295,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                     case 2:
 
                         isSendMsg = false;
-                        imUtils.loginIm();
+                       // imUtils.loginIm();
 
                         loadEventMsg = loginBean.getData().getMsg();
                         imUtils.sendCenterDefaultMsg("" + loadEventMsg);

@@ -72,7 +72,7 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
     private static final int VIDEO_OVERTIME = 60 * 1000;//设置拨打视频超时时间
 
     private String mRoomId = "96635124";
-    private String mUserId = "" + ImUtils.MyUserId;
+    private String mUserId = "" + SharedPrefsUtils.getValue(AppConstant.MYUSERID);
     private TRTCCloud mTRTCCloud;
     private TXDeviceManager mTXDeviceManager;
     protected static final int REQ_PERMISSION_CODE = 0x1000;
@@ -175,7 +175,6 @@ public class VideoCallingActivity extends BaseActivity<VideoCallLayoutBinding, V
         super.initViewObservable();
 
         setMyListener();
-
 
         initVis();
 
