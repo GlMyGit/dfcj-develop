@@ -1,23 +1,17 @@
 package com.dfcj.videoim;
 
 import android.Manifest;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Intent;
-import android.database.DatabaseUtils;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.util.StringUtil;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.ActivityUtils;
@@ -29,8 +23,8 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.dfcj.videoim.adapter.ChatAdapter;
 import com.dfcj.videoim.appconfig.AppConstant;
-import com.dfcj.videoim.entity.BitRateBean;
 import com.dfcj.videoim.entity.ChangeCustomerServiceEntity;
+import com.dfcj.videoim.entity.CloudCustomDataBean;
 import com.dfcj.videoim.entity.CustomMsgEntity;
 import com.dfcj.videoim.entity.EventMessage;
 import com.dfcj.videoim.entity.HistoryMsgEntity;
@@ -46,7 +40,6 @@ import com.dfcj.videoim.entity.upLoadImgEntity;
 import com.dfcj.videoim.im.ImConstant;
 import com.dfcj.videoim.im.ImUtils;
 import com.dfcj.videoim.im.ocr.OcrUtil;
-import com.dfcj.videoim.listener.ShopClickListener;
 import com.dfcj.videoim.ui.video.VideoCallingActivity;
 import com.dfcj.videoim.util.AppUtils;
 import com.dfcj.videoim.util.ChatUiHelper;
@@ -73,10 +66,8 @@ import com.tencent.imsdk.v2.V2TIMCustomElem;
 import com.tencent.imsdk.v2.V2TIMFaceElem;
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMMessage;
-import com.tencent.imsdk.v2.V2TIMMessageListGetOption;
 import com.tencent.imsdk.v2.V2TIMSignalingListener;
 import com.tencent.imsdk.v2.V2TIMTextElem;
-import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.iot.speech.asr.listener.MessageListener;
 import com.wzq.mvvmsmart.base.AppManagerMVVM;
 import com.wzq.mvvmsmart.event.StateLiveData;
@@ -198,23 +189,17 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
 
     //视频聊天选择进来
-    private void showVideoIm(){
+    private void showVideoIm() {
 
-        switch (chatType){
-
+        switch (chatType) {
             case "1"://聊天
-
                 break;
-
             case "2"://视频
                 KLog.d("视频点击11");
-                showVideoClick();
+                showVideoClick2();
                 break;
-
         }
-
         SharedPrefsUtils.putValue(AppConstant.CHAT_TYPE, "0");
-
     }
 
     private void initAppValue() {
@@ -228,7 +213,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         SharedPrefsUtils.putValue(AppConstant.USERTOKEN, "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMDA4MDEwMDAwNDQiLCJpc3MiOiJvY2otc3RhcnNreSIsImxvZ2lkIjoiNjg3NDYyNzk0OTA5MDMxMjE5MiIsImV4cCI6MTY0NjgxNTAyNywiaWF0IjoxNjM5MDM5MDI3LCJkZXZpY2VpZCI6IiJ9.hNcsiYer2GsAA_TbqPT8vyNrW1rfdVfV4YTbMs-Rrho");
 
         token = SharedPrefsUtils.getValue(AppConstant.USERTOKEN);
-        chatType = ""+SharedPrefsUtils.getValue(AppConstant.CHAT_TYPE);
+        chatType = "" + SharedPrefsUtils.getValue(AppConstant.CHAT_TYPE);
         String shopMsgBodyStr = SharedPrefsUtils.getValue(AppConstant.SHOP_MSG_BODY_DATA);
         if (!ObjectUtils.isEmpty(shopMsgBodyStr)) {
             shopMsgBody = GsonUtil.newGson22().fromJson(shopMsgBodyStr, ShopMsgBody.class);
@@ -382,9 +367,10 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
         //转人工
         public void transferToLabor() {
-            if (!isSendMsg) {
+            getChangeToLable2();
+            /*if (!isSendMsg) {
                 getChangeToLable();
-            }
+            }*/
         }
 
         //语音点击
@@ -481,7 +467,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
 
     //打视频
-    private  void showVideoClick(){
+    private void showVideoClick() {
         PermissionUtil.getIsPrmission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         PermissionUtil.getIsPrmission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
 
@@ -503,9 +489,27 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                 imUtils.sendCenterDefaultMsg(loadEventMsg);
             }
         }
+    }
 
+    private void showVideoClick2() {
+        PermissionUtil.getIsPrmission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        PermissionUtil.getIsPrmission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
 
+        boolean permission3 = AppUtils.isPermission(mContext, Manifest.permission.CAMERA);
+        boolean permission4 = AppUtils.isPermission(mContext, Manifest.permission.RECORD_AUDIO);
 
+        if (!permission3 || !permission4) {
+            sPermission();
+            return;
+        }
+
+        if (imUtils.isLogin) {
+            if (isSendMsg) {
+                getChangeToLable2();
+            } else {
+                imUtils.sendCenterDefaultMsg(loadEventMsg);
+            }
+        }
     }
 
     //获取房间号
@@ -515,23 +519,25 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         if (ObjectUtils.isEmpty(CloudCustomData)) {
             KLog.d("获取eventId失败");
         } else {
-            Map<String, String> map = GsonUtil.GsonToMaps(cloudCustomData);
-            viewModel.getTrtcRoomId(map.get("eventId"));
+            CloudCustomDataBean cloudCustomDataBean = GsonUtil.GsonToBean(CloudCustomData, CloudCustomDataBean.class);
+            viewModel.getTrtcRoomId(cloudCustomDataBean.getEventId());
         }
     }
 
 
-    //获取人工客服
+    //获取人工客服（废弃）
     private void getChangeToLable() {
         // imUtils.sendTextDefaultMsg("1");
         viewModel.getImStaff();
+    }
 
-
+    //获取人工客服
+    private void getChangeToLable2() {
+        viewModel.getTrtcStaff();
     }
 
 
     private void ocrEditMsgDialog() {
-
 
 
         OcrMsgEditDialog fxdialog = MyDialogUtil.ocrEditMsgDialog(binding.mainOcrContentTv.getText().toString());
@@ -805,11 +811,11 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
         RichText.recycle();
         String value = SharedPrefsUtils.getValue(AppConstant.USERTOKEN);
-        KLog.d("用户token:"+value);
+        KLog.d("用户token:" + value);
         SharedPrefsUtils.putValue(AppConstant.SHOP_MSG_BODY_DATA, "");
         SharedPrefsUtils.clearShardInfo();
 
-        SharedPrefsUtils.putValue(AppConstant.USERTOKEN,value);
+        SharedPrefsUtils.putValue(AppConstant.USERTOKEN, value);
 
     }
 
@@ -976,7 +982,6 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
     }*/
 
 
-
     @Override
     public void onReceiveEvent(EventMessage event) {
         super.onReceiveEvent(event);
@@ -1089,7 +1094,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
                 } else if (msgType == AppConstant.SEND_MSG_TYPE_SERVICE) {//会话接入
 
-                    KLog.d("cloudCustomData55:"+cloudCustomData);
+                    KLog.d("cloudCustomData55:" + cloudCustomData);
 
 
                     SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
@@ -1131,9 +1136,9 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
     //接收自定义消息（处理接口拉取的历史数据）
     private void sendZiDingYiMsg(CustomMsgEntity customMsgEntity, boolean isSelf) {
-       // KLog.d("自定义消息接收cloudCustomData：" + GsonUtil.GsonString(customMsgEntity) + isSelf);
+        // KLog.d("自定义消息接收cloudCustomData：" + GsonUtil.GsonString(customMsgEntity) + isSelf);
 
-        if(customMsgEntity==null){
+        if (customMsgEntity == null) {
             return;
         }
 
@@ -1147,7 +1152,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
             return;
         }
 
-        KLog.d("tttttttt:"+msgType);
+        KLog.d("tttttttt:" + msgType);
         switch (msgType) {
             case AppConstant.SEND_MSG_TYPE_TEXT://文本
                 if (isSelf) {
@@ -1261,17 +1266,18 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
                 SharedPrefsUtils.putValue(AppConstant.SDKUserSig, loginBean.getData().getUserSig());
 
+                imUtils.loginIm();
+
                 //0正在会话，1未会话，2排队中
                 switch (loginBean.getData().getStatus()) {
                     case 0:
                         isSendMsg = true;
-                        imUtils.loginIm();
 
                         Map<String, Object> value = new HashMap<>();
                         value.put("eventId", Long.parseLong(loginBean.getData().getEventId()));
 
                         cloudCustomData = new Gson().toJson(value);
-                        KLog.d("cloudCustomData33:"+cloudCustomData);
+                        KLog.d("cloudCustomData33:" + cloudCustomData);
                         myEventId = "" + loginBean.getData().getEventId();
                         SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
                         SharedPrefsUtils.putValue(AppConstant.STAFF_CODE, loginBean.getData().getStaffCode());
@@ -1293,7 +1299,6 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                     case 2:
 
                         isSendMsg = false;
-                        imUtils.loginIm();
 
                         loadEventMsg = loginBean.getData().getMsg();
                         imUtils.sendCenterDefaultMsg("" + loadEventMsg);
@@ -1334,23 +1339,37 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
 
                     List<HistoryMsgEntity.DataDTO.DataDTO2.MsgBody> msgBody = GsonUtil.GsonToList(dataDTO2.getMsgBody(), HistoryMsgEntity.DataDTO.DataDTO2.MsgBody.class);
-
                     String str = GsonUtil.GsonString(msgBody.get(0));
                     MsgBodyBean msgBodyBean = GsonUtil.newGson22().fromJson(str, MsgBodyBean.class);
 
-                    String data = msgBodyBean.getMsgContent().getData();
-                    CustomMsgEntity customMsgEntity = GsonUtil.newGson22().fromJson(data, CustomMsgEntity.class);
+                    if ("TIMTextElem".equals(msgBodyBean.getMsgType())) {
+                        //文本消息
 
-                    sendZiDingYiMsg(customMsgEntity, StringUtils.equals(dataDTO2.getFromAccount(), ""+SharedPrefsUtils.getValue(AppConstant.MYUSERID)));
+                        if (StringUtils.equals(dataDTO2.getFromAccount(), "" + SharedPrefsUtils.getValue(AppConstant.MYUSERID))) {
+                            imUtils.sendRightTextMsg2(msgBodyBean.getMsgContent().getText());
+                        } else {
+                            imUtils.sendLeftTextMsg2(msgBodyBean.getMsgContent().getText());
+                        }
+
+                    } else {
+                        //自定义消息
+
+                        String data = msgBodyBean.getMsgContent().getData();
+                        CustomMsgEntity customMsgEntity = GsonUtil.newGson22().fromJson(data, CustomMsgEntity.class);
+
+                        sendZiDingYiMsg(customMsgEntity, StringUtils.equals(dataDTO2.getFromAccount(), "" + SharedPrefsUtils.getValue(AppConstant.MYUSERID)));
+                    }
+
+
                 }
-                if (historyPage == 1) {
+                if (historyPage == 1 && historyMsgEntityList.size() > 0) {
                     binding.rvChatList.smoothScrollToPosition(mAdapter.getItemCount() - 1);
                 }
 
             }
         });
 
-        //获取人工客服
+        //获取人工客服(废弃)
         viewModel.changeCustomerServiceEntity.observe(this, new Observer<ChangeCustomerServiceEntity>() {
             @Override
             public void onChanged(ChangeCustomerServiceEntity changeCustomerServiceEntity) {
@@ -1377,9 +1396,9 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
                                 Map<String, Object> value = new HashMap<>();
                                 value.put("eventId", changeCustomerServiceEntity.getData().getEventId());
-                                cloudCustomData =new Gson().toJson(value);
+                                cloudCustomData = new Gson().toJson(value);
 
-                                KLog.d("cloudCustomData11:"+cloudCustomData);
+                                KLog.d("cloudCustomData11:" + cloudCustomData);
 
                                 SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
                                 SharedPrefsUtils.putValue(AppConstant.STAFF_CODE, changeCustomerServiceEntity.getData().getStaffCode());
@@ -1395,11 +1414,58 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
             }
         });
 
+        //获取人工客服
+        viewModel.changeCustomerServiceEntity2.observe(this, new Observer<ChangeCustomerServiceEntity>() {
+            @Override
+            public void onChanged(ChangeCustomerServiceEntity changeCustomerServiceEntity) {
+                if (changeCustomerServiceEntity != null) {
+                    String code = changeCustomerServiceEntity.getCode();
+
+                    switch (code) {
+                        case "18790301"://排队中
+                        case "18790303"://客服下班了
+                            isSendMsg = false;
+
+                            String message = changeCustomerServiceEntity.getMessage();
+                            imUtils.sendCenterDefaultMsg("" + message);
+
+                            setVideoStatus(false);
+
+                            break;
+                        case "99990000"://有客服接入
+                            //String staffCode = changeCustomerServiceEntity.getData().getStaffCode();
+                            //myEventId = "" + changeCustomerServiceEntity.getData().getEventId();
+
+                            if (changeCustomerServiceEntity.getData() != null) {
+
+                                Map<String, Object> value = new HashMap<>();
+                                value.put("eventId", changeCustomerServiceEntity.getData().getEventId());
+                                cloudCustomData = new Gson().toJson(value);
+
+                                KLog.d("cloudCustomData11:" + cloudCustomData);
+
+                                SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
+                                SharedPrefsUtils.putValue(AppConstant.STAFF_CODE, changeCustomerServiceEntity.getData().getStaffCode());
+
+                                setVideoStatus(true);
+                                isSendMsg = true;
+
+                                String roomId = changeCustomerServiceEntity.getData().getRoomId();
+                                imUtils.sendTextMsg("" + roomId, AppConstant.SEND_VIDEO_TYPE_START);
+                            }
+                            break;
+                    }
+
+
+                }
+
+            }
+        });
+
         //未回复客服消息
         viewModel.sendOffineMsgEntity.observe(this, new Observer<SendOffineMsgEntity>() {
             @Override
             public void onChanged(SendOffineMsgEntity sendOffineMsgEntity) {
-
 
 
                 if (sendOffineMsgEntity != null) {
@@ -1422,7 +1488,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
                             //  String staffCode = changeCustomerServiceEntity.getData().getStaffCode();
 
 
-                            if(sendOffineMsgEntity.getData() != null){
+                            if (sendOffineMsgEntity.getData() != null) {
 
                                 Integer showType = sendOffineMsgEntity.getData().getShowType();
                                 //0代表小I回复 1代表返回商品 2客服
@@ -1452,14 +1518,14 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
                                         Map<String, Object> value = new HashMap<>();
                                         value.put("eventId", sendOffineMsgEntity.getData().getDistributeStaffInfo().getEventId());
-                                        cloudCustomData =new Gson().toJson(value);
+                                        cloudCustomData = new Gson().toJson(value);
 
-                                        KLog.d("cloudCustomData11:"+cloudCustomData);
+                                        KLog.d("cloudCustomData11:" + cloudCustomData);
 
                                         SharedPrefsUtils.putValue(AppConstant.CloudCustomData, cloudCustomData);
                                         SharedPrefsUtils.putValue(AppConstant.STAFF_CODE, sendOffineMsgEntity.getData().getDistributeStaffInfo().getStaffCode());
 
-                                      //  String roomId = sendOffineMsgEntity.getData().getDistributeStaffInfo().getRoomId();
+                                        //  String roomId = sendOffineMsgEntity.getData().getDistributeStaffInfo().getRoomId();
 
 
                                     }
@@ -1476,11 +1542,6 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
 
                             break;
                     }
-
-
-
-
-
 
 
 //                    //如果获取到1163则转人工
@@ -1501,7 +1562,7 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
         viewModel.trtcRoomEntity.observe(this, new Observer<TrtcRoomEntity>() {
             @Override
             public void onChanged(TrtcRoomEntity trtcRoomEntity) {
-                if (trtcRoomEntity != null && trtcRoomEntity.getData()!=null) {
+                if (trtcRoomEntity != null && trtcRoomEntity.getData() != null) {
 
                     mRoomId = trtcRoomEntity.getData();
                     KLog.d("房间号：" + mRoomId);
@@ -1521,12 +1582,12 @@ public class MainActivity extends BaseActivity<MainLayoutBinding, MainActivityVi
             @Override
             public void onChanged(upLoadImgEntity upLoadImgEntity) {
 
-                if(upLoadImgEntity!=null && upLoadImgEntity.getData()!=null){
+                if (upLoadImgEntity != null && upLoadImgEntity.getData() != null) {
 
                     String data = upLoadImgEntity.getData();
 
                     if (!TextUtils.isEmpty(data)) {
-                       // dismissLoading();
+                        // dismissLoading();
                         imUtils.sendTextMsg(data, AppConstant.SEND_MSG_TYPE_IMAGE);
                     }
 

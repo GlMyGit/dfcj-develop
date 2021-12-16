@@ -41,6 +41,7 @@ public class MainActivityViewModel extends BaseViewModel {
     public SingleLiveEvent<LoginBean> loadEvent = new SingleLiveEvent<>();
     public SingleLiveEvent<SendOffineMsgEntity> sendOffineMsgEntity = new SingleLiveEvent<>();
     public SingleLiveEvent<ChangeCustomerServiceEntity> changeCustomerServiceEntity = new SingleLiveEvent<>();
+    public SingleLiveEvent<ChangeCustomerServiceEntity> changeCustomerServiceEntity2 = new SingleLiveEvent<>();
     public SingleLiveEvent<upLoadImgEntity> upLoad_ImgEntity = new SingleLiveEvent<>();
     public SingleLiveEvent<TrtcRoomEntity> trtcRoomEntity = new SingleLiveEvent<>();
     public SingleLiveEvent<HistoryMsgEntity> historyMsgEntity = new SingleLiveEvent<>();
@@ -163,7 +164,7 @@ public class MainActivityViewModel extends BaseViewModel {
     }
 
 
-    //获取客服
+    //获取客服（废弃）
     public void getImStaff() {
         String systemModel = AppUtils.getSystemModel();
 
@@ -204,6 +205,43 @@ public class MainActivityViewModel extends BaseViewModel {
 
     }
 
+    //视频会话获取客服
+    public void getTrtcStaff() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("customerCode", "" + SharedPrefsUtils.getValue(AppConstant.MYUSERID));
+        params.put("faceUrl", SharedPrefsUtils.getValue(AppConstant.MyUserIcon));
+        params.put("nick", "" + SharedPrefsUtils.getValue(AppConstant.MyUserName));
+        params.put("osInfo", "" + AppUtils.getSystemModel());
+        params.put("osType", "2");//1、iOS系统、2、Android系统、3、微信小程序4、Mobile 5、电脑端PC网页浏览器
+
+        RetrofitClient.getInstance(HostType.lOAN_STEWARD_MAIN_HOST).create(ApiService.class)
+                .requestChangeCustomerService2(params)
+                .compose(RxUtils.observableToMain()) //线程调度,compose操作符是直接对当前Observable进行操作（可简单理解为不停地.方法名（）.方法名（）链式操作当前Observable）
+                .compose(RxUtils.exceptionTransformer()) // 网络错误的异常转换, 这里可以换成自己的ExceptionHandle
+                .doOnSubscribe(MainActivityViewModel.this)    //  请求与ViewModel周期同步
+                .subscribe(new Observer<ChangeCustomerServiceEntity>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                        //stateLiveData.postLoading();
+                    }
+
+                    @Override
+                    public void onNext(@NonNull ChangeCustomerServiceEntity entity) {
+                        changeCustomerServiceEntity2.postValue(entity);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        stateLiveData.postIdle();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        stateLiveData.postIdle();
+                    }
+                });
+    }
+
 
     //上传图片
     public void fileUpload(String params) {
@@ -242,12 +280,12 @@ public class MainActivityViewModel extends BaseViewModel {
 
 
     //获取视频房间号
-    public void getTrtcRoomId(String eventId) {
+    public void getTrtcRoomId(long eventId) {
         String systemModel = AppUtils.getSystemModel();
 
         Map<String, Object> params = new HashMap<>();
         params.put("customerCode", "" + SharedPrefsUtils.getValue(AppConstant.MYUSERID));
-        params.put("eventId", "" +eventId);
+        params.put("eventId", eventId);
         params.put("osInfo", "" + systemModel);
         params.put("osType", "2");//1、iOS系统、2、Android系统、3、微信小程序4、Mobile 5、电脑端PC网页浏览器
 
@@ -318,4 +356,6 @@ public class MainActivityViewModel extends BaseViewModel {
                     }
                 });
     }
+
+
 }

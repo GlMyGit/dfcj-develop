@@ -27,6 +27,7 @@ public class MsgBodyBean {
     public static class MsgContentDTO {
         @SerializedName("Data")
         private String data;
+        private String Text;
 
         public String getData() {
             return data;
@@ -34,6 +35,14 @@ public class MsgBodyBean {
 
         public void setData(String data) {
             this.data = data;
+        }
+
+        public String getText() {
+            return Text;
+        }
+
+        public void setText(String text) {
+            Text = text;
         }
     }
 }
