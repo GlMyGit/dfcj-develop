@@ -31,11 +31,11 @@ public class IMSDK {
     public static int CHAT_TYPE_VIDEO = 1;
 
     public static void initIMSDK(Application application) {
-        BaseApplicationMVVM.setApplication(application);
-        KLog.init(BuildConfig.DEBUG);
+        //BaseApplicationMVVM.setApplication(application);
+       // KLog.init(false);
         AppApplicationMVVM.initCrash();
         LiveEventBus.config().supportBroadcast(application).lifecycleObserverAlwaysActive(true);
-        LogUtils.logInit(BuildConfig.My_LOG_DEBUG);
+        LogUtils.logInit(false);
         SharedPrefsUtils prefsUtils = new SharedPrefsUtils(application);
         application.registerActivityLifecycleCallbacks(EToastUtils.init());
         ARouter.init(application);
@@ -56,7 +56,6 @@ public class IMSDK {
      */
     public void setToken(String token) {
         SharedPrefsUtils.putValue(AppConstant.USERTOKEN, token);
-        //
         SharedPrefsUtils.putValue(AppConstant.CHAT_TYPE, CHAT_TYPE);
     }
 

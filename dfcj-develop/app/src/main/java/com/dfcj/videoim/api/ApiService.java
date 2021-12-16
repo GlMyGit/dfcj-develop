@@ -44,9 +44,13 @@ public interface ApiService {
     @POST("/api/newMedia/fcm/xiaoIRead/ask")
     Observable<SendOffineMsgEntity> requestSendOffineMsg(@Body Map<String, Object> map);
 
-    //转人工客服 分配客服
+    //转人工客服 分配客服（废弃）
     @POST("/api/newMedia/fcm/customerRead/getImStaff")
     Observable<ChangeCustomerServiceEntity> requestChangeCustomerService(@Body Map<String, Object> map);
+
+    //视频通话获取客服
+    @POST("/api/newMedia/fcm/customerRead/getTrtcStaff")
+    Observable<ChangeCustomerServiceEntity> requestChangeCustomerService2(@Body Map<String, Object> map);
 
     //获取视频房间号
     @POST("/api/newMedia/fcm/customerRead/getTrtcRoomId")
