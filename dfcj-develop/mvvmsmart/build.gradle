@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
+//apply plugin: 'maven'
 //apply plugin: 'com.kezong.fat-aar'
 /*uploadArchives {
     repositories.mavenDeployer{
