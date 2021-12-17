@@ -3,7 +3,6 @@ if (!isMoudle.toBoolean()) {
 } else {
     apply plugin: 'com.android.library'
 }
-apply plugin: 'com.kezong.fat-aar'
 android {
 
     signingConfigs {
@@ -197,7 +196,7 @@ dependencies {
 
     //implementation 'com.imsdk.pro:imst_sdk:1.0.0'
 
-    embed   project(':mvvmsmart')
+    implementation   project(':mvvmsmart')
     //5.0新特性
     // implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
