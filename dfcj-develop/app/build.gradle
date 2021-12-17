@@ -438,5 +438,5 @@ dependencies {
 
 }
 apply plugin: 'com.github.dcendents.android-maven'
-group='com.github.${dfcj-develop}'
+group='com.github.${GlMyGit:dfcj-develop}'
 //apply plugin: 'com.huawei.agconnect'
