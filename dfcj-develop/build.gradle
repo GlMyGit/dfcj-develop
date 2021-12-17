@@ -8,8 +8,6 @@ buildscript {
         //jcenter()
         mavenLocal()
         maven { url 'https://jitpack.io' }
-       // maven { url 'https://maven.google.com'}
-        //maven { url 'https://dl.bintray.com/umsdk/release' }
         maven { url 'https://dl.google.com/dl/android/maven2/' }
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/'}
         maven { url 'https://maven.aliyun.com/repository/google' }
@@ -18,7 +16,6 @@ buildscript {
         maven { url "https://maven.aliyun.com/repository/gradle-plugin" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
         maven { url "https://plugins.gradle.org/m2/" }
-       // maven {url 'https://developer.huawei.com/repo/'}
         //本地maven
 
     }
@@ -42,18 +39,12 @@ allprojects {
       //  jcenter()
         mavenLocal()
         maven { url 'https://jitpack.io' }
-       // maven { url 'https://maven.google.com'}
-      //  maven { url 'https://dl.bintray.com/umsdk/release' }
         maven{url 'http://maven.aliyun.com/nexus/content/groups/public/'}
         maven { url 'https://maven.aliyun.com/repository/google' }
         maven { url 'https://maven.aliyun.com/repository/jcenter' }
         maven { url "https://maven.aliyun.com/repository/public" }
         maven { url "https://maven.aliyun.com/repository/gradle-plugin" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
-        //本地maven
-        //maven{url 'file://d://AAR/'}
-        // 添加下面的内容     jcenter{url "http://jcenter.bintray.com/"}
-        //maven { url 'https://developer.huawei.com/repo/' }
         flatDir {
             dirs 'libs'
         }

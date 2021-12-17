@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven'
 //apply plugin: 'com.kezong.fat-aar'
-uploadArchives {
+/*uploadArchives {
     repositories.mavenDeployer{
         repository(url: "file://d://AAR/")
         pom.project {
@@ -23,7 +23,7 @@ artifacts {
 }
 repositories {
     mavenCentral()
-}
+}*/
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
     defaultConfig {

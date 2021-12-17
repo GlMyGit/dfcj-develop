@@ -5,14 +5,14 @@ if (!isMoudle.toBoolean()) {
 }
 android {
 
-    signingConfigs {
+   /* signingConfigs {
         config {
             keyAlias 'weatherKeyStore'
             keyPassword 'mykey666'
             storeFile file('D:\\worck\\2021\\worck\\key\\weather\\1\\weatherKeyStore.p12')
             storePassword 'mykey666'
         }
-    }
+    }*/
 
    // flavorDimensions "default"
 
@@ -51,7 +51,7 @@ android {
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
+           // signingConfig signingConfigs.config
 
         }
 
@@ -60,7 +60,7 @@ android {
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
+           // signingConfig signingConfigs.config
         }
 
     }
