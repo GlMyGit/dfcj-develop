@@ -1,5 +1,29 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
+//apply plugin: 'com.kezong.fat-aar'
+uploadArchives {
+    repositories.mavenDeployer{
+        repository(url: "file://d://AAR/")
+        pom.project {
+            version '1.0.0'
+            artifactId 'imst_sdk'
+            groupId 'com.imsdk.pro'
+            packaging 'aar'
+        }
 
+    }
+
+}
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.sourceFiles
+}
+artifacts {
+    archives androidSourcesJar
+}
+repositories {
+    mavenCentral()
+}
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
     defaultConfig {

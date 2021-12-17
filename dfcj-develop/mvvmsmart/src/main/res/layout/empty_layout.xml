@@ -20,7 +20,7 @@
         android:id="@+id/placeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="10dp"
         android:gravity="center"
         android:textSize="23sp"
         tools:text="暂无搜索结果" />
