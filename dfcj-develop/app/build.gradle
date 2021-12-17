@@ -432,12 +432,12 @@ dependencies {
         embed 'com.contrarywind:Android-PickerView:4.1.9'
         embed 'com.github.yhaolpz:FloatWindow:1.0.9'
 
-
         embed 'com.github.chrisbanes:PhotoView:2.0.0'*//*
-
 
     }
 */
 
 }
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.github.${dfcj-develop}'
 //apply plugin: 'com.huawei.agconnect'
