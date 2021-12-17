@@ -3,6 +3,9 @@ if (!isMoudle.toBoolean()) {
 } else {
     apply plugin: 'com.android.library'
 }
+/*apply plugin: 'com.github.dcendents.android-maven'
+
+group='com.github.dfcj-develop'*/
 android {
 
    /* signingConfigs {
